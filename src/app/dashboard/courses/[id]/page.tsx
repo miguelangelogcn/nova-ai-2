@@ -3,9 +3,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Download, FileText, Loader2, MessageCircle } from "lucide-react";
+import { Download, FileText, Loader2, MessageCircle, PlayCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getCourse, type Course } from "@/services/courses";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
     const [course, setCourse] = useState<Course | null>(null);
@@ -82,15 +83,31 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                         <CardTitle className="font-headline">Course Content</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <ul className="space-y-2 text-sm">
-                            {(course.content?.modules && course.content.modules.length > 0) ? (
-                                course.content.modules.map((module, index) => (
-                                    <li key={index} className="flex items-center gap-2">{module}</li>
-                                ))
-                            ) : (
-                                <li className="text-muted-foreground">No modules listed for this course.</li>
-                            )}
-                        </ul>
+                        {(course.content?.modules && course.content.modules.length > 0) ? (
+                            <Accordion type="single" collapsible className="w-full">
+                                {course.content.modules.map((module, index) => (
+                                    <AccordionItem value={`item-${index}`} key={index}>
+                                        <AccordionTrigger className="font-semibold">{module.title}</AccordionTrigger>
+                                        <AccordionContent>
+                                            {module.description && <p className="text-sm text-muted-foreground pb-4">{module.description}</p>}
+                                            <ul className="space-y-3 pl-2">
+                                                {module.lessons.map((lesson, lessonIndex) => (
+                                                    <li key={lessonIndex} className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group">
+                                                        <PlayCircle className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                                        <span className="flex-1">{lesson.title}</span>
+                                                    </li>
+                                                ))}
+                                                {module.lessons.length === 0 && (
+                                                    <li className="text-sm text-muted-foreground pl-2">Nenhuma aula neste módulo ainda.</li>
+                                                )}
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Nenhum módulo listado para este curso.</p>
+                        )}
                     </CardContent>
                 </Card>
                 <Card>

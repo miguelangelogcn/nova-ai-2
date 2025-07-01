@@ -1,6 +1,16 @@
 import { db } from "@/lib/firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
+export type Lesson = {
+    title: string;
+};
+
+export type Module = {
+    title: string;
+    description?: string;
+    lessons: Lesson[];
+};
+
 export type Course = {
     id: string;
     title: string;
@@ -10,7 +20,7 @@ export type Course = {
     dataAiHint: string;
     content?: {
         about: string;
-        modules: string[];
+        modules: Module[];
     }
 };
 
