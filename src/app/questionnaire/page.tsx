@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { handleAnalysis } from "./actions"
 import { useState } from "react"
@@ -23,11 +22,87 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 
+const behavioralQuestions = [
+    {
+      name: "comunicacaoEmpatica",
+      title: "1. Comunicação Empática",
+      situation: "Situação: Um paciente idoso recusa a medicação. Você está em final de plantão.",
+      options: [
+        { value: "A) Conversa brevemente, reforça a importância da medicação para evitar atrasos.", label: "Conversa brevemente, reforça a importância da medicação para evitar atrasos." },
+        { value: "B) Escuta o motivo da recusa, acolhe e propõe uma nova abordagem.", label: "Escuta o motivo da recusa, acolhe e propõe uma nova abordagem." },
+        { value: "C) Anota a recusa e segue com outros atendimentos.", label: "Anota a recusa e segue com outros atendimentos." },
+      ],
+    },
+    {
+      name: "gestaoEmocional",
+      title: "2. Gestão Emocional",
+      situation: "Situação: Você é criticado na frente de colegas por algo que não causou.",
+      options: [
+        { value: "A) Respira fundo, pede para conversar depois em particular.", label: "Respira fundo, pede para conversar depois em particular." },
+        { value: "B) Tolera em silêncio, evita mais tensão, mas fica abalado.", label: "Tolera em silêncio, evita mais tensão, mas fica abalado." },
+        { value: "C) Rebate a crítica na hora, para não se sentir diminuído.", label: "Rebate a crítica na hora, para não se sentir diminuído." },
+      ],
+    },
+    {
+      name: "trabalhoEquipe",
+      title: "3. Trabalho em Equipe",
+      situation: "Situação: Uma colega esquece uma medicação. Você nota e o paciente pode ter prejuízo.",
+      options: [
+        { value: "A) Corrige e comenta depois de forma leve.", label: "Corrige e comenta depois de forma leve." },
+        { value: "B) Corrige e conversa no momento, com foco no paciente.", label: "Corrige e conversa no momento, com foco no paciente." },
+        { value: "C) Relata à liderança formalmente.", label: "Relata à liderança formalmente." },
+      ],
+    },
+    {
+        name: "pensamentoCritico",
+        title: "4. Pensamento Crítico",
+        situation: "Situação: Prescrição com dosagem diferente do habitual.",
+        options: [
+            { value: "A) Questiona educadamente após revisar histórico e protocolos.", label: "Questiona educadamente após revisar histórico e protocolos." },
+            { value: "B) Aplica e documenta dúvida para se resguardar.", label: "Aplica e documenta dúvida para se resguardar." },
+            { value: "C) Comenta informalmente com colegas, sem intervir.", label: "Comenta informalmente com colegas, sem intervir." },
+        ],
+    },
+    {
+        name: "adaptabilidade",
+        title: "5. Adaptabilidade",
+        situation: "Situação: Remanejado para setor novo, pouco estruturado.",
+        options: [
+            { value: "A) Tenta melhorar o ambiente mesmo que não seja bem recebido.", label: "Tenta melhorar o ambiente mesmo que não seja bem recebido." },
+            { value: "B) Cumpre o que pedem e observa o funcionamento.", label: "Cumpre o que pedem e observa o funcionamento." },
+            { value: "C) Solicita retorno ao setor antigo.", label: "Solicita retorno ao setor antigo." },
+        ],
+    },
+    {
+        name: "posturaEtica",
+        title: "6. Postura Ética",
+        situation: "Situação: Sugestão de anotar um procedimento antes de executá-lo para agilizar plantão.",
+        options: [
+            { value: "A) Sugere anotar juntos depois, reforçando o risco do hábito.", label: "Sugere anotar juntos depois, reforçando o risco do hábito." },
+            { value: "B) Diz que prefere não fazer assim, mas respeita o colega.", label: "Diz que prefere não fazer assim, mas respeita o colega." },
+            { value: "C) Aceita, pois “todo mundo faz”.", label: "Aceita, pois “todo mundo faz”." },
+        ],
+    },
+    {
+        name: "escutaAtiva",
+        title: "7. Escuta Ativa",
+        situation: "Situação: Paciente insiste que “algo está errado”, mesmo com exames normais.",
+        options: [
+            { value: "A) Escuta e comunica à equipe como precaução.", label: "Escuta e comunica à equipe como precaução." },
+            { value: "B) Tenta tranquilizar e explica que está tudo certo.", label: "Tenta tranquilizar e explica que está tudo certo." },
+            { value: "C) Diz que ele já foi avaliado, sem outras ações.", label: "Diz que ele já foi avaliado, sem outras ações." },
+        ],
+    },
+];
+  
 const formSchema = z.object({
-    confidence: z.string().nonempty({ message: "Por favor, selecione um nível de confiança." }),
-    conflict: z.string().nonempty({ message: "Por favor, descreva como você lida com conflitos." }),
-    procedures: z.string().nonempty({ message: "Por favor, descreva sua familiaridade com procedimentos." }),
-    difficultNews: z.string().nonempty({ message: "Por favor, descreva sua experiência." }),
+    comunicacaoEmpatica: z.string({ required_error: "Por favor, selecione uma opção." }),
+    gestaoEmocional: z.string({ required_error: "Por favor, selecione uma opção." }),
+    trabalhoEquipe: z.string({ required_error: "Por favor, selecione uma opção." }),
+    pensamentoCritico: z.string({ required_error: "Por favor, selecione uma opção." }),
+    adaptabilidade: z.string({ required_error: "Por favor, selecione uma opção." }),
+    posturaEtica: z.string({ required_error: "Por favor, selecione uma opção." }),
+    escutaAtiva: z.string({ required_error: "Por favor, selecione uma opção." }),
 });
 
 export default function QuestionnairePage() {
@@ -38,16 +113,18 @@ export default function QuestionnairePage() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            confidence: "",
-            conflict: "",
-            procedures: "",
-            difficultNews: "",
+            comunicacaoEmpatica: "",
+            gestaoEmocional: "",
+            trabalhoEquipe: "",
+            pensamentoCritico: "",
+            adaptabilidade: "",
+            posturaEtica: "",
+            escutaAtiva: "",
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!user) {
-            // Should not happen if page is protected
             console.error("User not authenticated");
             return;
         }
@@ -76,7 +153,7 @@ export default function QuestionnairePage() {
 
     if (analysisResult) {
         return (
-            <div className="max-w-4xl mx-auto space-y-6">
+            <div className="max-w-4xl mx-auto space-y-6 py-8">
                  <Card className="text-center">
                     <CardHeader>
                         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center">
@@ -122,88 +199,59 @@ export default function QuestionnairePage() {
     }
 
     return (
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-3xl mx-auto my-8">
             <CardHeader>
-                <CardTitle className="font-headline text-3xl">A Bússola - Seu Guia</CardTitle>
-                <CardDescription>Responda a estas perguntas honestamente para nos ajudar a construir seu plano de crescimento personalizado.</CardDescription>
+                <CardTitle className="font-headline text-3xl">A Bússola - Seu Guia de Desenvolvimento</CardTitle>
+                <CardDescription>Responda a estas perguntas honestamente. Suas respostas gerarão uma análise personalizada para guiar seu crescimento.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="confidence"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                <FormLabel>Quão confiante você está para realizar uma punção venosa (coletar sangue)?</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="flex flex-col space-y-1"
-                                    >
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                        <FormControl><RadioGroupItem value="very_confident" /></FormControl>
-                                        <FormLabel className="font-normal">Muito Confiante</FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                        <FormControl><RadioGroupItem value="confident" /></FormControl>
-                                        <FormLabel className="font-normal">Confiante</FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                        <FormControl><RadioGroupItem value="neutral" /></FormControl>
-                                        <FormLabel className="font-normal">Neutro</FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
-                                        <FormControl><RadioGroupItem value="not_confident" /></FormControl>
-                                        <FormLabel className="font-normal">Pouco Confiante</FormLabel>
-                                    </FormItem>
-                                    </RadioGroup>
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="conflict"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Como você normalmente lida com um conflito ou desacordo com um colega sobre o cuidado do paciente?</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder="Descreva sua abordagem..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="procedures"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Com quais destes procedimentos avançados você está mais familiarizado? (ex: inserir um cateter PICC, gerenciar um ventilador, etc.)</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder="Liste os procedimentos e seu nível de familiaridade..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="difficultNews"
-                            render={({ field }) => (
-                                <FormItem>
-                                <FormLabel>Descreva uma vez que você teve que dar notícias difíceis para a família de um paciente. Como você abordou a situação?</FormLabel>
-                                <FormControl>
-                                    <Textarea placeholder="Descreva a situação e suas ações..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="w-full" disabled={isLoading}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                        <div>
+                            <h2 className="text-2xl font-headline mb-6 border-b pb-2">Análise Comportamental</h2>
+                            <div className="space-y-8">
+                                {behavioralQuestions.map((q) => (
+                                    <FormField
+                                        key={q.name}
+                                        control={form.control}
+                                        name={q.name as keyof z.infer<typeof formSchema>}
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-3">
+                                                <FormLabel className="font-bold text-base">{q.title}</FormLabel>
+                                                <FormDescription>{q.situation}</FormDescription>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="flex flex-col space-y-2 pt-2"
+                                                    >
+                                                        {q.options.map((opt) => (
+                                                            <FormItem key={opt.value} className="flex items-center space-x-3 space-y-0 p-3 rounded-lg border border-transparent has-[:checked]:border-primary has-[:checked]:bg-muted">
+                                                                <FormControl>
+                                                                    <RadioGroupItem value={opt.value} />
+                                                                </FormControl>
+                                                                <FormLabel className="font-normal cursor-pointer flex-1">{opt.label}</FormLabel>
+                                                            </FormItem>
+                                                        ))}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h2 className="text-2xl font-headline mb-4 border-b pb-2">Análise Técnica</h2>
+                            <div className="text-center py-10 px-4 border-2 border-dashed rounded-lg">
+                                <p className="text-muted-foreground">A seção de análise técnica está em desenvolvimento.</p>
+                                <p className="text-sm text-muted-foreground">Em breve, você poderá avaliar suas habilidades técnicas aqui.</p>
+                            </div>
+                        </div>
+
+                        <Button type="submit" className="w-full !mt-12" disabled={isLoading}>
                             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4"/>}
                             Gerar Minha Análise
                         </Button>
