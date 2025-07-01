@@ -24,7 +24,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { addTeamAction, TeamFormSchema, type TeamFormInput } from './actions';
+import { addTeamAction } from './actions';
+import { TeamFormSchema, type TeamFormInput } from './types';
 import { PlusCircle, Loader2 } from 'lucide-react';
 
 

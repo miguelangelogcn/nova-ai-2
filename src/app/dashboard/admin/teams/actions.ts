@@ -1,7 +1,7 @@
 'use server';
 
 import { addTeam, getTeams, updateTeam, deleteTeam } from '@/services/teams';
-import { z } from 'zod';
+import { type TeamFormInput, TeamFormSchema } from './types';
 
 export async function getTeamsAction() {
     try {
@@ -12,13 +12,6 @@ export async function getTeamsAction() {
         throw new Error("Não foi possível carregar as equipes. Verifique os logs do servidor.");
     }
 }
-
-export const TeamFormSchema = z.object({
-  name: z.string().min(2, 'O nome da equipe deve ter pelo menos 2 caracteres.'),
-  description: z.string().optional(),
-});
-
-export type TeamFormInput = z.infer<typeof TeamFormSchema>;
 
 export async function addTeamAction(data: TeamFormInput) {
   const validation = TeamFormSchema.safeParse(data);

@@ -23,7 +23,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { updateTeamAction, type TeamFormInput, TeamFormSchema } from './actions';
+import { updateTeamAction } from './actions';
+import { type TeamFormInput, TeamFormSchema } from './types';
 import { Loader2 } from 'lucide-react';
 import type { Team } from '@/services/teams';
 
