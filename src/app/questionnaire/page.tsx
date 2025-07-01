@@ -18,9 +18,9 @@ import { handleAnalysis } from "./actions"
 import { useState } from "react"
 import { ArrowRight, Loader2, Zap } from "lucide-react"
 import type { AnalysisResult } from "./types"
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
+import { SwotCube } from "../dashboard/profile/swot-cube";
 
 const behavioralQuestions = [
     {
@@ -154,37 +154,18 @@ export default function QuestionnairePage() {
     if (analysisResult) {
         return (
             <div className="max-w-4xl mx-auto space-y-6 py-8">
-                 <Card className="text-center">
-                    <CardHeader>
+                 <Card>
+                    <CardHeader className="text-center">
                         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center">
                             <Zap className="w-8 h-8"/>
                         </div>
                         <CardTitle className="font-headline text-3xl mt-4">Sua Análise está Pronta!</CardTitle>
-                        <CardDescription>Aqui está sua análise SWOT personalizada para guiar seu desenvolvimento profissional.</CardDescription>
+                        <CardDescription>Aqui está sua análise SWOT personalizada. Gire o cubo para explorar e depois veja em seu perfil.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Separator className="my-4"/>
-                        <h3 className="text-xl font-bold font-headline">Análise SWOT</h3>
-                        <div className="grid md:grid-cols-2 gap-4 text-left mt-4">
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Forças</h4>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.strengths}</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Fraquezas</h4>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.weaknesses}</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Oportunidades</h4>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.opportunities}</p>
-                            </div>
-                             <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Ameaças</h4>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.threats}</p>
-                            </div>
-                        </div>
+                        <SwotCube swot={analysisResult.swot} />
                     </CardContent>
-                    <CardFooter className="flex-col gap-4">
+                    <CardFooter className="flex-col gap-4 items-center justify-center pt-6">
                         <Button asChild>
                             <Link href="/dashboard/profile">Ver no Meu Perfil <ArrowRight className="ml-2"/></Link>
                         </Button>
