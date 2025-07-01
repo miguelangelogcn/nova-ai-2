@@ -33,6 +33,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { addUserAction } from './actions';
 import { PlusCircle, Loader2 } from 'lucide-react';
+import type { Team } from '@/services/teams';
 
 const formSchema = z.object({
   displayName: z.string().min(2, { message: 'O nome deve ter pelo menos 2 caracteres.' }),
@@ -44,10 +45,7 @@ const formSchema = z.object({
 
 type AddUserFormValues = z.infer<typeof formSchema>;
 
-// Mock teams. In the future, this would come from a database collection.
-const availableTeams = ['Equipe Alpha', 'Equipe Beta', 'Equipe Gamma', 'Equipe Delta'];
-
-export function AddUserDialog() {
+export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -184,7 +182,7 @@ export function AddUserDialog() {
                     </FormControl>
                     <SelectContent>
                       {availableTeams.map(team => (
-                        <SelectItem key={team} value={team}>{team}</SelectItem>
+                        <SelectItem key={team.id} value={team.name}>{team.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

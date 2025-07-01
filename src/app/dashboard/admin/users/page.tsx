@@ -8,16 +8,22 @@ import { AlertCircle } from "lucide-react";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { AddUserDialog } from "./add-user-dialog";
+import { getTeamsAction } from "../teams/actions";
+import type { Team } from "@/services/teams";
 
 
 export default async function AdminUsersPage() {
     let users: AppUser[] = [];
+    let teams: Team[] = [];
     let error: string | null = null;
 
     try {
-        const fetchedUsers = await getUsersAction();
-        // Sort users on the client-side to avoid complex Firestore indexing
+        const [fetchedUsers, fetchedTeams] = await Promise.all([
+            getUsersAction(),
+            getTeamsAction(),
+        ]);
         users = fetchedUsers.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        teams = fetchedTeams;
     } catch (e: any) {
         error = e.message;
     }
@@ -30,7 +36,7 @@ export default async function AdminUsersPage() {
                         <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
                         <CardDescription>Visualize, adicione e gerencie todos os usuários da plataforma.</CardDescription>
                     </div>
-                    <AddUserDialog />
+                    <AddUserDialog availableTeams={teams} />
                 </div>
             </CardHeader>
             <CardContent>

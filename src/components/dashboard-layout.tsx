@@ -13,6 +13,7 @@ import {
   Settings,
   Users,
   Loader2,
+  Users2,
 } from 'lucide-react';
 
 import { NovaAiSaudeLogo } from '@/components/icons';
@@ -44,6 +45,7 @@ const adminNavItems = [
   { href: '/dashboard', icon: Home, label: 'Início' },
   { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
   { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
+  { href: '/dashboard/admin/teams', icon: Users2, label: 'Equipes' },
   { href: '/dashboard/admin/logs', icon: ClipboardList, label: 'Registros' },
 ];
 
