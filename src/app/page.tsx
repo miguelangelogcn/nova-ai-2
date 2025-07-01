@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { NursePathLogo } from "@/components/icons";
+import { NovaAiSaudeLogo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -41,9 +41,9 @@ export default function LoginPage() {
       <Card className="mx-auto max-w-sm w-full shadow-2xl">
         <CardHeader className="space-y-2 text-center">
             <div className="inline-block mx-auto text-accent">
-                <NursePathLogo className="w-14 h-14" />
+                <NovaAiSaudeLogo className="w-14 h-14" />
             </div>
-          <CardTitle className="text-3xl font-headline">Bem-vindo(a) ao NursePath</CardTitle>
+          <CardTitle className="text-3xl font-headline">Bem-vindo(a) ao Nova AI | Saúde</CardTitle>
           <CardDescription>Insira suas credenciais para acessar sua jornada de crescimento</CardDescription>
         </CardHeader>
         <CardContent>

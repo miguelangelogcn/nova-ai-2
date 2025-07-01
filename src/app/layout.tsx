@@ -5,8 +5,8 @@ import { Toaster } from "@/components/ui/toaster"
 import { AuthContextProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'NursePath',
-  description: 'Uma plataforma para capacitar profissionais de enfermagem.',
+  title: 'Nova AI | Saúde',
+  description: 'Uma plataforma para capacitar profissionais de saúde.',
 };
 
 export default function RootLayout({

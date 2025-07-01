@@ -15,7 +15,7 @@ import {
   Loader2,
 } from 'lucide-react';
 
-import { NursePathLogo } from '@/components/icons';
+import { NovaAiSaudeLogo } from '@/components/icons';
 import {
   Sidebar,
   SidebarContent,
@@ -87,8 +87,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <SidebarContent>
           <SidebarHeader>
             <div className="flex items-center gap-2">
-              <NursePathLogo className="w-8 h-8 text-accent" />
-              <span className="text-lg font-semibold font-headline">NursePath</span>
+              <NovaAiSaudeLogo className="w-8 h-8 text-accent" />
+              <span className="text-lg font-semibold font-headline">Nova AI | Saúde</span>
             </div>
           </SidebarHeader>
           <SidebarMenu>

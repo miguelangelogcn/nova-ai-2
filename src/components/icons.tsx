@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export const NursePathLogo = (props: SVGProps<SVGSVGElement>) => (
+export const NovaAiSaudeLogo = (props: SVGProps<SVGSVGElement>) => (
     <svg
       width="24"
       height="24"
