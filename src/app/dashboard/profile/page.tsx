@@ -61,7 +61,7 @@ export default function ProfilePage() {
                             <CardTitle className="font-headline">Análise SWOT Interativa</CardTitle>
                             <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
                         </CardHeader>
-                        <CardContent className="min-h-[420px] flex items-center justify-center">
+                        <CardContent>
                             <SwotCube swot={latestAssessment.swot} />
                         </CardContent>
                         <CardFooter>
