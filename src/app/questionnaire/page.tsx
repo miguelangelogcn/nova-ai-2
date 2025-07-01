@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { SwotCube } from "../dashboard/profile/swot-cube";
 import { useToast } from "@/hooks/use-toast"
+import { PersonalizedLearningPlan } from "../dashboard/personalized-learning-plan";
 
 const behavioralQuestions = [
     {
@@ -212,11 +213,11 @@ export default function QuestionnairePage() {
         try {
             const result = await handleAnalysis(values, user.uid);
             setAnalysisResult(result);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
             toast({
                 title: "Erro na Análise",
-                description: "Não foi possível gerar sua análise. Por favor, tente novamente.",
+                description: error.message || "Não foi possível gerar sua análise. Por favor, tente novamente.",
                 variant: "destructive",
             });
         } finally {
@@ -245,31 +246,41 @@ export default function QuestionnairePage() {
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <Loader2 className="h-12 w-12 animate-spin text-accent mb-4" />
                 <h2 className="text-2xl font-headline text-center">Analisando suas respostas...</h2>
-                <p className="text-muted-foreground">Sua análise SWOT personalizada está sendo gerada.</p>
+                <p className="text-muted-foreground">Sua análise personalizada está sendo gerada pela IA.</p>
             </div>
         )
     }
 
     if (analysisResult) {
         return (
-            <div className="max-w-4xl mx-auto space-y-6 py-8">
-                 <Card>
-                    <CardHeader className="text-center">
-                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center">
-                            <Zap className="w-8 h-8"/>
-                        </div>
-                        <CardTitle className="font-headline text-3xl mt-4">Sua Análise está Pronta!</CardTitle>
-                        <CardDescription>Ótimo trabalho! Sua análise está pronta. Explore o resultado e continue para o seu painel.</CardDescription>
+            <div className="max-w-4xl mx-auto space-y-6 py-12">
+                <div className="text-center space-y-2">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center">
+                        <Zap className="w-8 h-8"/>
+                    </div>
+                    <h1 className="font-headline text-3xl mt-4">Sua Análise está Pronta!</h1>
+                    <p className="text-muted-foreground">Ótimo trabalho! Explore os resultados abaixo e continue para o seu painel.</p>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="font-headline">Análise Swot Pessoal</CardTitle>
+                        <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <SwotCube swot={analysisResult.swot} />
                     </CardContent>
-                    <CardFooter className="flex-col gap-4 items-center justify-center pt-6">
-                        <Button asChild>
-                            <Link href="/dashboard">Ir para o Painel <ArrowRight className="ml-2"/></Link>
-                        </Button>
-                    </CardFooter>
                 </Card>
+
+                {analysisResult.learningPath && (
+                    <PersonalizedLearningPlan learningPath={analysisResult.learningPath} />
+                )}
+
+                <div className="text-center pt-4">
+                    <Button asChild size="lg">
+                        <Link href="/dashboard">Ir para o Painel <ArrowRight className="ml-2"/></Link>
+                    </Button>
+                </div>
             </div>
         );
     }

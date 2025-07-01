@@ -8,6 +8,7 @@ import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 import type { Assessment } from "@/services/user";
 import { SwotCube } from "./swot-cube";
+import { PersonalizedLearningPlan } from "../personalized-learning-plan";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
@@ -66,6 +67,9 @@ export default function ProfilePage() {
                         </CardContent>
                     </Card>
                 )}
+                 {latestAssessment?.learningPath && (
+                    <PersonalizedLearningPlan learningPath={latestAssessment.learningPath} />
+                 )}
             </div>
         </div>
     )

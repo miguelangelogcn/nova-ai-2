@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ArrowRight, Bot, BookOpen, BarChart, Users, ClipboardList, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
-import { PersonalizedLearningPlan } from "./personalized-learning-plan";
 
 export default function DashboardPage() {
     const { appUser } = useAuth();
@@ -81,8 +80,6 @@ export default function DashboardPage() {
     }
 
     // Default User (Nurse/Technician) Dashboard View
-    const latestAssessment = appUser?.assessments?.[0];
-
     return (
         <div className="space-y-6">
             <div>
@@ -91,7 +88,23 @@ export default function DashboardPage() {
             </div>
             
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-                <PersonalizedLearningPlan learningPath={latestAssessment?.learningPath} />
+                <Card className="flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center gap-2">
+                            <BookOpen className="text-accent" />
+                            Biblioteca de Cursos
+                        </CardTitle>
+                        <CardDescription>Explore nossa lista completa de cursos para expandir seus conhecimentos e habilidades.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <p className="text-sm bg-muted p-3 rounded-lg">Aprenda sobre Suporte Avançado de Vida, dosagem de medicação e muito mais.</p>
+                    </CardContent>
+                    <CardFooter>
+                         <Button asChild variant="secondary" className="w-full">
+                            <Link href="/dashboard/courses">Explorar Todos os Cursos <ArrowRight className="ml-2" /></Link>
+                        </Button>
+                    </CardFooter>
+                </Card>
                 
                 <Card className="flex flex-col">
                     <CardHeader>

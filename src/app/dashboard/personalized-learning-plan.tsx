@@ -47,7 +47,7 @@ export function PersonalizedLearningPlan({ learningPath }: PersonalizedLearningP
             <CardHeader>
                 <CardTitle className="font-headline flex items-center gap-2">
                     <BookCheck className="text-accent" />
-                    Trilha de Aprendizagem Sugerida
+                    Trilha de Aprendizagem Personalizada
                 </CardTitle>
                 <CardDescription>
                     Cursos recomendados pela IA com base na sua análise SWOT para impulsionar seu desenvolvimento.
