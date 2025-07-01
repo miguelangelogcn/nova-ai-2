@@ -1,9 +1,10 @@
+'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, Edit, Lightbulb, ShieldAlert, Target, TrendingUp } from "lucide-react";
+import { CheckCircle2, Edit, Lightbulb, Loader2, ShieldAlert, Target, TrendingUp } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
 
 const swotData = {
     strengths: [
@@ -36,21 +37,41 @@ const learningPath = [
 ]
 
 export default function ProfilePage() {
+    const { user, appUser, loading } = useAuth();
+
+    if (loading || !user || !appUser) {
+        return (
+            <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
+                <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+        );
+    }
+    
+    const getAvatarFallback = () => {
+        if (appUser?.displayName) {
+            return appUser.displayName.split(' ').map((n) => n[0]).join('').toUpperCase();
+        }
+        if (user.email) {
+            return user.email.substring(0, 2).toUpperCase();
+        }
+        return 'U';
+    }
+
     return (
         <div className="space-y-6">
             <Card>
                 <CardHeader>
                     <div className="flex items-center gap-4">
                         <Avatar className="h-20 w-20">
-                            <AvatarImage src="https://placehold.co/80x80.png" data-ai-hint="woman smiling" alt="Jane Doe" />
-                            <AvatarFallback>JD</AvatarFallback>
+                            <AvatarImage src={appUser.photoURL ?? "https://placehold.co/80x80.png"} data-ai-hint="woman smiling" alt={appUser.displayName} />
+                            <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h1 className="text-3xl font-bold font-headline">Jane Doe</h1>
-                            <p className="text-muted-foreground">Registered Nurse</p>
+                            <h1 className="text-3xl font-bold font-headline">{appUser.displayName}</h1>
+                            <p className="text-muted-foreground capitalize">{appUser.role}</p>
                             <div className="flex gap-2 mt-2">
                                 <Badge>Cardiology</Badge>
-                                <Badge variant="secondary">Team Alpha</Badge>
+                                <Badge variant="secondary">{appUser.team ?? 'Team Alpha'}</Badge>
                             </div>
                         </div>
                         <Button variant="outline" className="ml-auto"><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>

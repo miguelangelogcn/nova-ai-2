@@ -1,14 +1,19 @@
+'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight, Bot, BookOpen, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 
 export default function DashboardPage() {
+    const { appUser } = useAuth();
+    const displayName = appUser?.displayName?.split(' ')[0] ?? 'User';
+
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold font-headline">Welcome back, Jane!</h1>
+                <h1 className="text-3xl font-bold font-headline">Welcome back, {displayName}!</h1>
                 <p className="text-muted-foreground">Here's your progress summary. Keep up the great work!</p>
             </div>
             
