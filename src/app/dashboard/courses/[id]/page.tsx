@@ -7,16 +7,18 @@ import { Download, FileText, Loader2, MessageCircle, PlayCircle } from "lucide-r
 import { useEffect, useState } from "react";
 import { getCourse, type Course } from "@/services/courses";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useParams } from "next/navigation";
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
-    const { id } = params;
+export default function CourseDetailPage() {
+    const params = useParams<{ id: string }>();
+    const id = params?.id;
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const fetchedCourse = await getCourse(id);
+                const fetchedCourse = await getCourse(id as string);
                 setCourse(fetchedCourse);
             } catch (error) {
                 console.error("Failed to fetch course:", error);
