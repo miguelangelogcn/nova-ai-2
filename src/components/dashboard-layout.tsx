@@ -34,13 +34,14 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { useAuth } from '@/context/auth-context';
 
-const navItems = [
+const userNavItems = [
   { href: '/dashboard', icon: Home, label: 'Início' },
   { href: '/dashboard/mentor', icon: Bot, label: 'Mentor IA' },
   { href: '/dashboard/courses', icon: BookOpen, label: 'Cursos' },
 ];
 
 const adminNavItems = [
+  { href: '/dashboard', icon: Home, label: 'Início' },
   { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
   { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
   { href: '/dashboard/admin/logs', icon: ClipboardList, label: 'Registros' },
@@ -91,30 +92,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
           </SidebarHeader>
           <SidebarMenu>
-            <SidebarGroup>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname === item.href}
-                    tooltip={item.label}
-                  >
-                    <Link href={item.href}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarGroup>
-            {appUser?.role === 'admin' && (
+            {appUser?.role === 'admin' ? (
                 <SidebarGroup>
                 <SidebarGroupLabel>Admin</SidebarGroupLabel>
                 {adminNavItems.map((item) => (
                     <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                         asChild
-                        isActive={pathname.startsWith(item.href)}
+                        isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href)}
                         tooltip={item.label}
                     >
                         <Link href={item.href}>
@@ -125,6 +110,23 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     </SidebarMenuItem>
                 ))}
                 </SidebarGroup>
+            ) : (
+              <SidebarGroup>
+                {userNavItems.map((item) => (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.href}
+                      tooltip={item.label}
+                    >
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarGroup>
             )}
           </SidebarMenu>
         </SidebarContent>
