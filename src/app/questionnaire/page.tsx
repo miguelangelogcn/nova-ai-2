@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, type FieldErrors } from "react-hook-form"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,6 +21,7 @@ import type { AnalysisResult } from "./types"
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 import { SwotCube } from "../dashboard/profile/swot-cube";
+import { useToast } from "@/hooks/use-toast"
 
 const behavioralQuestions = [
     {
@@ -189,6 +190,7 @@ export default function QuestionnairePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
     const { user } = useAuth();
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -198,6 +200,11 @@ export default function QuestionnairePage() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!user) {
             console.error("User not authenticated");
+            toast({
+                title: "Erro de Autenticação",
+                description: "Usuário não autenticado. Por favor, faça login novamente.",
+                variant: "destructive",
+            });
             return;
         }
         setIsLoading(true);
@@ -207,10 +214,22 @@ export default function QuestionnairePage() {
             setAnalysisResult(result);
         } catch (error) {
             console.error(error);
-            // Here you would show a toast notification
+            toast({
+                title: "Erro na Análise",
+                description: "Não foi possível gerar sua análise. Por favor, tente novamente.",
+                variant: "destructive",
+            });
         } finally {
             setIsLoading(false);
         }
+    }
+
+    function onInvalid(errors: FieldErrors) {
+        toast({
+            title: "Formulário Incompleto",
+            description: "Por favor, responda a todas as perguntas antes de gerar a análise.",
+            variant: "destructive",
+        })
     }
 
     if (isLoading) {
@@ -289,7 +308,7 @@ export default function QuestionnairePage() {
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+                    <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-10">
                         <div>
                             <h2 className="text-2xl font-headline mb-6 border-b pb-2">Análise Comportamental</h2>
                             <div className="space-y-8">
