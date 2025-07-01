@@ -10,8 +10,8 @@ export async function getUsersAction(): Promise<AppUser[]> {
     try {
         return await adminGetAllUsers();
     } catch (error) {
-        console.error("Action Error: Failed to get users", error);
-        return [];
+        console.error("Action Error: Failed to get users. Check Firebase Admin setup.", error);
+        throw new Error("Falha ao carregar usuários. Verifique as credenciais do Firebase Admin.");
     }
 }
 
@@ -32,8 +32,11 @@ export async function addUserAction(data: UserFormValues) {
         return { success: true, message: 'Usuário adicionado com sucesso.' };
     } catch (error: any) {
         // Provide a more helpful error message for credential issues.
-        if (error.code === 'auth/internal-error' || error.message.includes('Credential')) {
-             return { success: false, message: `Falha na autenticação do servidor. Verifique se as variáveis de ambiente do Firebase Admin (FIREBASE_PROJECT_ID, etc.) estão configuradas.` };
+        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço')) {
+             return { 
+                 success: false, 
+                 message: `Falha na autenticação do servidor. Para corrigir, crie um arquivo '.env.local' na raiz do projeto e adicione as credenciais de sua conta de serviço do Firebase. Você pode obter essas credenciais em: Console do Firebase > Configurações do Projeto > Contas de Serviço. Gere uma nova chave privada, copie os valores para as variáveis FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, e FIREBASE_PRIVATE_KEY, e reinicie o servidor de desenvolvimento.` 
+                };
         }
         return { success: false, message: `Falha ao adicionar usuário: ${error.message}` };
     }

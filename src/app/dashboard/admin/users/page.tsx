@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { AppUser } from "@/services/user";
 import { getUsersAction } from "./actions";
 import { UserFormDialog, DeleteUserDialog } from "./components";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<AppUser[]>([]);
@@ -25,14 +26,20 @@ export default function AdminUsersPage() {
         isDeleteConfirmOpen: false,
         selectedUser: null,
     });
+    const { toast } = useToast();
 
     const fetchUsers = async () => {
         try {
             setLoading(true);
             const userList = await getUsersAction();
             setUsers(userList);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to fetch users:", error);
+            toast({
+                variant: 'destructive',
+                title: 'Erro ao Carregar Usuários',
+                description: error.message || "Não foi possível buscar a lista de usuários. Verifique a configuração do Firebase Admin e as credenciais.",
+            });
         } finally {
             setLoading(false);
         }
