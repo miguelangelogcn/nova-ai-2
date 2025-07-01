@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { ArrowRight, ClipboardCheck, Edit, Lightbulb, Loader2, ShieldAlert, Target, TrendingUp } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
+import type { Assessment } from "@/services/user";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
@@ -27,6 +28,8 @@ export default function ProfilePage() {
         }
         return 'U';
     }
+
+    const latestAssessment: Assessment | null = appUser.assessments && appUser.assessments.length > 0 ? appUser.assessments[0] : null;
 
     return (
         <div className="space-y-6">
@@ -51,30 +54,35 @@ export default function ProfilePage() {
             </Card>
 
             <div className="grid md:grid-cols-2 gap-6">
-                {appUser.swot ? (
+                {latestAssessment ? (
                     <Card className="md:col-span-2">
                         <CardHeader>
-                            <CardTitle className="font-headline">Análise SWOT</CardTitle>
-                            <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais.</CardDescription>
+                            <CardTitle className="font-headline">Análise SWOT Mais Recente</CardTitle>
+                            <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais, com base na sua última avaliação.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="p-4 rounded-lg bg-green-50 border border-green-200">
                                 <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Forças</h3>
-                                <p className="text-sm text-green-900 whitespace-pre-wrap">{appUser.swot.strengths}</p>
+                                <p className="text-sm text-green-900 whitespace-pre-wrap">{latestAssessment.swot.strengths}</p>
                             </div>
                             <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
                                 <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Fraquezas</h3>
-                                <p className="text-sm text-yellow-900 whitespace-pre-wrap">{appUser.swot.weaknesses}</p>
+                                <p className="text-sm text-yellow-900 whitespace-pre-wrap">{latestAssessment.swot.weaknesses}</p>
                             </div>
                             <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
                                 <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Oportunidades</h3>
-                                <p className="text-sm text-blue-900 whitespace-pre-wrap">{appUser.swot.opportunities}</p>
+                                <p className="text-sm text-blue-900 whitespace-pre-wrap">{latestAssessment.swot.opportunities}</p>
                             </div>
                             <div className="p-4 rounded-lg bg-red-50 border border-red-200">
                                 <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Ameaças</h3>
-                                <p className="text-sm text-red-900 whitespace-pre-wrap">{appUser.swot.threats}</p>
+                                <p className="text-sm text-red-900 whitespace-pre-wrap">{latestAssessment.swot.threats}</p>
                             </div>
                         </CardContent>
+                        <CardFooter>
+                             <Button asChild variant="outline">
+                                <Link href="/questionnaire">Fazer Nova Avaliação</Link>
+                            </Button>
+                        </CardFooter>
                     </Card>
                 ) : (
                     <Card className="md:col-span-2">

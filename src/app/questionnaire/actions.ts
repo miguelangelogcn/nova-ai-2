@@ -1,7 +1,7 @@
 'use server';
 
 import { generateSwotAnalysis } from "@/ai/flows/swot-analysis";
-import { updateUserProfile } from "@/services/user";
+import { addAssessmentToProfile } from "@/services/user";
 import type { AnalysisResult } from "./types";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
@@ -10,7 +10,7 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     try {
         const swotAnalysis = await generateSwotAnalysis({ questionnaireResponses: questionnaireResponsesForAI });
 
-        await updateUserProfile(uid, {
+        await addAssessmentToProfile(uid, {
             swot: swotAnalysis,
             questionnaireResponses: formData,
         });

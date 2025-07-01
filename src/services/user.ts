@@ -1,6 +1,12 @@
 import { db } from "@/lib/firebase";
-import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp, updateDoc, arrayUnion } from "firebase/firestore";
 import type { GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
+
+export type Assessment = {
+    swot: GenerateSwotAnalysisOutput;
+    questionnaireResponses: Record<string, string>;
+    appliedAt: any; // Stored as Timestamp, received as ISO string
+};
 
 export type AppUser = {
     uid: string;
@@ -11,8 +17,7 @@ export type AppUser = {
     team?: string;
     createdAt: any;
     status: "Ativo" | "Inativo";
-    swot?: GenerateSwotAnalysisOutput;
-    questionnaireResponses?: Record<string, string>;
+    assessments?: Assessment[];
 };
 
 export const createUserProfile = async (user: any) => {
@@ -30,6 +35,7 @@ export const createUserProfile = async (user: any) => {
                 role: "enfermeiro",
                 createdAt: serverTimestamp(),
                 status: "Ativo",
+                assessments: [],
             });
         } catch (error) {
             console.error("Error creating user profile:", error);
@@ -47,6 +53,13 @@ export const getUserProfile = async (uid: string): Promise<AppUser | null> => {
         const serializableData = {
             ...data,
             createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+            // Sort assessments by date, newest first, and serialize timestamp
+            assessments: (data.assessments || [])
+                .map((assessment: any) => ({
+                    ...assessment,
+                    appliedAt: assessment.appliedAt?.toDate ? assessment.appliedAt.toDate().toISOString() : new Date().toISOString(),
+                }))
+                .sort((a: Assessment, b: Assessment) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()),
         };
         return serializableData as AppUser;
     }
@@ -60,5 +73,22 @@ export const updateUserProfile = async (uid: string, data: Partial<AppUser>) => 
         await updateDoc(userRef, data);
     } catch (error) {
         console.error("Error updating user profile:", error);
+    }
+};
+
+export const addAssessmentToProfile = async (uid: string, data: { swot: GenerateSwotAnalysisOutput; questionnaireResponses: Record<string, string> }) => {
+    const userRef = doc(db, "users", uid);
+    const newAssessment = {
+        ...data,
+        appliedAt: serverTimestamp(),
+    };
+    try {
+        // Using arrayUnion to add the new assessment to the array
+        await updateDoc(userRef, {
+            assessments: arrayUnion(newAssessment),
+        });
+    } catch (error) {
+        console.error("Error adding assessment to profile:", error);
+        throw error;
     }
 };
