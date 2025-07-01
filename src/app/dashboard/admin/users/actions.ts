@@ -2,9 +2,10 @@
 
 import { getAllUsers } from '@/services/user.admin';
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
+import { type AddUserInput, AddUserSchema, type EditUserInput, EditUserSchema } from './types';
+
 
 /**
  * Server action to get all users and sort them alphabetically by display name.
@@ -23,17 +24,6 @@ export async function getUsersAction() {
         throw new Error(error.message);
     }
 }
-
-
-const AddUserSchema = z.object({
-  displayName: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres.'),
-  email: z.string().email('O e-mail fornecido não é válido.'),
-  password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
-  role: z.enum(['enfermeiro', 'tecnico', 'admin']),
-  team: z.string().optional(),
-});
-
-export type AddUserInput = z.infer<typeof AddUserSchema>;
 
 export async function addUserAction(data: AddUserInput) {
   const validation = AddUserSchema.safeParse(data);
@@ -78,5 +68,53 @@ export async function addUserAction(data: AddUserInput) {
     }
 
     return { success: false, error: errorMessage };
+  }
+}
+
+export async function updateUserAction(uid: string, data: EditUserInput) {
+  const validation = EditUserSchema.safeParse(data);
+
+  if (!validation.success) {
+    const errorMessages = validation.error.issues.map(issue => issue.message).join(' ');
+    return { success: false, error: `Dados inválidos: ${errorMessages}` };
+  }
+
+  const { displayName, role, team, status } = validation.data;
+
+  try {
+    // Update Firebase Auth user
+    await adminAuth.updateUser(uid, {
+      displayName,
+    });
+
+    // Update Firestore user document
+    await adminDb.collection('users').doc(uid).update({
+      displayName,
+      role,
+      team: team ?? '',
+      status,
+    });
+
+    revalidatePath('/dashboard/admin/users');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Erro ao atualizar usuário (ação):', error);
+    return { success: false, error: 'Ocorreu um erro desconhecido ao atualizar o usuário.' };
+  }
+}
+
+export async function deleteUserAction(uid: string) {
+  try {
+    // Delete from Firebase Auth
+    await adminAuth.deleteUser(uid);
+
+    // Delete from Firestore
+    await adminDb.collection('users').doc(uid).delete();
+
+    revalidatePath('/dashboard/admin/users');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Erro ao excluir usuário (ação):', error);
+    return { success: false, error: 'Ocorreu um erro desconhecido ao excluir o usuário.' };
   }
 }

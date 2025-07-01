@@ -10,6 +10,7 @@ import { ptBR } from 'date-fns/locale';
 import { AddUserDialog } from "./add-user-dialog";
 import { getTeamsAction } from "../teams/actions";
 import type { Team } from "@/services/teams";
+import { UserActions } from "./user-actions";
 
 
 export default async function AdminUsersPage() {
@@ -34,7 +35,7 @@ export default async function AdminUsersPage() {
                 <div className="flex justify-between items-start">
                     <div>
                         <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
-                        <CardDescription>Visualize, adicione e gerencie todos os usuários da plataforma.</CardDescription>
+                        <CardDescription>Visualize, adicione, edite e gerencie todos os usuários da plataforma.</CardDescription>
                     </div>
                     <AddUserDialog availableTeams={teams} />
                 </div>
@@ -57,6 +58,7 @@ export default async function AdminUsersPage() {
                                     <TableHead>Equipe</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Data de Cadastro</TableHead>
+                                    <TableHead className="text-right w-[80px]">Ações</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -70,10 +72,13 @@ export default async function AdminUsersPage() {
                                             <Badge variant={user.status === 'Ativo' ? 'default' : 'destructive'}>{user.status}</Badge>
                                         </TableCell>
                                         <TableCell>{format(new Date(user.createdAt), 'dd/MM/yyyy', { locale: ptBR })}</TableCell>
+                                        <TableCell className="text-right">
+                                            <UserActions user={user} availableTeams={teams} />
+                                        </TableCell>
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
+                                        <TableCell colSpan={7} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

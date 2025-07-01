@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -30,43 +29,58 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { addUserAction } from './actions';
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { updateUserAction } from './actions';
+import { type EditUserInput, EditUserSchema } from './types';
+import { Loader2 } from 'lucide-react';
+import type { AppUser } from '@/services/user';
 import type { Team } from '@/services/teams';
-import { AddUserSchema, type AddUserInput } from './types';
 
+interface EditUserDialogProps {
+  user: AppUser;
+  availableTeams: Team[];
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
-export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
-  const [open, setOpen] = useState(false);
+export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: EditUserDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<AddUserInput>({
-    resolver: zodResolver(AddUserSchema),
+  const form = useForm<EditUserInput>({
+    resolver: zodResolver(EditUserSchema),
     defaultValues: {
-      displayName: '',
-      email: '',
-      password: '',
-      role: 'enfermeiro',
-      team: '',
+      displayName: user.displayName,
+      role: user.role,
+      team: user.team || '',
+      status: user.status,
     },
   });
 
-  const onSubmit = async (values: AddUserInput) => {
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        displayName: user.displayName,
+        role: user.role,
+        team: user.team || '',
+        status: user.status,
+      });
+    }
+  }, [isOpen, user, form]);
+
+  const onSubmit = async (values: EditUserInput) => {
     setIsSubmitting(true);
     try {
-      const result = await addUserAction(values);
+      const result = await updateUserAction(user.uid, values);
       if (result.success) {
         toast({
           title: 'Sucesso!',
-          description: 'O novo usuário foi criado.',
+          description: 'O usuário foi atualizado.',
         });
-        setOpen(false);
-        form.reset();
+        setIsOpen(false);
       } else {
         toast({
           variant: 'destructive',
-          title: 'Erro ao criar usuário',
+          title: 'Erro ao atualizar usuário',
           description: result.error || 'Ocorreu um erro desconhecido.',
         });
       }
@@ -82,27 +96,23 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-        setOpen(isOpen);
-        if (!isOpen) {
-            form.reset();
-        }
-    }}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Adicionar Usuário
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar Novo Usuário</DialogTitle>
+          <DialogTitle>Editar Usuário</DialogTitle>
           <DialogDescription>
-            Preencha os detalhes abaixo para adicionar um novo usuário à plataforma.
+            Atualize os detalhes do usuário. Clique em salvar quando terminar.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input value={user.email} disabled />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <FormField
               control={form.control}
               name="displayName"
@@ -111,32 +121,6 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                   <FormLabel>Nome Completo</FormLabel>
                   <FormControl>
                     <Input placeholder="Jane Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="jane.doe@hospital.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Senha</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,16 +170,37 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                   <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um status" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Ativo">Ativo</SelectItem>
+                      <SelectItem value="Inativo">Inativo</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
                 <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Criando...
+                        Salvando...
                     </>
                     ) : (
-                    'Criar Usuário'
+                    'Salvar Alterações'
                     )}
                 </Button>
             </DialogFooter>
