@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { handleAnalysis } from "./actions"
 import { useState } from "react"
-import { ArrowRight, Check, Loader2, Zap } from "lucide-react"
+import { ArrowRight, Loader2, Zap } from "lucide-react"
 import type { AnalysisResult } from "./types"
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 
 const formSchema = z.object({
     confidence: z.string().nonempty({ message: "Please select a confidence level." }),
@@ -32,6 +33,7 @@ const formSchema = z.object({
 export default function QuestionnairePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+    const { user } = useAuth();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -44,10 +46,15 @@ export default function QuestionnairePage() {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        if (!user) {
+            // Should not happen if page is protected
+            console.error("User not authenticated");
+            return;
+        }
         setIsLoading(true);
         setAnalysisResult(null);
         try {
-            const result = await handleAnalysis(values);
+            const result = await handleAnalysis(values, user.uid);
             setAnalysisResult(result);
         } catch (error) {
             console.error(error);

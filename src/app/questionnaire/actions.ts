@@ -2,9 +2,10 @@
 
 import { generatePersonalizedLearningPath } from "@/ai/flows/personalized-learning-path";
 import { generateSwotAnalysis } from "@/ai/flows/swot-analysis";
+import { updateUserProfile } from "@/services/user";
 import type { AnalysisResult } from "./types";
 
-export async function handleAnalysis(formData: any): Promise<AnalysisResult> {
+export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
     const questionnaireResponses = JSON.stringify(formData, null, 2);
 
     try {
@@ -27,6 +28,11 @@ export async function handleAnalysis(formData: any): Promise<AnalysisResult> {
         const learningPath = await generatePersonalizedLearningPath({
             swotAnalysis: swotString,
             availableCourses: availableCourses,
+        });
+
+        await updateUserProfile(uid, {
+            swot: swotAnalysis,
+            path: learningPath
         });
 
         return {

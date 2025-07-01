@@ -2,39 +2,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, Edit, Lightbulb, Loader2, ShieldAlert, Target, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { ArrowRight, ClipboardCheck, Edit, Lightbulb, Loader2, ShieldAlert, Target, TrendingUp } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
-
-const swotData = {
-    strengths: [
-        "Excellent patient communication",
-        "Proficient in IV insertion",
-        "Strong teamwork skills"
-    ],
-    weaknesses: [
-        "Documentation time management",
-        "Delegation of tasks",
-        "Advanced cardiac life support (ACLS) knowledge"
-    ],
-    opportunities: [
-        "Leadership training programs",
-        "New hospital wing opening",
-        "Mentorship from senior nurses"
-    ],
-    threats: [
-        "High nurse-to-patient ratios",
-        "Frequent changes in charting software",
-        "Risk of burnout"
-    ]
-}
-
-const learningPath = [
-    { title: "Time Management for Nurses", reason: "To improve documentation efficiency." },
-    { title: "Effective Leadership and Delegation", reason: "To enhance task delegation skills." },
-    { title: "ACLS Certification Prep", reason: "To strengthen knowledge in advanced cardiac life support." },
-    { title: "Burnout Prevention Strategies", reason: "To mitigate the risk of burnout." },
-]
+import Link from "next/link";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
@@ -80,59 +51,61 @@ export default function ProfilePage() {
             </Card>
 
             <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline">SWOT Analysis</CardTitle>
-                        <CardDescription>Your professional strengths, weaknesses, opportunities, and threats.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                            <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Strengths</h3>
-                            <ul className="list-disc list-inside text-sm text-green-900">
-                                {swotData.strengths.map(s => <li key={s}>{s}</li>)}
-                            </ul>
-                        </div>
-                        <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                            <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Weaknesses</h3>
-                            <ul className="list-disc list-inside text-sm text-yellow-900">
-                                {swotData.weaknesses.map(s => <li key={s}>{s}</li>)}
-                            </ul>
-                        </div>
-                        <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                            <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Opportunities</h3>
-                            <ul className="list-disc list-inside text-sm text-blue-900">
-                                {swotData.opportunities.map(s => <li key={s}>{s}</li>)}
-                            </ul>
-                        </div>
-                        <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-                            <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Threats</h3>
-                            <ul className="list-disc list-inside text-sm text-red-900">
-                                {swotData.threats.map(s => <li key={s}>{s}</li>)}
-                            </ul>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline">Personalized Learning Path</CardTitle>
-                        <CardDescription>Courses recommended by your AI mentor to accelerate your growth.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="space-y-4">
-                            {learningPath.map((item, index) => (
-                                <li key={index} className="flex items-start gap-4">
-                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary mt-1">
-                                        <CheckCircle2 />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold">{item.title}</h4>
-                                        <p className="text-sm text-muted-foreground">{item.reason}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                </Card>
+                {appUser.swot && appUser.path ? (
+                    <>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline">SWOT Analysis</CardTitle>
+                                <CardDescription>Your professional strengths, weaknesses, opportunities, and threats.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Strengths</h3>
+                                    <p className="text-sm text-green-900 whitespace-pre-wrap">{appUser.swot.strengths}</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Weaknesses</h3>
+                                    <p className="text-sm text-yellow-900 whitespace-pre-wrap">{appUser.swot.weaknesses}</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Opportunities</h3>
+                                    <p className="text-sm text-blue-900 whitespace-pre-wrap">{appUser.swot.opportunities}</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Threats</h3>
+                                    <p className="text-sm text-red-900 whitespace-pre-wrap">{appUser.swot.threats}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline">Personalized Learning Path</CardTitle>
+                                <CardDescription>Courses recommended by your AI mentor to accelerate your growth.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{appUser.path.learningPath}</p>
+                            </CardContent>
+                        </Card>
+                    </>
+                ) : (
+                    <Card className="md:col-span-2">
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">
+                            <ClipboardCheck className="text-accent" />
+                            Your Compass
+                            </CardTitle>
+                            <CardDescription>Start your journey by completing the 'A Bússola' assessment to unlock your personalized learning path.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                            <p className="text-sm text-muted-foreground">Your SWOT analysis and course recommendations await.</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button asChild className="w-full">
+                                <Link href="/questionnaire">Take Assessment <ArrowRight className="ml-2" /></Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                )}
             </div>
         </div>
     )

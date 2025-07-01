@@ -1,5 +1,6 @@
 import { db } from "@/lib/firebase";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import type { GenerateSwotAnalysisOutput, PersonalizedLearningPathOutput } from "@/app/questionnaire/types";
 
 export type AppUser = {
     uid: string;
@@ -9,6 +10,8 @@ export type AppUser = {
     role: "nurse" | "technician" | "admin";
     team?: string;
     createdAt: any;
+    swot?: GenerateSwotAnalysisOutput;
+    path?: PersonalizedLearningPathOutput;
 };
 
 export const createUserProfile = async (user: any) => {
@@ -40,4 +43,13 @@ export const getUserProfile = async (uid: string) => {
         return snapshot.data() as AppUser;
     }
     return null;
+};
+
+export const updateUserProfile = async (uid: string, data: Partial<AppUser>) => {
+    const userRef = doc(db, "users", uid);
+    try {
+        await updateDoc(userRef, data);
+    } catch (error) {
+        console.error("Error updating user profile:", error);
+    }
 };
