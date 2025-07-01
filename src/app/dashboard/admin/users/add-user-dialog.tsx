@@ -39,9 +39,13 @@ const formSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
   password: z.string().min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' }),
   role: z.enum(['enfermeiro', 'tecnico', 'admin']),
+  team: z.string().optional(),
 });
 
 type AddUserFormValues = z.infer<typeof formSchema>;
+
+// Mock teams. In the future, this would come from a database collection.
+const availableTeams = ['Equipe Alpha', 'Equipe Beta', 'Equipe Gamma', 'Equipe Delta'];
 
 export function AddUserDialog() {
   const [open, setOpen] = useState(false);
@@ -55,6 +59,7 @@ export function AddUserDialog() {
       email: '',
       password: '',
       role: 'enfermeiro',
+      team: '',
     },
   });
 
@@ -159,6 +164,28 @@ export function AddUserDialog() {
                       <SelectItem value="enfermeiro">Enfermeiro(a)</SelectItem>
                       <SelectItem value="tecnico">Técnico(a)</SelectItem>
                       <SelectItem value="admin">Administrador(a)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="team"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Equipe</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma equipe (opcional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableTeams.map(team => (
+                        <SelectItem key={team} value={team}>{team}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

@@ -48,6 +48,7 @@ export default async function AdminUsersPage() {
                                     <TableHead>Nome</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Função</TableHead>
+                                    <TableHead>Equipe</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Data de Cadastro</TableHead>
                                 </TableRow>
@@ -58,6 +59,7 @@ export default async function AdminUsersPage() {
                                         <TableCell className="font-medium">{user.displayName}</TableCell>
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell><Badge variant="secondary" className="capitalize">{user.role}</Badge></TableCell>
+                                        <TableCell>{user.team || 'N/A'}</TableCell>
                                         <TableCell>
                                             <Badge variant={user.status === 'Ativo' ? 'default' : 'destructive'}>{user.status}</Badge>
                                         </TableCell>
@@ -65,7 +67,7 @@ export default async function AdminUsersPage() {
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
+                                        <TableCell colSpan={6} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

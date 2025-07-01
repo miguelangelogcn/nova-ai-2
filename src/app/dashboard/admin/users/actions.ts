@@ -30,6 +30,7 @@ const AddUserSchema = z.object({
   email: z.string().email('O e-mail fornecido não é válido.'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
   role: z.enum(['enfermeiro', 'tecnico', 'admin']),
+  team: z.string().optional(),
 });
 
 export type AddUserInput = z.infer<typeof AddUserSchema>;
@@ -42,7 +43,7 @@ export async function addUserAction(data: AddUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { email, password, displayName, role } = validation.data;
+  const { email, password, displayName, role, team } = validation.data;
 
   try {
     const userRecord = await adminAuth.createUser({
@@ -58,6 +59,7 @@ export async function addUserAction(data: AddUserInput) {
       email,
       photoURL: '',
       role,
+      team: team ?? '',
       createdAt: Timestamp.now(),
       status: 'Ativo',
     });
