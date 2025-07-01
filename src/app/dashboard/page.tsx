@@ -97,7 +97,6 @@ export default function DashboardPage() {
                         <CardDescription>Explore nossa lista completa de cursos para expandir seus conhecimentos e habilidades.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                        <p className="text-sm bg-muted p-3 rounded-lg">Aprenda sobre Suporte Avançado de Vida, dosagem de medicação e muito mais.</p>
                     </CardContent>
                     <CardFooter>
                          <Button asChild variant="secondary" className="w-full">
