@@ -1,8 +1,16 @@
 import { db } from "@/lib/firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
+export type Resource = {
+    name: string;
+    url: string;
+};
+
 export type Lesson = Record<string, {
     title: string;
+    videoUrl?: string;
+    content?: string;
+    resources?: Resource[];
 }>;
 
 export type Module = Record<string, {
