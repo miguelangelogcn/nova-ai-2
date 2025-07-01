@@ -52,3 +52,31 @@ export async function addTeam(name: string, description?: string): Promise<{ id:
 
     return { id: teamRef.id };
 }
+
+/**
+ * Updates an existing team in the Firestore 'teams' collection.
+ * @param id - The ID of the team to update.
+ * @param data - The data to update.
+ */
+export async function updateTeam(id: string, data: { name: string, description?: string }): Promise<void> {
+    const teamRef = adminDb.collection('teams').doc(id);
+    await teamRef.update({
+        name: data.name,
+        description: data.description ?? '',
+    });
+    
+    revalidatePath('/dashboard/admin/teams');
+    revalidatePath('/dashboard/admin/users');
+}
+
+/**
+ * Deletes a team from the Firestore 'teams' collection.
+ * @param id - The ID of the team to delete.
+ */
+export async function deleteTeam(id: string): Promise<void> {
+    const teamRef = adminDb.collection('teams').doc(id);
+    await teamRef.delete();
+    
+    revalidatePath('/dashboard/admin/teams');
+    revalidatePath('/dashboard/admin/users');
+}

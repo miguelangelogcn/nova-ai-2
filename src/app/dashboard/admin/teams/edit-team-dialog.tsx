@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -24,38 +23,51 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { addTeamAction, TeamFormSchema, type TeamFormInput } from './actions';
-import { PlusCircle, Loader2 } from 'lucide-react';
+import { updateTeamAction, type TeamFormInput, TeamFormSchema } from './actions';
+import { Loader2 } from 'lucide-react';
+import type { Team } from '@/services/teams';
 
+interface EditTeamDialogProps {
+  team: Team;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
 
-export function AddTeamDialog() {
-  const [open, setOpen] = useState(false);
+export function EditTeamDialog({ team, isOpen, setIsOpen }: EditTeamDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<TeamFormInput>({
     resolver: zodResolver(TeamFormSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      name: team.name,
+      description: team.description || '',
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        name: team.name,
+        description: team.description || '',
+      });
+    }
+  }, [isOpen, team, form]);
 
   const onSubmit = async (values: TeamFormInput) => {
     setIsSubmitting(true);
     try {
-      const result = await addTeamAction(values);
+      const result = await updateTeamAction(team.id, values);
       if (result.success) {
         toast({
           title: 'Sucesso!',
-          description: 'A nova equipe foi criada.',
+          description: 'A equipe foi atualizada.',
         });
-        setOpen(false);
-        form.reset();
+        setIsOpen(false);
       } else {
         toast({
           variant: 'destructive',
-          title: 'Erro ao criar equipe',
+          title: 'Erro ao atualizar equipe',
           description: result.error || 'Ocorreu um erro desconhecido.',
         });
       }
@@ -71,23 +83,12 @@ export function AddTeamDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen);
-      if (!isOpen) {
-        form.reset();
-      }
-    }}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Adicionar Equipe
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Criar Nova Equipe</DialogTitle>
+          <DialogTitle>Editar Equipe</DialogTitle>
           <DialogDescription>
-            Preencha os detalhes abaixo para adicionar uma nova equipe à plataforma.
+            Atualize os detalhes da equipe. Clique em salvar quando terminar.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -119,15 +120,15 @@ export function AddTeamDialog() {
               )}
             />
             <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
                 <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Criando...
+                        Salvando...
                     </>
                     ) : (
-                    'Criar Equipe'
+                    'Salvar Alterações'
                     )}
                 </Button>
             </DialogFooter>

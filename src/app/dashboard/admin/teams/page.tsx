@@ -7,6 +7,7 @@ import { AlertCircle } from "lucide-react";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { AddTeamDialog } from "./add-team-dialog";
+import { TeamActions } from "./team-actions";
 
 export default async function AdminTeamsPage() {
     let teams: Team[] = [];
@@ -44,6 +45,7 @@ export default async function AdminTeamsPage() {
                                     <TableHead>Nome</TableHead>
                                     <TableHead>Descrição</TableHead>
                                     <TableHead>Data de Criação</TableHead>
+                                    <TableHead className="text-right w-[80px]">Ações</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -52,10 +54,13 @@ export default async function AdminTeamsPage() {
                                         <TableCell className="font-medium">{team.name}</TableCell>
                                         <TableCell>{team.description || 'N/A'}</TableCell>
                                         <TableCell>{format(new Date(team.createdAt), 'dd/MM/yyyy', { locale: ptBR })}</TableCell>
+                                        <TableCell className="text-right">
+                                            <TeamActions team={team} />
+                                        </TableCell>
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={3} className="text-center h-24">Nenhuma equipe encontrada.</TableCell>
+                                        <TableCell colSpan={4} className="text-center h-24">Nenhuma equipe encontrada.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
