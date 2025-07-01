@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, Bot, BookOpen, ClipboardCheck, BarChart, Users, ClipboardList } from "lucide-react";
+import { ArrowRight, Bot, BookOpen, ClipboardCheck, BarChart, Users, ClipboardList, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 
@@ -18,7 +18,7 @@ export default function DashboardPage() {
                     <h1 className="text-3xl font-bold font-headline">Painel do Administrador</h1>
                     <p className="text-muted-foreground">Gerencie sua organização e monitore o progresso do aprendizado.</p>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-2">
                     <Card className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="font-headline flex items-center gap-2">
@@ -30,6 +30,20 @@ export default function DashboardPage() {
                         <CardFooter className="mt-auto">
                             <Button asChild className="w-full">
                                 <Link href="/dashboard/admin/users">Gerenciar Usuários <ArrowRight className="ml-2" /></Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                    <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">
+                               <Users2 className="text-accent" />
+                               Gerenciamento de Equipes
+                            </CardTitle>
+                            <CardDescription>Crie, edite e organize as equipes da sua organização.</CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-auto">
+                            <Button asChild className="w-full">
+                                <Link href="/dashboard/admin/teams">Gerenciar Equipes <ArrowRight className="ml-2" /></Link>
                             </Button>
                         </CardFooter>
                     </Card>
