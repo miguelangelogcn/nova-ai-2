@@ -6,6 +6,7 @@ import type { AnalysisResult } from "./types";
 import { generateDiscAnalysis } from "@/ai/flows/disc-analysis";
 import { generatePersonalizedLearningPath } from "@/ai/flows/personalized-learning-path";
 import { getCoursesAdmin } from "@/services/courses.admin";
+import type { GenerateDiscAnalysisOutput, GenerateSwotAnalysisOutput } from "./types";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
     const allResponsesString = JSON.stringify(formData, null, 2);
@@ -23,20 +24,35 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     }
     const discResponsesString = JSON.stringify(discResponses, null, 2);
 
+    let swotAnalysis: GenerateSwotAnalysisOutput;
+    let discAnalysis: GenerateDiscAnalysisOutput;
+    let allCourses: any[];
+
     try {
         // Generate SWOT, DISC, and fetch courses in parallel
-        const [swotAnalysis, discAnalysis, allCourses] = await Promise.all([
+        [swotAnalysis, discAnalysis, allCourses] = await Promise.all([
             generateSwotAnalysis({ questionnaireResponses: allResponsesString }),
             generateDiscAnalysis({ discQuestionnaireResponses: discResponsesString }),
             getCoursesAdmin()
         ]);
-        
+    } catch (error) {
+        console.error("Error during parallel analysis generation (SWOT/DISC/Courses):", error);
+        throw new Error("Falha ao gerar a análise inicial (SWOT/DISC). Por favor, tente novamente.");
+    }
+    
+    let learningPathResult;
+    try {
         // Generate personalized learning path based on SWOT and courses
-        const learningPathResult = await generatePersonalizedLearningPath({
+        learningPathResult = await generatePersonalizedLearningPath({
             swot: swotAnalysis,
             courses: allCourses,
         });
+    } catch(error) {
+        console.error("Error generating learning path:", error);
+        throw new Error("Falha ao gerar sua trilha de aprendizado personalizada. Por favor, tente novamente.");
+    }
 
+    try {
         // Save everything to the user's profile
         await addAssessmentToProfile(uid, {
             swot: swotAnalysis,
@@ -44,14 +60,13 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
             questionnaireResponses: formData,
             learningPath: learningPathResult.recommendedCourseIds,
         });
-
-        return {
-            swot: swotAnalysis,
-            disc: discAnalysis,
-        };
-
-    } catch (error) {
-        console.error("Error generating analysis:", error);
-        throw new Error("Falha ao gerar análise. Por favor, tente novamente.");
+    } catch(error) {
+        console.error("Error saving assessment to profile:", error);
+        throw new Error("Falha ao salvar sua avaliação. Por favor, tente novamente.");
     }
+
+    return {
+        swot: swotAnalysis,
+        disc: discAnalysis,
+    };
 }
