@@ -10,13 +10,6 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const CourseInfoSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  description: z.string(),
-  category: z.string(),
-});
-
 const GeneratePersonalizedLearningPathInputSchema = z.object({
   swot: z.object({
     strengths: z.string(),
@@ -24,7 +17,7 @@ const GeneratePersonalizedLearningPathInputSchema = z.object({
     opportunities: z.string(),
     threats: z.string(),
   }),
-  courses: z.array(CourseInfoSchema),
+  coursesAsString: z.string().describe("A formatted string listing all available courses."),
 });
 export type GeneratePersonalizedLearningPathInput = z.infer<typeof GeneratePersonalizedLearningPathInputSchema>;
 
@@ -35,15 +28,6 @@ const GeneratePersonalizedLearningPathOutputSchema = z.object({
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
 export async function generatePersonalizedLearningPath(input: GeneratePersonalizedLearningPathInput): Promise<GeneratePersonalizedLearningPathOutput> {
-  console.log('[AI Flow Wrapper] Starting generatePersonalizedLearningPath.');
-  
-  // Guard clause: If there are no courses, return an empty path immediately without calling the AI.
-  if (!input.courses || input.courses.length === 0) {
-    console.log('[AI Flow Wrapper] No courses provided. Returning empty recommendation without calling AI.');
-    return { recommendedCourseIds: [], reasoning: 'Não há cursos disponíveis na plataforma no momento para criar uma recomendação.' };
-  }
-
-  console.log(`[AI Flow Wrapper] Received ${input.courses.length} courses to analyze. Calling the flow...`);
   return generatePersonalizedLearningPathFlow(input);
 }
 
@@ -63,12 +47,7 @@ Analyze the following SWOT:
 - Threats: {{{swot.threats}}}
 
 Here is the list of available courses:
-{{#each courses}}
-- Course ID: {{id}}
-  - Title: {{title}}
-  - Description: {{description}}
-  - Category: {{category}}
-{{/each}}
+{{{coursesAsString}}}
 
 Based on this information, generate the learning path.`,
 });
@@ -81,7 +60,6 @@ const generatePersonalizedLearningPathFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedLearningPathOutputSchema,
   },
   async (input) => {
-    // Reverting to the simpler, proven pattern from other flows.
     const { output } = await prompt(input);
     return output!;
   }

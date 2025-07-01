@@ -23,7 +23,7 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     }
     const discResponsesString = JSON.stringify(discResponses, null, 2);
 
-    let swotAnalysis, discAnalysis, learningPath, courses, courseInfoForAI;
+    let swotAnalysis, discAnalysis, learningPath, courses;
 
     // Step 1: Generate SWOT and DISC in parallel
     try {
@@ -45,12 +45,6 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     try {
         console.log('[handleAnalysis] Step 2: Fetching courses...');
         courses = await getCoursesAdmin();
-        courseInfoForAI = courses.map(course => ({
-            id: course.id,
-            title: course.title,
-            description: course.description,
-            category: course.category
-        }));
         console.log(`[handleAnalysis] Step 2 Succeeded: Found ${courses.length} courses.`);
     } catch (error) {
         console.error("[handleAnalysis] Step 2 FAILED: Error fetching courses:", error);
@@ -60,12 +54,22 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     // Step 3: Generate Learning Path using the SWOT result and courses
     try {
         console.log('[handleAnalysis] Step 3: Generating personalized learning path...');
-        console.log('[handleAnalysis] Input for learning path AI:', JSON.stringify({ swot: swotAnalysis, courseCount: courseInfoForAI.length }, null, 2));
-        
-        learningPath = await generatePersonalizedLearningPath({
-            swot: swotAnalysis,
-            courses: courseInfoForAI,
-        });
+
+        if (!courses || courses.length === 0) {
+            console.log('[handleAnalysis] No courses available. Skipping learning path generation.');
+            learningPath = { recommendedCourseIds: [], reasoning: 'Não há cursos disponíveis na plataforma no momento para criar uma recomendação.' };
+        } else {
+            const coursesAsString = courses.map(course => 
+                `- Course ID: ${course.id}\n  - Title: ${course.title}\n  - Description: ${course.description}\n  - Category: ${course.category}`
+            ).join('\n');
+
+            console.log(`[handleAnalysis] Input for learning path AI: ${courses.length} courses formatted as string.`);
+
+            learningPath = await generatePersonalizedLearningPath({
+                swot: swotAnalysis,
+                coursesAsString: coursesAsString,
+            });
+        }
 
         console.log('[handleAnalysis] Step 3 Succeeded: Personalized learning path generated.');
         if (!learningPath) {
