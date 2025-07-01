@@ -69,7 +69,7 @@ export function PersonalizedLearningPlan({ learningPath }: PersonalizedLearningP
                     </ol>
                 ) : (
                     <p className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
-                        {learningPath?.reasoning || "Nenhuma recomendação de curso disponível no momento. Explore nossa biblioteca de cursos."}
+                        Nenhuma recomendação de curso disponível no momento.
                     </p>
                 )}
             </CardContent>

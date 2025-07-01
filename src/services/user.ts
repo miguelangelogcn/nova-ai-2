@@ -4,7 +4,6 @@ import type { GenerateDiscAnalysisOutput, GenerateSwotAnalysisOutput } from "@/a
 
 export type LearningPath = {
     recommendedCourseIds: string[];
-    reasoning: string;
 };
 
 export type Assessment = {

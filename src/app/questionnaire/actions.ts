@@ -57,7 +57,7 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
 
         if (!courses || courses.length === 0) {
             console.log('[handleAnalysis] No courses available. Skipping learning path generation.');
-            learningPath = { recommendedCourseIds: [], reasoning: 'Não há cursos disponíveis na plataforma no momento para criar uma recomendação.' };
+            learningPath = { recommendedCourseIds: [] };
         } else {
             const coursesAsString = courses.map(course => 
                 `- Course ID: ${course.id}\n  - Title: ${course.title}\n  - Description: ${course.description}\n  - Category: ${course.category}`
