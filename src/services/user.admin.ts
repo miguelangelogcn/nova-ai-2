@@ -5,7 +5,7 @@ import type { AppUser } from "./user";
 
 // Admin Functions
 export const adminGetAllUsers = async (): Promise<AppUser[]> => {
-    const snapshot = await adminDb.collection("users").orderBy("displayName").get();
+    const snapshot = await adminDb.collection("users").get();
     if (snapshot.empty) {
         return [];
     }

@@ -32,7 +32,8 @@ export default function AdminUsersPage() {
         try {
             setLoading(true);
             const userList = await getUsersAction();
-            setUsers(userList);
+            const sortedUsers = userList.sort((a, b) => a.displayName.localeCompare(b.displayName));
+            setUsers(sortedUsers);
         } catch (error: any) {
             console.error("Failed to fetch users:", error);
             toast({
