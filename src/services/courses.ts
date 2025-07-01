@@ -26,8 +26,6 @@ export type Course = {
     title: string;
     description: string;
     category: string;
-    image: string;
-    dataAiHint: string;
     modules?: Module[];
 };
 

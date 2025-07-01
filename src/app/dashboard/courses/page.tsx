@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCourses, type Course } from "@/services/courses";
 import { Loader2 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -52,23 +51,14 @@ export default function CoursesPage() {
                     {courses.map(course => (
                         <Link href={`/dashboard/courses/${course.id}`} key={course.id}>
                             <Card className="flex flex-col h-full hover:shadow-lg transition-shadow duration-300">
-                                <CardHeader className="p-0">
-                                    <div className="relative h-48 w-full">
-                                        <Image
-                                            src={course.image || 'https://placehold.co/600x400.png'}
-                                            alt={course.title}
-                                            fill
-                                            className="rounded-t-lg object-cover"
-                                            data-ai-hint={course.dataAiHint}
-                                        />
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="flex-grow p-4 space-y-2">
-                                    <Badge variant="secondary">{course.category}</Badge>
+                                <CardHeader>
+                                    <Badge variant="secondary" className="w-fit mb-2">{course.category}</Badge>
                                     <CardTitle className="font-headline text-lg">{course.title}</CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex-grow">
                                     <CardDescription className="text-sm">{course.description}</CardDescription>
                                 </CardContent>
-                                <CardFooter className="p-4">
+                                <CardFooter>
                                      <p className="text-xs text-primary font-semibold">Ver Detalhes</p>
                                 </CardFooter>
                             </Card>
