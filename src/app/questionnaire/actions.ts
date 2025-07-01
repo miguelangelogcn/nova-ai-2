@@ -5,13 +5,14 @@ import { updateUserProfile } from "@/services/user";
 import type { AnalysisResult } from "./types";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
-    const questionnaireResponses = JSON.stringify(formData, null, 2);
+    const questionnaireResponsesForAI = JSON.stringify(formData, null, 2);
 
     try {
-        const swotAnalysis = await generateSwotAnalysis({ questionnaireResponses });
+        const swotAnalysis = await generateSwotAnalysis({ questionnaireResponses: questionnaireResponsesForAI });
 
         await updateUserProfile(uid, {
             swot: swotAnalysis,
+            questionnaireResponses: formData,
         });
 
         return {

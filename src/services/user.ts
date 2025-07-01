@@ -12,6 +12,7 @@ export type AppUser = {
     createdAt: any;
     status: "Ativo" | "Inativo";
     swot?: GenerateSwotAnalysisOutput;
+    questionnaireResponses?: Record<string, string>;
 };
 
 export const createUserProfile = async (user: any) => {
