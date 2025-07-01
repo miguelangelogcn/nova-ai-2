@@ -7,7 +7,7 @@ export type AppUser = {
     email: string;
     displayName: string;
     photoURL: string;
-    role: "nurse" | "technician" | "admin";
+    role: "enfermeiro" | "tecnico" | "admin";
     team?: string;
     createdAt: any;
     swot?: GenerateSwotAnalysisOutput;
@@ -26,7 +26,7 @@ export const createUserProfile = async (user: any) => {
                 displayName: displayName ?? email,
                 email,
                 photoURL: photoURL ?? '',
-                role: "nurse",
+                role: "enfermeiro",
                 createdAt: serverTimestamp(),
             });
         } catch (error) {
