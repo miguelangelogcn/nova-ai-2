@@ -5,17 +5,28 @@ import type { AppUser } from '@/services/user';
 import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers } from '@/services/user.admin';
 import { userFormSchema, type UserFormValues } from './schema';
 
-const credentialError = `Falha na autenticação do servidor. Para corrigir, crie um arquivo '.env.local' na raiz do projeto e adicione as credenciais de sua conta de serviço do Firebase. Você pode obter essas credenciais em: Console do Firebase > Configurações do Projeto > Contas de Serviço. Gere uma nova chave privada, copie os valores para as variáveis FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL e FIREBASE_PRIVATE_KEY, e reinicie o servidor.`;
+const credentialError = `Falha na autenticação do servidor. O formato do seu arquivo '.env.local' parece estar incorreto.
+
+**Para corrigir, siga estes passos:**
+1. Apague o conteúdo do seu arquivo '.env.local'.
+2. Cole o seguinte, substituindo com seus próprios valores do arquivo JSON da sua conta de serviço:
+
+FIREBASE_PROJECT_ID="seu-project-id"
+FIREBASE_CLIENT_EMAIL="seu-client-email"
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n...sua chave completa aqui...\\n-----END PRIVATE KEY-----\\n"
+
+**Importante:** Use três variáveis separadas. O valor da FIREBASE_PRIVATE_KEY deve estar entre aspas duplas (") para que as quebras de linha sejam lidas corretamente. Após salvar, reinicie o servidor.`;
 
 export async function getUsersAction(): Promise<AppUser[]> {
     try {
-        return await adminGetAllUsers();
+        const userList = await adminGetAllUsers();
+        const sortedUsers = userList.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        return sortedUsers;
     } catch (error: any) {
-        console.error("Action Error: Failed to get users. Check Firebase Admin setup.", error);
-        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço') || error.message.includes('Unexpected response')) {
-            throw new Error(credentialError);
-        }
-        throw new Error("Falha ao carregar usuários. Verifique os logs do servidor para mais detalhes.");
+        console.error("Action Error: Failed to get users. The most likely cause is an incorrect Firebase Admin setup in '.env.local'.", error);
+        // For local development, any error in this admin action is highly likely to be a credential/setup issue.
+        // We will throw the detailed guidance error to help the user.
+        throw new Error(credentialError);
     }
 }
 
