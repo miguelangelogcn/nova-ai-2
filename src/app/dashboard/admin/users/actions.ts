@@ -31,6 +31,10 @@ export async function addUserAction(data: UserFormValues) {
         revalidatePath('/dashboard/admin/users');
         return { success: true, message: 'Usuário adicionado com sucesso.' };
     } catch (error: any) {
+        // Provide a more helpful error message for credential issues.
+        if (error.code === 'auth/internal-error' || error.message.includes('Credential')) {
+             return { success: false, message: `Falha na autenticação do servidor. Verifique se as variáveis de ambiente do Firebase Admin (FIREBASE_PROJECT_ID, etc.) estão configuradas.` };
+        }
         return { success: false, message: `Falha ao adicionar usuário: ${error.message}` };
     }
 }
