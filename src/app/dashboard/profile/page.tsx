@@ -3,10 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, ClipboardCheck, Edit, Lightbulb, Loader2, ShieldAlert, Target, TrendingUp } from "lucide-react";
+import { ArrowRight, ClipboardCheck, Edit, Loader2 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 import type { Assessment } from "@/services/user";
+import { SwotCube } from "./swot-cube";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
@@ -53,42 +54,15 @@ export default function ProfilePage() {
                 </CardHeader>
             </Card>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-1 gap-6">
                 {latestAssessment ? (
-                    <Card className="md:col-span-2">
+                    <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline">Análise SWOT Mais Recente</CardTitle>
-                            <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais, com base na sua última avaliação.</CardDescription>
+                            <CardTitle className="font-headline">Análise SWOT Interativa</CardTitle>
+                            <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
                         </CardHeader>
-                        <CardContent className="grid md:grid-cols-2 gap-6">
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-chart-2">
-                                    <Lightbulb className="h-6 w-6" /> 
-                                    Forças
-                                </h3>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.strengths}</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-chart-4">
-                                    <Target className="h-6 w-6" /> 
-                                    Fraquezas
-                                </h3>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.weaknesses}</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-primary">
-                                    <TrendingUp className="h-6 w-6" /> 
-                                    Oportunidades
-                                </h3>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.opportunities}</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-card border">
-                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-destructive">
-                                    <ShieldAlert className="h-6 w-6" /> 
-                                    Ameaças
-                                </h3>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.threats}</p>
-                            </div>
+                        <CardContent className="min-h-[420px] flex items-center justify-center">
+                            <SwotCube swot={latestAssessment.swot} />
                         </CardContent>
                         <CardFooter>
                              <Button asChild variant="outline">
@@ -97,7 +71,7 @@ export default function ProfilePage() {
                         </CardFooter>
                     </Card>
                 ) : (
-                    <Card className="md:col-span-2">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="font-headline flex items-center gap-2">
                             <ClipboardCheck className="text-accent" />
