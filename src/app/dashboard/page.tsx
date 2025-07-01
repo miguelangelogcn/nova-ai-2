@@ -2,14 +2,71 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ArrowRight, Bot, BookOpen, ClipboardCheck } from "lucide-react";
+import { ArrowRight, Bot, BookOpen, ClipboardCheck, BarChart, Users, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 
 export default function DashboardPage() {
     const { appUser } = useAuth();
-    const displayName = appUser?.displayName?.split(' ')[0] ?? 'User';
+    const displayName = appUser?.displayName?.split(' ')[0] ?? 'Usuário';
 
+    // Admin Dashboard View
+    if (appUser?.role === 'admin') {
+        return (
+            <div className="space-y-6">
+                <div>
+                    <h1 className="text-3xl font-bold font-headline">Painel do Administrador</h1>
+                    <p className="text-muted-foreground">Gerencie sua organização e monitore o progresso do aprendizado.</p>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">
+                               <Users className="text-accent" />
+                               Gerenciamento de Usuários
+                            </CardTitle>
+                            <CardDescription>Adicione, remova e edite os perfis dos membros da sua equipe.</CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-auto">
+                            <Button asChild className="w-full">
+                                <Link href="/dashboard/admin/users">Gerenciar Usuários <ArrowRight className="ml-2" /></Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                     <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">
+                               <BarChart className="text-accent" />
+                               Relatórios e Análises
+                            </CardTitle>
+                            <CardDescription>Veja as métricas de conclusão de cursos e engajamento da equipe.</CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-auto">
+                            <Button asChild className="w-full">
+                                <Link href="/dashboard/admin/dashboard">Ver Relatórios <ArrowRight className="ml-2" /></Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                     <Card className="flex flex-col">
+                        <CardHeader>
+                            <CardTitle className="font-headline flex items-center gap-2">
+                               <ClipboardList className="text-accent" />
+                               Registros de Atividade
+                            </CardTitle>
+                            <CardDescription>Monitore todas as atividades importantes que ocorrem na plataforma.</CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-auto">
+                            <Button asChild className="w-full">
+                                <Link href="/dashboard/admin/logs">Ver Registros <ArrowRight className="ml-2" /></Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </div>
+            </div>
+        )
+    }
+
+    // Default User (Nurse/Technician) Dashboard View
     return (
         <div className="space-y-6">
             <div>
