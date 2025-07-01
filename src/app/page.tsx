@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -61,12 +60,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-                <div className="flex items-center">
-                    <Label htmlFor="password">Senha</Label>
-                    <Link href="#" className="ml-auto inline-block text-sm underline">
-                        Esqueceu sua senha?
-                    </Link>
-                </div>
+              <Label htmlFor="password">Senha</Label>
               <Input
                 id="password"
                 type="password"
