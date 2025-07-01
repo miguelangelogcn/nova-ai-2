@@ -8,9 +8,8 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
+import { z } from 'genkit';
 import type { Course } from '@/services/courses';
-import type { GenerateSwotAnalysisOutput } from './swot-analysis';
 
 const GeneratePersonalizedLearningPathInputSchema = z.object({
   swot: z.object({
