@@ -51,11 +51,11 @@ const prompt = ai.definePrompt({
   name: 'personalizedLearningPathPrompt',
   input: { schema: GeneratePersonalizedLearningPathInputSchema },
   output: { schema: GeneratePersonalizedLearningPathOutputSchema },
-  system: `You are a career development expert for nursing professionals. Your task is to create a personalized learning path by recommending up to 5 courses from a given list.
+  prompt: `You are a career development expert for nursing professionals. Your task is to create a personalized learning path by recommending up to 5 courses from a given list.
 Your recommendation must be based on the provided SWOT analysis. Prioritize courses that address weaknesses and leverage opportunities.
 You must provide the output in the specified JSON format. The 'recommendedCourseIds' field must be an array of strings (course IDs). The 'reasoning' field must be a string explaining your choices.
-If no courses are relevant, return an empty array for 'recommendedCourseIds' and explain why in the 'reasoning' field.`,
-  prompt: `
+If no courses are relevant, return an empty array for 'recommendedCourseIds' and explain why in the 'reasoning' field.
+
 Analyze the following SWOT:
 - Strengths: {{{swot.strengths}}}
 - Weaknesses: {{{swot.weaknesses}}}
@@ -81,25 +81,8 @@ const generatePersonalizedLearningPathFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedLearningPathOutputSchema,
   },
   async (input) => {
-    console.log('[AI Flow] Executing generatePersonalizedLearningPathFlow.');
-    try {
-        const { output } = await prompt(input);
-        
-        // Defensive check: Ensure the AI returned a valid, structured output.
-        if (!output) {
-            const errorMessage = '[AI Flow] AI prompt did not return a valid structured output. The response was null or undefined.';
-            console.error(errorMessage);
-            throw new Error(errorMessage);
-        }
-        
-        console.log('[AI Flow] AI prompt succeeded. Returning output.');
-        return output;
-
-    } catch (error) {
-        const errorMessage = '[AI Flow] An error occurred within the AI flow execution.';
-        console.error(errorMessage, error);
-        // Re-throw the error to be caught by the calling server action.
-        throw new Error(`${errorMessage} Details: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    // Reverting to the simpler, proven pattern from other flows.
+    const { output } = await prompt(input);
+    return output!;
   }
 );
