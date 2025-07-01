@@ -9,13 +9,14 @@ import { getCourse, type Course } from "@/services/courses";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function CourseDetailPage({ params }: { params: { id: string } }) {
+    const { id } = params;
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const fetchedCourse = await getCourse(params.id);
+                const fetchedCourse = await getCourse(id);
                 setCourse(fetchedCourse);
             } catch (error) {
                 console.error("Failed to fetch course:", error);
@@ -23,10 +24,10 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                 setLoading(false);
             }
         };
-        if (params.id) {
+        if (id) {
             fetchCourse();
         }
-    }, [params.id]);
+    }, [id]);
 
     if (loading) {
         return (
