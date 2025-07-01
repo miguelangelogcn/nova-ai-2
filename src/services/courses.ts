@@ -28,10 +28,7 @@ export type Course = {
     category: string;
     image: string;
     dataAiHint: string;
-    content?: {
-        about: string;
-        modules: Module[];
-    }
+    modules?: Module[];
 };
 
 export const getCourses = async (): Promise<Course[]> => {

@@ -48,7 +48,7 @@ export default function CourseModulesPage() {
         );
     }
 
-    const modules = course.content?.modules || [];
+    const modules = course.modules || [];
 
     return (
         <div className="space-y-6">

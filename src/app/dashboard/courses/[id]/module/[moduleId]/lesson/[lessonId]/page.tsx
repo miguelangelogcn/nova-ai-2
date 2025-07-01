@@ -9,6 +9,20 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
+function getYouTubeEmbedUrl(url: string) {
+    if (!url) return '';
+    if (url.includes('embed')) return url;
+    const videoId = url.split('v=')[1];
+    if (videoId) {
+        const ampersandPosition = videoId.indexOf('&');
+        if (ampersandPosition !== -1) {
+            return `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}`;
+        }
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return '';
+}
+
 export default function LessonContentPage() {
     const params = useParams<{ id: string, moduleId: string, lessonId: string }>();
     const courseId = params?.id;
@@ -26,8 +40,8 @@ export default function LessonContentPage() {
             try {
                 const fetchedCourse = await getCourse(courseId);
                 setCourse(fetchedCourse);
-                if (fetchedCourse?.content?.modules) {
-                    const currentModule = fetchedCourse.content.modules.find(m => m.id === moduleId);
+                if (fetchedCourse?.modules) {
+                    const currentModule = fetchedCourse.modules.find(m => m.id === moduleId);
                     setModule(currentModule || null);
                     if (currentModule?.lessons) {
                         const currentLesson = currentModule.lessons.find(l => l.id === lessonId);
@@ -61,6 +75,8 @@ export default function LessonContentPage() {
             </Card>
         );
     }
+    
+    const embedUrl = lesson.videoUrl ? getYouTubeEmbedUrl(lesson.videoUrl) : '';
 
     return (
         <div className="space-y-6">
@@ -81,11 +97,11 @@ export default function LessonContentPage() {
                             <CardTitle className="text-3xl font-headline">{lesson.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                             {lesson.videoUrl ? (
+                             {embedUrl ? (
                                 <div className="aspect-video bg-muted rounded-lg mb-6">
                                    <iframe
                                         className="w-full h-full rounded-lg"
-                                        src={lesson.videoUrl}
+                                        src={embedUrl}
                                         title="Vídeo da Aula"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen>

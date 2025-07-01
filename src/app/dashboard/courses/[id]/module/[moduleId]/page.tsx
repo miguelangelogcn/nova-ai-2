@@ -22,8 +22,8 @@ export default function ModuleLessonsPage() {
             try {
                 const fetchedCourse = await getCourse(courseId);
                 setCourse(fetchedCourse);
-                if (fetchedCourse?.content?.modules) {
-                    const currentModule = fetchedCourse.content.modules.find(m => m.id === moduleId);
+                if (fetchedCourse?.modules) {
+                    const currentModule = fetchedCourse.modules.find(m => m.id === moduleId);
                     setModule(currentModule || null);
                 }
             } catch (error) {
