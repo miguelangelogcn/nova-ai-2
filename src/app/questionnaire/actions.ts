@@ -42,10 +42,18 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
     
     let learningPathResult;
     try {
+        // Sanitize courses to only pass necessary fields to the AI
+        const coursesForAI = allCourses.map(course => ({
+            id: course.id,
+            title: course.title,
+            description: course.description,
+            category: course.category,
+        }));
+
         // Generate personalized learning path based on SWOT and courses
         learningPathResult = await generatePersonalizedLearningPath({
             swot: swotAnalysis,
-            courses: allCourses,
+            courses: coursesForAI,
         });
     } catch(error) {
         console.error("Error generating learning path:", error);
