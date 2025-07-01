@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Home,
   LogOut,
+  User,
   Users,
   Loader2,
   Users2,
@@ -38,6 +39,7 @@ const userNavItems = [
   { href: '/dashboard', icon: Home, label: 'Início' },
   { href: '/dashboard/mentor', icon: Bot, label: 'Florence' },
   { href: '/dashboard/courses', icon: BookOpen, label: 'Cursos' },
+  { href: '/dashboard/profile', icon: User, label: 'Perfil' },
 ];
 
 const adminNavItems = [
@@ -158,7 +160,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname === item.href}
+                      isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href)}
                       tooltip={item.label}
                     >
                       <Link href={item.href}>
@@ -194,14 +196,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <header className="flex items-center justify-between p-2 pl-4 border-b h-14">
             <div className="md:hidden">
                 <SidebarTrigger />
-            </div>
-            <div className="flex items-center gap-4 ml-auto">
-                 <Link href="/dashboard/profile">
-                    <Avatar className='h-9 w-9'>
-                        <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
-                        <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
-                    </Avatar>
-                </Link>
             </div>
         </header>
         <main className="p-4 md:p-6 bg-background/70 min-h-[calc(100vh-3.5rem)]">{children}</main>
