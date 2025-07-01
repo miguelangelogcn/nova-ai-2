@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { AppUser } from "@/services/user";
 import { useState } from "react";
-import { userFormSchema, type UserFormValues, addUserAction, updateUserAction, deleteUserAction } from "./actions";
+import { addUserAction, updateUserAction, deleteUserAction } from "./actions";
+import { userFormSchema, type UserFormValues } from "./schema";
 import { Loader2 } from "lucide-react";
 
 type UserFormDialogProps = {
