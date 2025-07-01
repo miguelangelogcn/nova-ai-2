@@ -17,13 +17,13 @@ const GeneratePersonalizedLearningPathInputSchema = z.object({
     opportunities: z.string(),
     threats: z.string(),
   }),
-  coursesAsString: z.string().describe("A formatted string listing all available courses."),
+  coursesAsString: z.string().describe("Uma string formatada listando todos os cursos disponíveis."),
 });
 export type GeneratePersonalizedLearningPathInput = z.infer<typeof GeneratePersonalizedLearningPathInputSchema>;
 
 const GeneratePersonalizedLearningPathOutputSchema = z.object({
-  recommendedCourseIds: z.array(z.string()).describe('An ordered list of recommended course IDs, up to a maximum of 5. If no courses are relevant, this must be an empty array.'),
-  reasoning: z.string().describe('A brief reasoning for the recommendation, explaining why these courses were chosen. If no courses are recommended, explain why.'),
+  recommendedCourseIds: z.array(z.string()).describe('Uma lista ordenada de IDs de cursos recomendados, até um máximo de 5. Se nenhum curso for relevante, este deve ser um array vazio.'),
+  reasoning: z.string().describe('Uma breve justificativa para a recomendação, explicando por que esses cursos foram escolhidos. Se nenhum curso for recomendado, explique o porquê. A justificativa deve estar em português.'),
 });
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
@@ -35,21 +35,21 @@ const prompt = ai.definePrompt({
   name: 'personalizedLearningPathPrompt',
   input: { schema: GeneratePersonalizedLearningPathInputSchema },
   output: { schema: GeneratePersonalizedLearningPathOutputSchema },
-  prompt: `You are a career development expert for nursing professionals. Your task is to create a personalized learning path by recommending up to 5 courses from a given list.
-Your recommendation must be based on the provided SWOT analysis. Prioritize courses that address weaknesses and leverage opportunities.
-You must provide the output in the specified JSON format. The 'recommendedCourseIds' field must be an array of strings (course IDs). The 'reasoning' field must be a string explaining your choices.
-If no courses are relevant, return an empty array for 'recommendedCourseIds' and explain why in the 'reasoning' field.
+  prompt: `Você é um especialista em desenvolvimento de carreira para profissionais de enfermagem. Sua tarefa é criar uma trilha de aprendizado personalizada, recomendando até 5 cursos de uma lista fornecida.
+Sua recomendação deve ser baseada na análise SWOT fornecida. Priorize cursos que abordem fraquezas e aproveitem oportunidades.
+Você deve fornecer a saída no formato JSON especificado. O campo 'recommendedCourseIds' deve ser um array de strings (IDs dos cursos). O campo 'reasoning' deve ser uma string em português explicando suas escolhas.
+Se nenhum curso for relevante, retorne um array vazio para 'recommendedCourseIds' e explique o porquê no campo 'reasoning'.
 
-Analyze the following SWOT:
-- Strengths: {{{swot.strengths}}}
-- Weaknesses: {{{swot.weaknesses}}}
-- Opportunities: {{{swot.opportunities}}}
-- Threats: {{{swot.threats}}}
+Analise a seguinte SWOT:
+- Forças: {{{swot.strengths}}}
+- Fraquezas: {{{swot.weaknesses}}}
+- Oportunidades: {{{swot.opportunities}}}
+- Ameaças: {{{swot.threats}}}
 
-Here is the list of available courses:
+Aqui está a lista de cursos disponíveis:
 {{{coursesAsString}}}
 
-Based on this information, generate the learning path.`,
+Com base nessas informações, gere a trilha de aprendizado.`,
 });
 
 
@@ -60,7 +60,20 @@ const generatePersonalizedLearningPathFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedLearningPathOutputSchema,
   },
   async (input) => {
+    // Handle case where no courses are available to avoid unnecessary AI call
+    if (!input.coursesAsString || input.coursesAsString.trim() === '') {
+        return {
+            recommendedCourseIds: [],
+            reasoning: 'Nenhum curso disponível no momento para gerar uma trilha de aprendizado.',
+        };
+    }
+    
     const { output } = await prompt(input);
-    return output!;
+
+    if (!output) {
+        throw new Error('A IA não retornou um resultado estruturado válido.');
+    }
+
+    return output;
   }
 );
