@@ -24,11 +24,10 @@ import { SwotCube } from "../dashboard/profile/swot-cube";
 import { useToast } from "@/hooks/use-toast"
 import { PersonalizedLearningPlan } from "../dashboard/personalized-learning-plan";
 
-const behavioralQuestions = [
+const allQuestions = [
     {
       name: "comunicacaoEmpatica",
-      title: "1. Comunicação Empática",
-      situation: "Situação: Um paciente idoso recusa a medicação. Você está em final de plantão.",
+      title: "1. Um paciente idoso recusa a medicação e você está no final do plantão. O que você faz?",
       options: [
         { value: "A) Conversa brevemente, reforça a importância da medicação para evitar atrasos.", label: "Conversa brevemente, reforça a importância da medicação para evitar atrasos." },
         { value: "B) Escuta o motivo da recusa, acolhe e propõe uma nova abordagem.", label: "Escuta o motivo da recusa, acolhe e propõe uma nova abordagem." },
@@ -37,8 +36,7 @@ const behavioralQuestions = [
     },
     {
       name: "gestaoEmocional",
-      title: "2. Gestão Emocional",
-      situation: "Situação: Você é criticado na frente de colegas por algo que não causou.",
+      title: "2. Você é criticado(a) na frente de colegas por um erro que não cometeu. Como você reage?",
       options: [
         { value: "A) Respira fundo, pede para conversar depois em particular.", label: "Respira fundo, pede para conversar depois em particular." },
         { value: "B) Tolera em silêncio, evita mais tensão, mas fica abalado.", label: "Tolera em silêncio, evita mais tensão, mas fica abalado." },
@@ -47,8 +45,7 @@ const behavioralQuestions = [
     },
     {
       name: "trabalhoEquipe",
-      title: "3. Trabalho em Equipe",
-      situation: "Situação: Uma colega esquece uma medicação. Você nota e o paciente pode ter prejuízo.",
+      title: "3. Você percebe que um(a) colega esqueceu de administrar uma medicação importante. Qual sua atitude?",
       options: [
         { value: "A) Corrige e comenta depois de forma leve.", label: "Corrige e comenta depois de forma leve." },
         { value: "B) Corrige e conversa no momento, com foco no paciente.", label: "Corrige e conversa no momento, com foco no paciente." },
@@ -57,8 +54,7 @@ const behavioralQuestions = [
     },
     {
         name: "pensamentoCritico",
-        title: "4. Pensamento Crítico",
-        situation: "Situação: Prescrição com dosagem diferente do habitual.",
+        title: "4. Você se depara com uma prescrição médica com dosagem diferente do habitual. O que você faz?",
         options: [
             { value: "A) Questiona educadamente após revisar histórico e protocolos.", label: "Questiona educadamente após revisar histórico e protocolos." },
             { value: "B) Aplica e documenta dúvida para se resguardar.", label: "Aplica e documenta dúvida para se resguardar." },
@@ -67,8 +63,7 @@ const behavioralQuestions = [
     },
     {
         name: "adaptabilidade",
-        title: "5. Adaptabilidade",
-        situation: "Situação: Remanejado para setor novo, pouco estruturado.",
+        title: "5. Você é remanejado(a) para um novo setor, com processos pouco estruturados. Como você lida com a situação?",
         options: [
             { value: "A) Tenta melhorar o ambiente mesmo que não seja bem recebido.", label: "Tenta melhorar o ambiente mesmo que não seja bem recebido." },
             { value: "B) Cumpre o que pedem e observa o funcionamento.", label: "Cumpre o que pedem e observa o funcionamento." },
@@ -77,8 +72,7 @@ const behavioralQuestions = [
     },
     {
         name: "posturaEtica",
-        title: "6. Postura Ética",
-        situation: "Situação: Sugestão de anotar um procedimento antes de executá-lo para agilizar plantão.",
+        title: "6. Um(a) colega sugere que você anote um procedimento como feito antes de executá-lo para 'agilizar' o plantão. Qual é a sua resposta?",
         options: [
             { value: "A) Sugere anotar juntos depois, reforçando o risco do hábito.", label: "Sugere anotar juntos depois, reforçando o risco do hábito." },
             { value: "B) Diz que prefere não fazer assim, mas respeita o colega.", label: "Diz que prefere não fazer assim, mas respeita o colega." },
@@ -87,17 +81,13 @@ const behavioralQuestions = [
     },
     {
         name: "escutaAtiva",
-        title: "7. Escuta Ativa",
-        situation: "Situação: Paciente insiste que “algo está errado”, mesmo com exames normais.",
+        title: "7. Um paciente, cujos exames estão normais, insiste que 'algo está errado'. Como você procede?",
         options: [
             { value: "A) Escuta e comunica à equipe como precaução.", label: "Escuta e comunica à equipe como precaução." },
             { value: "B) Tenta tranquilizar e explica que está tudo certo.", label: "Tenta tranquilizar e explica que está tudo certo." },
             { value: "C) Diz que ele já foi avaliado, sem outras ações.", label: "Diz que ele já foi avaliado, sem outras ações." },
         ],
     },
-];
-
-const discQuestions = [
     {
       name: "dianteDeDesafio",
       title: "8. Diante de um grande desafio, você tende a:",
@@ -169,7 +159,7 @@ const discQuestions = [
       ],
     },
 ];
-  
+
 const formSchema = z.object({
     comunicacaoEmpatica: z.string({ required_error: "Por favor, selecione uma opção." }),
     gestaoEmocional: z.string({ required_error: "Por favor, selecione uma opção." }),
@@ -285,39 +275,6 @@ export default function QuestionnairePage() {
         );
     }
 
-    const renderQuestions = (questions: typeof behavioralQuestions) => {
-        return questions.map((q) => (
-            <FormField
-                key={q.name}
-                control={form.control}
-                name={q.name as keyof z.infer<typeof formSchema>}
-                render={({ field }) => (
-                    <FormItem className="space-y-3">
-                        <FormLabel className="font-bold text-base">{q.title}</FormLabel>
-                        {q.situation && <FormDescription>{q.situation}</FormDescription>}
-                        <FormControl>
-                            <RadioGroup
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                                className="flex flex-col space-y-2 pt-2"
-                            >
-                                {q.options.map((opt) => (
-                                    <FormItem key={opt.value} className="flex items-center space-x-3 space-y-0 p-3 rounded-lg border border-transparent has-[:checked]:border-primary has-[:checked]:bg-muted">
-                                        <FormControl>
-                                            <RadioGroupItem value={opt.value} />
-                                        </FormControl>
-                                        <FormLabel className="font-normal cursor-pointer flex-1">{opt.label}</FormLabel>
-                                    </FormItem>
-                                ))}
-                            </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-        ))
-    }
-
     return (
         <Card className="max-w-3xl mx-auto my-8">
             <CardHeader>
@@ -330,9 +287,35 @@ export default function QuestionnairePage() {
                         <div>
                             <h2 className="text-2xl font-headline mb-6 border-b pb-2">Análise Comportamental</h2>
                             <div className="space-y-8">
-                                {renderQuestions(behavioralQuestions)}
-                                <h3 className="text-xl font-headline pt-6">Análise DISC</h3>
-                                {renderQuestions(discQuestions)}
+                                {allQuestions.map((q) => (
+                                    <FormField
+                                        key={q.name}
+                                        control={form.control}
+                                        name={q.name as keyof z.infer<typeof formSchema>}
+                                        render={({ field }) => (
+                                            <FormItem className="space-y-3">
+                                                <FormLabel className="font-bold text-base">{q.title}</FormLabel>
+                                                <FormControl>
+                                                    <RadioGroup
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                        className="flex flex-col space-y-2 pt-2"
+                                                    >
+                                                        {q.options.map((opt) => (
+                                                            <FormItem key={opt.value} className="flex items-center space-x-3 space-y-0 p-3 rounded-lg border border-transparent has-[:checked]:border-primary has-[:checked]:bg-muted">
+                                                                <FormControl>
+                                                                    <RadioGroupItem value={opt.value} />
+                                                                </FormControl>
+                                                                <FormLabel className="font-normal cursor-pointer flex-1">{opt.label}</FormLabel>
+                                                            </FormItem>
+                                                        ))}
+                                                    </RadioGroup>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                ))}
                             </div>
                         </div>
                         
