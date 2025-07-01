@@ -68,7 +68,7 @@ export function SwotCube({ swot }: SwotCubeProps) {
 
   return (
     <div className="w-full">
-        <div className="grid md:grid-cols-3 gap-6 items-start">
+        <div className="grid md:grid-cols-3 gap-4 items-start">
             {/* Left side: Cube and instruction */}
             <div className="md:col-span-1 flex flex-col items-center gap-4">
                 <div
