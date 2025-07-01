@@ -10,7 +10,6 @@ import {
   ClipboardList,
   Home,
   LogOut,
-  Settings,
   Users,
   Loader2,
   Users2,
@@ -197,7 +196,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <SidebarTrigger />
             </div>
             <div className="flex items-center gap-4 ml-auto">
-                <Button variant="ghost" size="icon"><Settings /></Button>
                  <Link href="/dashboard/profile">
                     <Avatar className='h-9 w-9'>
                         <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
