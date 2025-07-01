@@ -7,6 +7,7 @@ export type Assessment = {
     disc?: GenerateDiscAnalysisOutput;
     questionnaireResponses: Record<string, string>;
     appliedAt: any; // Stored as Timestamp, received as ISO string
+    learningPath?: string[];
 };
 
 export type AppUser = {

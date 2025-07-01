@@ -46,7 +46,7 @@ export async function getAllUsers(): Promise<AppUser[]> {
  * @param uid The user's ID.
  * @param data The assessment data, including SWOT and questionnaire responses.
  */
-export async function addAssessmentToProfile(uid: string, data: { swot: GenerateSwotAnalysisOutput; disc?: GenerateDiscAnalysisOutput; questionnaireResponses: Record<string, string> }) {
+export async function addAssessmentToProfile(uid: string, data: { swot: GenerateSwotAnalysisOutput; disc?: GenerateDiscAnalysisOutput; questionnaireResponses: Record<string, string>, learningPath: string[] }) {
     const userRef = adminDb.collection("users").doc(uid);
     const newAssessment = {
         ...data,
