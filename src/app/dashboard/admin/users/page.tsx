@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { AddUserDialog } from "./add-user-dialog";
 
 
 export default async function AdminUsersPage() {
@@ -14,7 +15,9 @@ export default async function AdminUsersPage() {
     let error: string | null = null;
 
     try {
-        users = await getUsersAction();
+        const fetchedUsers = await getUsersAction();
+        // Sort users on the client-side to avoid complex Firestore indexing
+        users = fetchedUsers.sort((a, b) => a.displayName.localeCompare(b.displayName));
     } catch (e: any) {
         error = e.message;
     }
@@ -22,8 +25,13 @@ export default async function AdminUsersPage() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
-                <CardDescription>Visualize e gerencie todos os usuários da plataforma.</CardDescription>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
+                        <CardDescription>Visualize, adicione e gerencie todos os usuários da plataforma.</CardDescription>
+                    </div>
+                    <AddUserDialog />
+                </div>
             </CardHeader>
             <CardContent>
                 {error ? (
