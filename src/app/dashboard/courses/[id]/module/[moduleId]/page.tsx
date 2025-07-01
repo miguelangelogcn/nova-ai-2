@@ -78,7 +78,7 @@ export default function ModuleLessonsPage() {
                             {lessons.map((lesson) => (
                                 <li key={lesson.id}>
                                     <Link href={`/dashboard/courses/${courseId}/module/${moduleId}/lesson/${lesson.id}`} className="flex items-center gap-3 p-4 rounded-lg border hover:bg-muted/50 transition-colors">
-                                        <PlayCircle className="h-6 w-6 text-primary" />
+                                        <PlayCircle className="h-6 w-6 text-accent" />
                                         <span className="flex-1 font-medium">{lesson.title}</span>
                                         <ChevronRight className="h-5 w-5 text-muted-foreground" />
                                     </Link>

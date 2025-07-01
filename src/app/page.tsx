@@ -40,7 +40,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="mx-auto max-w-sm w-full shadow-2xl">
         <CardHeader className="space-y-2 text-center">
-            <div className="inline-block mx-auto text-primary">
+            <div className="inline-block mx-auto text-accent">
                 <NursePathLogo className="w-14 h-14" />
             </div>
           <CardTitle className="text-3xl font-headline">Bem-vindo(a) ao NursePath</CardTitle>

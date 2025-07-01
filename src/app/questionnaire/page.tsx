@@ -67,7 +67,7 @@ export default function QuestionnairePage() {
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                <Loader2 className="h-12 w-12 animate-spin text-accent mb-4" />
                 <h2 className="text-2xl font-headline text-center">Analisando suas respostas...</h2>
                 <p className="text-muted-foreground">Sua análise SWOT e plano de aprendizado personalizados estão sendo gerados.</p>
             </div>
