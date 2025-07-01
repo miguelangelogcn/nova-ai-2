@@ -5,17 +5,6 @@ import type { AppUser } from '@/services/user';
 import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers } from '@/services/user.admin';
 import { userFormSchema, type UserFormValues } from './schema';
 
-const credentialError = `Falha na autenticação do servidor. O formato do seu arquivo '.env.local' parece estar incorreto.
-
-**Para corrigir, siga estes passos:**
-1. Apague o conteúdo do seu arquivo '.env.local'.
-2. Cole o seguinte, substituindo com seus próprios valores do arquivo JSON da sua conta de serviço:
-
-FIREBASE_PROJECT_ID="seu-project-id"
-FIREBASE_CLIENT_EMAIL="seu-client-email"
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n...sua chave completa aqui...\\n-----END PRIVATE KEY-----\\n"
-
-**Importante:** Use três variáveis separadas. O valor da FIREBASE_PRIVATE_KEY deve estar entre aspas duplas (") para que as quebras de linha sejam lidas corretamente. Após salvar, reinicie o servidor.`;
 
 export async function getUsersAction(): Promise<AppUser[]> {
     try {
@@ -23,10 +12,9 @@ export async function getUsersAction(): Promise<AppUser[]> {
         const sortedUsers = userList.sort((a, b) => a.displayName.localeCompare(b.displayName));
         return sortedUsers;
     } catch (error: any) {
-        console.error("Action Error: Failed to get users. The most likely cause is an incorrect Firebase Admin setup in '.env.local'.", error);
-        // For local development, any error in this admin action is highly likely to be a credential/setup issue.
-        // We will throw the detailed guidance error to help the user.
-        throw new Error(credentialError);
+        console.error("Action Error: Failed to get users:", error);
+        // The detailed setup error is now in firebase-admin.ts. This will catch other runtime errors.
+        throw new Error(`Falha ao carregar usuários. Verifique os logs do servidor para mais detalhes. (${error.message})`);
     }
 }
 
@@ -46,9 +34,7 @@ export async function addUserAction(data: UserFormValues) {
         revalidatePath('/dashboard/admin/users');
         return { success: true, message: 'Usuário adicionado com sucesso.' };
     } catch (error: any) {
-        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço') || error.message.includes('Unexpected response')) {
-             return { success: false, message: credentialError };
-        }
+        console.error("Action Error: Failed to add user:", error);
         return { success: false, message: `Falha ao adicionar usuário: ${error.message}` };
     }
 }
