@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import type { GenerateSwotAnalysisOutput, PersonalizedLearningPathOutput } from "@/app/questionnaire/types";
+import type { GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
 
 export type AppUser = {
     uid: string;
@@ -12,7 +12,6 @@ export type AppUser = {
     createdAt: any;
     status: "Ativo" | "Inativo";
     swot?: GenerateSwotAnalysisOutput;
-    path?: PersonalizedLearningPathOutput;
 };
 
 export const createUserProfile = async (user: any) => {

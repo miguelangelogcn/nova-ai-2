@@ -146,7 +146,7 @@ export default function QuestionnairePage() {
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <Loader2 className="h-12 w-12 animate-spin text-accent mb-4" />
                 <h2 className="text-2xl font-headline text-center">Analisando suas respostas...</h2>
-                <p className="text-muted-foreground">Sua análise SWOT e plano de aprendizado personalizados estão sendo gerados.</p>
+                <p className="text-muted-foreground">Sua análise SWOT personalizada está sendo gerada.</p>
             </div>
         )
     }
@@ -160,7 +160,7 @@ export default function QuestionnairePage() {
                             <Zap className="w-8 h-8"/>
                         </div>
                         <CardTitle className="font-headline text-3xl mt-4">Sua Análise está Pronta!</CardTitle>
-                        <CardDescription>Aqui está sua análise SWOT personalizada e o plano de aprendizado recomendado para guiar seu desenvolvimento profissional.</CardDescription>
+                        <CardDescription>Aqui está sua análise SWOT personalizada para guiar seu desenvolvimento profissional.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Separator className="my-4"/>
@@ -183,9 +183,6 @@ export default function QuestionnairePage() {
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.threats}</p>
                             </div>
                         </div>
-                        <Separator className="my-6"/>
-                        <h3 className="text-xl font-bold font-headline">Plano de Aprendizagem Personalizado</h3>
-                        <p className="text-sm text-muted-foreground mt-4 text-left whitespace-pre-wrap">{analysisResult.path.learningPath}</p>
                     </CardContent>
                     <CardFooter className="flex-col gap-4">
                         <Button asChild>

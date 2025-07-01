@@ -51,42 +51,31 @@ export default function ProfilePage() {
             </Card>
 
             <div className="grid md:grid-cols-2 gap-6">
-                {appUser.swot && appUser.path ? (
-                    <>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline">Análise SWOT</CardTitle>
-                                <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Forças</h3>
-                                    <p className="text-sm text-green-900 whitespace-pre-wrap">{appUser.swot.strengths}</p>
-                                </div>
-                                <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Fraquezas</h3>
-                                    <p className="text-sm text-yellow-900 whitespace-pre-wrap">{appUser.swot.weaknesses}</p>
-                                </div>
-                                <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Oportunidades</h3>
-                                    <p className="text-sm text-blue-900 whitespace-pre-wrap">{appUser.swot.opportunities}</p>
-                                </div>
-                                <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-                                    <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Ameaças</h3>
-                                    <p className="text-sm text-red-900 whitespace-pre-wrap">{appUser.swot.threats}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline">Plano de Aprendizagem Personalizado</CardTitle>
-                                <CardDescription>Cursos recomendados pelo seu mentor de IA para acelerar seu crescimento.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{appUser.path.learningPath}</p>
-                            </CardContent>
-                        </Card>
-                    </>
+                {appUser.swot ? (
+                    <Card className="md:col-span-2">
+                        <CardHeader>
+                            <CardTitle className="font-headline">Análise SWOT</CardTitle>
+                            <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                                <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Forças</h3>
+                                <p className="text-sm text-green-900 whitespace-pre-wrap">{appUser.swot.strengths}</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+                                <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Fraquezas</h3>
+                                <p className="text-sm text-yellow-900 whitespace-pre-wrap">{appUser.swot.weaknesses}</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
+                                <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Oportunidades</h3>
+                                <p className="text-sm text-blue-900 whitespace-pre-wrap">{appUser.swot.opportunities}</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+                                <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Ameaças</h3>
+                                <p className="text-sm text-red-900 whitespace-pre-wrap">{appUser.swot.threats}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
                 ) : (
                     <Card className="md:col-span-2">
                         <CardHeader>
@@ -94,10 +83,10 @@ export default function ProfilePage() {
                             <ClipboardCheck className="text-accent" />
                             Sua Bússola
                             </CardTitle>
-                            <CardDescription>Comece sua jornada completando a avaliação 'A Bússola' para desbloquear seu plano de aprendizado personalizado.</CardDescription>
+                            <CardDescription>Comece sua jornada completando a avaliação 'A Bússola' para gerar sua análise SWOT profissional.</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-sm text-muted-foreground">Sua análise SWOT e recomendações de cursos estão aguardando.</p>
+                            <p className="text-sm text-muted-foreground">Sua análise SWOT está aguardando.</p>
                         </CardContent>
                         <CardFooter>
                             <Button asChild className="w-full">
