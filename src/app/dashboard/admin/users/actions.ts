@@ -4,14 +4,18 @@ import { revalidatePath } from 'next/cache';
 import type { AppUser } from '@/services/user';
 import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers } from '@/services/user.admin';
 import { userFormSchema, type UserFormValues } from './schema';
-import { adminAuth } from '@/lib/firebase-admin';
+
+const credentialError = `Falha na autenticação do servidor. Para corrigir, crie um arquivo '.env.local' na raiz do projeto e adicione as credenciais de sua conta de serviço do Firebase. Você pode obter essas credenciais em: Console do Firebase > Configurações do Projeto > Contas de Serviço. Gere uma nova chave privada, copie os valores para as variáveis FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL e FIREBASE_PRIVATE_KEY, e reinicie o servidor.`;
 
 export async function getUsersAction(): Promise<AppUser[]> {
     try {
         return await adminGetAllUsers();
-    } catch (error) {
+    } catch (error: any) {
         console.error("Action Error: Failed to get users. Check Firebase Admin setup.", error);
-        throw new Error("Falha ao carregar usuários. Verifique as credenciais do Firebase Admin.");
+        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço') || error.message.includes('Unexpected response')) {
+            throw new Error(credentialError);
+        }
+        throw new Error("Falha ao carregar usuários. Verifique os logs do servidor para mais detalhes.");
     }
 }
 
@@ -31,12 +35,8 @@ export async function addUserAction(data: UserFormValues) {
         revalidatePath('/dashboard/admin/users');
         return { success: true, message: 'Usuário adicionado com sucesso.' };
     } catch (error: any) {
-        // Provide a more helpful error message for credential issues.
-        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço')) {
-             return { 
-                 success: false, 
-                 message: `Falha na autenticação do servidor. Para corrigir, crie um arquivo '.env.local' na raiz do projeto e adicione as credenciais de sua conta de serviço do Firebase. Você pode obter essas credenciais em: Console do Firebase > Configurações do Projeto > Contas de Serviço. Gere uma nova chave privada, copie os valores para as variáveis FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, e FIREBASE_PRIVATE_KEY, e reinicie o servidor de desenvolvimento.` 
-                };
+        if (error.code === 'auth/internal-error' || error.message.includes('Credential') || error.message.includes('serviço') || error.message.includes('Unexpected response')) {
+             return { success: false, message: credentialError };
         }
         return { success: false, message: `Falha ao adicionar usuário: ${error.message}` };
     }

@@ -1,6 +1,10 @@
+import { config } from 'dotenv';
+config({ path: '.env.local' }); // Explicitly load .env.local
+
 import { initializeApp, getApps, App, AppOptions, cert } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+
 
 // This function handles initialization, preventing re-initialization in hot-reload environments.
 function initializeAdminApp() {
@@ -23,6 +27,14 @@ function initializeAdminApp() {
     // Otherwise, fall back to default credentials (for deployed environments like Cloud Run).
     const options: AppOptions = hasServiceAccount ? { credential: cert(serviceAccount) } : {};
     
+    if (!hasServiceAccount) {
+        console.warn(
+            "Firebase Admin SDK: Service account credentials not found in .env.local. " +
+            "Attempting to initialize with default credentials. " +
+            "For local development, please create a .env.local file with FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY."
+        );
+    }
+
     return initializeApp(options, 'admin');
 }
 
