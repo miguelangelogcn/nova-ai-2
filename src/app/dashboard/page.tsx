@@ -112,10 +112,9 @@ export default function DashboardPage() {
                             <Bot className="text-accent" />
                             Florence | Mentora
                         </CardTitle>
-                        <CardDescription>Tem uma pergunta? Sua mentora Florence está disponível 24/7 para ajudar com qualquer dúvida clínica ou de procedimento.</CardDescription>
+                        <CardDescription>Tem uma pergunta? Sua mentora Florence está disponível 24/7 para ajudar com qualquer dúvida clínica, comportamental ou de procedimentos.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                        <p className="text-sm bg-muted p-3 rounded-lg">"Quais são os 5 certos da administração de medicamentos?"</p>
                     </CardContent>
                     <CardFooter>
                         <Button asChild variant="secondary" className="w-full">
