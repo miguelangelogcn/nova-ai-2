@@ -29,8 +29,8 @@ const GeneratePersonalizedLearningPathInputSchema = z.object({
 export type GeneratePersonalizedLearningPathInput = z.infer<typeof GeneratePersonalizedLearningPathInputSchema>;
 
 const GeneratePersonalizedLearningPathOutputSchema = z.object({
-  recommendedCourseIds: z.array(z.string()).describe('An ordered list of recommended course IDs, up to a maximum of 5.'),
-  reasoning: z.string().describe('A brief reasoning for the recommendation, explaining why these courses were chosen or why no courses were recommended.'),
+  recommendedCourseIds: z.array(z.string()).describe('An ordered list of recommended course IDs, up to a maximum of 5. If no courses are relevant, this must be an empty array.'),
+  reasoning: z.string().describe('A brief reasoning for the recommendation, explaining why these courses were chosen. If no courses are recommended, explain why.'),
 });
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
@@ -46,25 +46,26 @@ const prompt = ai.definePrompt({
   name: 'personalizedLearningPathPrompt',
   input: { schema: GeneratePersonalizedLearningPathInputSchema },
   output: { schema: GeneratePersonalizedLearningPathOutputSchema },
-  prompt: `Você é um especialista em desenvolvimento de carreira para profissionais de enfermagem. Sua tarefa é criar uma trilha de aprendizado personalizada com base na análise SWOT de um funcionário e nos cursos disponíveis.
+  system: `You are a career development expert for nursing professionals. Your task is to create a personalized learning path by recommending up to 5 courses from a given list.
+Your recommendation must be based on the provided SWOT analysis. Prioritize courses that address weaknesses and leverage opportunities.
+You must provide the output in the specified JSON format. The 'recommendedCourseIds' field must be an array of strings (course IDs). The 'reasoning' field must be a string explaining your choices.
+If no courses are relevant, return an empty array for 'recommendedCourseIds' and explain why in the 'reasoning' field.`,
+  prompt: `
+Analyze the following SWOT:
+- Strengths: {{{swot.strengths}}}
+- Weaknesses: {{{swot.weaknesses}}}
+- Opportunities: {{{swot.opportunities}}}
+- Threats: {{{swot.threats}}}
 
-Analise a SWOT a seguir:
-- Forças: {{{swot.strengths}}}
-- Fraquezas: {{{swot.weaknesses}}}
-- Oportunidades: {{{swot.opportunities}}}
-- Ameaças: {{{swot.threats}}}
-
-Aqui está a lista de cursos disponíveis na plataforma:
+Here is the list of available courses:
 {{#each courses}}
-- ID do Curso: {{id}}
-  - Título: {{title}}
-  - Descrição: {{description}}
-  - Categoria: {{category}}
+- Course ID: {{id}}
+  - Title: {{title}}
+  - Description: {{description}}
+  - Category: {{category}}
 {{/each}}
 
-Com base na análise, recomende uma trilha de até 5 cursos em uma ordem priorizada. A prioridade deve ser dada a cursos que ajudem a mitigar as fraquezas e a aproveitar as oportunidades. Explique brevemente o raciocínio por trás da sua recomendação.
-
-Se nenhum dos cursos disponíveis for relevante para as necessidades de desenvolvimento do funcionário, retorne um array vazio para 'recommendedCourseIds' e explique por que nenhuma recomendação foi feita no campo 'reasoning'.`,
+Based on this information, generate the learning path.`,
 });
 
 
