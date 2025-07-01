@@ -9,7 +9,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import type { Course } from '@/services/courses';
 
 const GeneratePersonalizedLearningPathInputSchema = z.object({
   swot: z.object({
