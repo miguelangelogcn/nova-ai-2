@@ -1,15 +1,15 @@
 import { db } from "@/lib/firebase";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
-export type Lesson = {
+export type Lesson = Record<string, {
     title: string;
-};
+}>;
 
-export type Module = {
+export type Module = Record<string, {
     title: string;
     description?: string;
     lessons: Lesson[];
-};
+}>;
 
 export type Course = {
     id: string;
