@@ -60,22 +60,34 @@ export default function ProfilePage() {
                             <CardTitle className="font-headline">Análise SWOT Mais Recente</CardTitle>
                             <CardDescription>Suas forças, fraquezas, oportunidades e ameaças profissionais, com base na sua última avaliação.</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                                <h3 className="font-semibold flex items-center gap-2 mb-2"><Lightbulb className="text-green-600" /> Forças</h3>
-                                <p className="text-sm text-green-900 whitespace-pre-wrap">{latestAssessment.swot.strengths}</p>
+                        <CardContent className="grid md:grid-cols-2 gap-6">
+                            <div className="p-4 rounded-lg bg-card border">
+                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-chart-2">
+                                    <Lightbulb className="h-6 w-6" /> 
+                                    Forças
+                                </h3>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.strengths}</p>
                             </div>
-                            <div className="p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                                <h3 className="font-semibold flex items-center gap-2 mb-2"><Target className="text-yellow-600" /> Fraquezas</h3>
-                                <p className="text-sm text-yellow-900 whitespace-pre-wrap">{latestAssessment.swot.weaknesses}</p>
+                            <div className="p-4 rounded-lg bg-card border">
+                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-chart-4">
+                                    <Target className="h-6 w-6" /> 
+                                    Fraquezas
+                                </h3>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.weaknesses}</p>
                             </div>
-                            <div className="p-4 rounded-lg bg-blue-50 border border-blue-200">
-                                <h3 className="font-semibold flex items-center gap-2 mb-2"><TrendingUp className="text-blue-600" /> Oportunidades</h3>
-                                <p className="text-sm text-blue-900 whitespace-pre-wrap">{latestAssessment.swot.opportunities}</p>
+                            <div className="p-4 rounded-lg bg-card border">
+                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-primary">
+                                    <TrendingUp className="h-6 w-6" /> 
+                                    Oportunidades
+                                </h3>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.opportunities}</p>
                             </div>
-                            <div className="p-4 rounded-lg bg-red-50 border border-red-200">
-                                <h3 className="font-semibold flex items-center gap-2 mb-2"><ShieldAlert className="text-red-600" /> Ameaças</h3>
-                                <p className="text-sm text-red-900 whitespace-pre-wrap">{latestAssessment.swot.threats}</p>
+                            <div className="p-4 rounded-lg bg-card border">
+                                <h3 className="font-headline text-xl flex items-center gap-3 mb-2 text-destructive">
+                                    <ShieldAlert className="h-6 w-6" /> 
+                                    Ameaças
+                                </h3>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{latestAssessment.swot.threats}</p>
                             </div>
                         </CardContent>
                         <CardFooter>
