@@ -6,18 +6,20 @@ export type Resource = {
     url: string;
 };
 
-export type Lesson = Record<string, {
+export type Lesson = {
+    id: string;
     title: string;
     videoUrl?: string;
     content?: string;
     resources?: Resource[];
-}>;
+};
 
-export type Module = Record<string, {
+export type Module = {
+    id: string;
     title: string;
     description?: string;
     lessons: Lesson[];
-}>;
+};
 
 export type Course = {
     id: string;

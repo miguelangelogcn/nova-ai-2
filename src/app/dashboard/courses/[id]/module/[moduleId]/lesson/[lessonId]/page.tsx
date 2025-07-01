@@ -1,6 +1,6 @@
 'use client';
 
-import { getCourse, type Course } from "@/services/courses";
+import { getCourse, type Course, type Module, type Lesson } from "@/services/courses";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,22 +16,32 @@ export default function LessonContentPage() {
     const lessonId = params?.lessonId;
 
     const [course, setCourse] = useState<Course | null>(null);
+    const [module, setModule] = useState<Module | null>(null);
+    const [lesson, setLesson] = useState<Lesson | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCourse = async () => {
-            if (!courseId) return;
+        const fetchCourseData = async () => {
+            if (!courseId || !moduleId || !lessonId) return;
             try {
                 const fetchedCourse = await getCourse(courseId);
                 setCourse(fetchedCourse);
+                if (fetchedCourse?.content?.modules) {
+                    const currentModule = fetchedCourse.content.modules.find(m => m.id === moduleId);
+                    setModule(currentModule || null);
+                    if (currentModule?.lessons) {
+                        const currentLesson = currentModule.lessons.find(l => l.id === lessonId);
+                        setLesson(currentLesson || null);
+                    }
+                }
             } catch (error) {
-                console.error("Failed to fetch course:", error);
+                console.error("Failed to fetch course data:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchCourse();
-    }, [courseId]);
+        fetchCourseData();
+    }, [courseId, moduleId, lessonId]);
 
     if (loading) {
         return (
@@ -41,27 +51,13 @@ export default function LessonContentPage() {
         );
     }
     
-    if (!course || !moduleId || !lessonId || !course.content?.modules[Number(moduleId)]) {
+    if (!course || !module || !lesson) {
         return (
             <Card>
                 <CardHeader><CardTitle>Content not found</CardTitle></CardHeader>
             </Card>
         );
     }
-    
-    const moduleWrapper = course.content.modules[Number(moduleId)];
-    const module = Object.values(moduleWrapper)[0];
-    
-    if(!module || !module.lessons[Number(lessonId)]) {
-         return (
-            <Card>
-                <CardHeader><CardTitle>Lesson not found</CardTitle></CardHeader>
-            </Card>
-        );
-    }
-
-    const lessonWrapper = module.lessons[Number(lessonId)];
-    const lesson = Object.values(lessonWrapper)[0];
 
     return (
         <div className="space-y-6">

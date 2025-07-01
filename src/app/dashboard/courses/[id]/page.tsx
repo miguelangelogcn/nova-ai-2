@@ -62,21 +62,16 @@ export default function CourseModulesPage() {
                     <h3 className="text-xl font-bold font-headline mb-4">Modules</h3>
                     {modules.length > 0 ? (
                         <div className="grid gap-4 md:grid-cols-2">
-                            {modules.map((moduleWrapper, index) => {
-                                const moduleKey = Object.keys(moduleWrapper)[0];
-                                const module = moduleWrapper[moduleKey];
-                                if (!module) return null;
-                                return (
-                                    <Link key={index} href={`/dashboard/courses/${id}/module/${index}`}>
-                                        <Card className="hover:bg-muted/50 transition-colors h-full">
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2 text-lg"><BookOpen className="text-primary"/>{module.title}</CardTitle>
-                                                <CardDescription>{module.description}</CardDescription>
-                                            </CardHeader>
-                                        </Card>
-                                    </Link>
-                                )
-                            })}
+                            {modules.map((module) => (
+                                <Link key={module.id} href={`/dashboard/courses/${id}/module/${module.id}`}>
+                                    <Card className="hover:bg-muted/50 transition-colors h-full">
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2 text-lg"><BookOpen className="text-primary"/>{module.title}</CardTitle>
+                                            <CardDescription>{module.description}</CardDescription>
+                                        </CardHeader>
+                                    </Card>
+                                </Link>
+                            ))}
                         </div>
                     ) : (
                          <p className="text-sm text-muted-foreground">No modules listed for this course yet.</p>

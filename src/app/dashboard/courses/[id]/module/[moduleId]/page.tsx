@@ -1,6 +1,6 @@
 'use client';
 
-import { getCourse, type Course } from "@/services/courses";
+import { getCourse, type Course, type Module } from "@/services/courses";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,22 +13,27 @@ export default function ModuleLessonsPage() {
     const moduleId = params?.moduleId;
 
     const [course, setCourse] = useState<Course | null>(null);
+    const [module, setModule] = useState<Module | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCourse = async () => {
-            if (!courseId) return;
+        const fetchCourseData = async () => {
+            if (!courseId || !moduleId) return;
             try {
                 const fetchedCourse = await getCourse(courseId);
                 setCourse(fetchedCourse);
+                if (fetchedCourse?.content?.modules) {
+                    const currentModule = fetchedCourse.content.modules.find(m => m.id === moduleId);
+                    setModule(currentModule || null);
+                }
             } catch (error) {
-                console.error("Failed to fetch course:", error);
+                console.error("Failed to fetch course data:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchCourse();
-    }, [courseId]);
+        fetchCourseData();
+    }, [courseId, moduleId]);
 
     if (loading) {
         return (
@@ -38,7 +43,7 @@ export default function ModuleLessonsPage() {
         );
     }
     
-    if (!course || !moduleId || !course.content?.modules[Number(moduleId)]) {
+    if (!course || !module) {
         return (
             <Card>
                 <CardHeader>
@@ -49,8 +54,6 @@ export default function ModuleLessonsPage() {
         );
     }
 
-    const moduleWrapper = course.content.modules[Number(moduleId)];
-    const module = Object.values(moduleWrapper)[0];
     const lessons = module.lessons || [];
 
     return (
@@ -72,19 +75,15 @@ export default function ModuleLessonsPage() {
                      <h3 className="text-xl font-bold font-headline mb-4">Lessons</h3>
                      {lessons.length > 0 ? (
                          <ul className="space-y-3">
-                            {lessons.map((lessonWrapper, index) => {
-                                const lesson = Object.values(lessonWrapper)[0];
-                                if(!lesson) return null;
-                                return (
-                                    <li key={index}>
-                                        <Link href={`/dashboard/courses/${courseId}/module/${moduleId}/lesson/${index}`} className="flex items-center gap-3 p-4 rounded-lg border hover:bg-muted/50 transition-colors">
-                                            <PlayCircle className="h-6 w-6 text-primary" />
-                                            <span className="flex-1 font-medium">{lesson.title}</span>
-                                            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                                        </Link>
-                                    </li>
-                                )
-                            })}
+                            {lessons.map((lesson) => (
+                                <li key={lesson.id}>
+                                    <Link href={`/dashboard/courses/${courseId}/module/${moduleId}/lesson/${lesson.id}`} className="flex items-center gap-3 p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                                        <PlayCircle className="h-6 w-6 text-primary" />
+                                        <span className="flex-1 font-medium">{lesson.title}</span>
+                                        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                                    </Link>
+                                </li>
+                            ))}
                          </ul>
                      ) : (
                          <p className="text-sm text-muted-foreground">No lessons in this module yet.</p>
