@@ -23,7 +23,7 @@ export type GeneratePersonalizedLearningPathInput = z.infer<typeof GeneratePerso
 
 const GeneratePersonalizedLearningPathOutputSchema = z.object({
   recommendedCourseIds: z.array(z.string()).describe('Uma lista ordenada de IDs de cursos recomendados, até um máximo de 5. Se nenhum curso for relevante, este deve ser um array vazio.'),
-  reasoning: z.string().describe('Uma breve justificativa para a recomendação, explicando por que esses cursos foram escolhidos. Se nenhum curso for recomendado, explique o porquê. A justificativa deve estar em português.'),
+  reasoning: z.string().describe('Uma breve justificativa para a recomendação. Se nenhum curso for recomendado, explique o porquê. A justificativa DEVE ser em português.'),
 });
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
@@ -35,9 +35,14 @@ const prompt = ai.definePrompt({
   name: 'personalizedLearningPathPrompt',
   input: { schema: GeneratePersonalizedLearningPathInputSchema },
   output: { schema: GeneratePersonalizedLearningPathOutputSchema },
-  prompt: `Você é um especialista em desenvolvimento de carreira para profissionais de enfermagem. Sua tarefa é criar uma trilha de aprendizado personalizada, recomendando até 5 cursos de uma lista fornecida.
+  prompt: `Você é um especialista em desenvolvimento de carreira para profissionais de enfermagem e sua tarefa é gerar respostas exclusivamente em português do Brasil.
+Sua tarefa é criar uma trilha de aprendizado personalizada, recomendando até 5 cursos de uma lista fornecida.
 Sua recomendação deve ser baseada na análise SWOT fornecida. Priorize cursos que abordem fraquezas e aproveitem oportunidades.
-Você deve fornecer a saída no formato JSON especificado. O campo 'recommendedCourseIds' deve ser um array de strings (IDs dos cursos). O campo 'reasoning' deve ser uma string em português explicando suas escolhas.
+
+Você deve fornecer a saída no formato JSON especificado.
+- O campo 'recommendedCourseIds' deve ser um array de strings (IDs dos cursos).
+- O campo 'reasoning' deve ser uma string explicando suas escolhas.
+
 Se nenhum curso for relevante, retorne um array vazio para 'recommendedCourseIds' e explique o porquê no campo 'reasoning'.
 
 Analise a seguinte SWOT:
@@ -49,7 +54,7 @@ Analise a seguinte SWOT:
 Aqui está a lista de cursos disponíveis:
 {{{coursesAsString}}}
 
-Com base nessas informações, gere a trilha de aprendizado.`,
+Com base nessas informações, gere a trilha de aprendizado. Lembre-se: a justificativa no campo 'reasoning' deve ser OBRIGATORIAMENTE escrita em português do Brasil.`,
 });
 
 
