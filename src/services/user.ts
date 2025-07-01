@@ -42,10 +42,17 @@ export const getUserProfile = async (uid: string): Promise<AppUser | null> => {
     const userRef = doc(db, "users", uid);
     const snapshot = await getDoc(userRef);
     if (snapshot.exists()) {
-        return snapshot.data() as AppUser;
+        const data = snapshot.data();
+        // Convert Firestore Timestamps to serializable format if they exist
+        const serializableData = {
+            ...data,
+            createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
+        };
+        return serializableData as AppUser;
     }
     return null;
 };
+
 
 export const updateUserProfile = async (uid: string, data: Partial<AppUser>) => {
     const userRef = doc(db, "users", uid);

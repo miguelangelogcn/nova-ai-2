@@ -40,8 +40,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         if (profile) {
             setAppUser(profile);
         } else {
+            // This might happen on the very first sign-in
             const newProfile = await createUserProfile(user);
-            setAppUser(newProfile as AppUser);
+            // Ensure newProfile is correctly typed before setting
+            if (newProfile) {
+              setAppUser(newProfile as AppUser);
+            }
         }
       } else {
         setUser(null);
