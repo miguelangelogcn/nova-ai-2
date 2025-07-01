@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import type { AppUser } from '@/services/user';
 import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers } from '@/services/user.admin';
 import { userFormSchema, type UserFormValues } from './schema';
+import { adminAuth } from '@/lib/firebase-admin';
 
 export async function getUsersAction(): Promise<AppUser[]> {
     try {
@@ -17,7 +18,9 @@ export async function getUsersAction(): Promise<AppUser[]> {
 export async function addUserAction(data: UserFormValues) {
     const validation = userFormSchema.safeParse(data);
     if (!validation.success) {
-        return { success: false, message: validation.error.flatten().fieldErrors };
+        const errors = validation.error.flatten().fieldErrors;
+        const firstError = Object.values(errors)[0]?.[0] || 'Validation failed.';
+        return { success: false, message: firstError };
     }
     if(!validation.data.password) {
         return { success: false, message: "A senha é obrigatória para novos usuários." };
@@ -35,11 +38,16 @@ export async function addUserAction(data: UserFormValues) {
 export async function updateUserAction(uid: string, data: Partial<UserFormValues>) {
      const validation = userFormSchema.partial().safeParse(data);
     if (!validation.success) {
-        return { success: false, message: validation.error.flatten().fieldErrors };
+        const errors = validation.error.flatten().fieldErrors;
+        const firstError = Object.values(errors)[0]?.[0] || 'Validation failed.';
+        return { success: false, message: firstError };
     }
     
+    // Do not pass password to the updateUser function
+    const { password, ...userData } = validation.data;
+
     try {
-        await adminUpdateUser(uid, validation.data);
+        await adminUpdateUser(uid, userData);
         revalidatePath('/dashboard/admin/users');
         return { success: true, message: 'Usuário atualizado com sucesso.' };
     } catch (error: any) {
