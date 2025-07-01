@@ -1,10 +1,10 @@
 import admin from 'firebase-admin';
-import { config } from 'dotenv';
-config();
 
 // -----------------------------------------------------------------------------
 // Firebase Admin
 // -----------------------------------------------------------------------------
+// A chamada para config() do dotenv foi removida. 
+// O Next.js carrega automaticamente as variáveis de .env.local no servidor.
 
 const privateKey = process.env.FIREBASE_PRIVATE_KEY
   ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
