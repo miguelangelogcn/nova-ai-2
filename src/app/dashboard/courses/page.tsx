@@ -15,6 +15,7 @@ import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -63,9 +64,12 @@ export default function CoursesPage() {
         )
     }
 
-    const CourseCard = ({ course }: { course: Course }) => (
+    const CourseCard = ({ course, isRecommended = false }: { course: Course, isRecommended?: boolean }) => (
         <Link href={`/dashboard/courses/${course.id}`} className="h-full block">
-            <Card className="flex flex-col h-full hover:shadow-lg transition-shadow duration-300">
+            <Card className={cn(
+                "flex flex-col h-full hover:shadow-lg transition-shadow duration-300",
+                isRecommended && "bg-gradient-to-br from-accent/20"
+            )}>
                 <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{course.category}</Badge>
                     <CardTitle className="font-headline text-lg">{course.title}</CardTitle>
@@ -98,7 +102,7 @@ export default function CoursesPage() {
                             {recommendedCourses.map((course) => (
                                 <CarouselItem key={course.id} className="md:basis-1/2 lg:basis-1/3">
                                    <div className="p-1 h-full">
-                                     <CourseCard course={course} />
+                                     <CourseCard course={course} isRecommended />
                                    </div>
                                 </CarouselItem>
                             ))}
