@@ -68,10 +68,10 @@ export function SwotCube({ swot }: SwotCubeProps) {
 
   return (
     <div className="w-full">
-        <div className="grid md:grid-cols-2 gap-8 items-center min-h-[250px]">
+        <div className="grid md:grid-cols-2 gap-4 items-start min-h-[250px]">
             {/* Left side: Cube */}
             <div
-                className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing"
+                className="w-full h-full flex items-start justify-start cursor-grab active:cursor-grabbing"
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
