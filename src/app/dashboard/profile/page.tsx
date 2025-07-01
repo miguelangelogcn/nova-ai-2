@@ -55,7 +55,7 @@ export default function ProfilePage() {
             </Card>
 
             <div className="grid md:grid-cols-1 gap-6">
-                {latestAssessment ? (
+                {latestAssessment && (
                     <Card>
                         <CardHeader>
                             <CardTitle className="font-headline">Análise Swot Pessoal</CardTitle>
@@ -64,29 +64,6 @@ export default function ProfilePage() {
                         <CardContent>
                             <SwotCube swot={latestAssessment.swot} />
                         </CardContent>
-                        <CardFooter>
-                             <Button asChild variant="outline">
-                                <Link href="/questionnaire">Fazer Nova Avaliação</Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ) : (
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="font-headline flex items-center gap-2">
-                            <ClipboardCheck className="text-accent" />
-                            Sua Bússola
-                            </CardTitle>
-                            <CardDescription>Comece sua jornada completando a avaliação 'A Bússola' para gerar sua análise SWOT profissional.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            <p className="text-sm text-muted-foreground">Sua análise SWOT está aguardando.</p>
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild className="w-full">
-                                <Link href="/questionnaire">Fazer Avaliação <ArrowRight className="ml-2" /></Link>
-                            </Button>
-                        </CardFooter>
                     </Card>
                 )}
             </div>

@@ -88,25 +88,7 @@ export default function DashboardPage() {
                 <p className="text-muted-foreground">Aqui está o resumo do seu progresso. Continue com o ótimo trabalho!</p>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="flex flex-col">
-                    <CardHeader>
-                        <CardTitle className="font-headline flex items-center gap-2">
-                           <ClipboardCheck className="text-accent" />
-                           Sua Bússola
-                        </CardTitle>
-                        <CardDescription>Comece sua jornada completando a avaliação 'A Bússola' para desbloquear seu plano de aprendizado personalizado.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                        <p className="text-sm text-muted-foreground">Sua análise SWOT e recomendações de cursos estão aguardando.</p>
-                    </CardContent>
-                    <CardFooter>
-                        <Button asChild className="w-full">
-                            <Link href="/questionnaire">Fazer Avaliação <ArrowRight className="ml-2" /></Link>
-                        </Button>
-                    </CardFooter>
-                </Card>
-
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2">
