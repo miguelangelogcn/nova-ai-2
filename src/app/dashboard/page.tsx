@@ -1,43 +1,13 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, BookOpen, BarChart, Users, ClipboardList, Users2, TrendingUp, ListChecks } from "lucide-react";
+import { ArrowRight, Bot, BookOpen, BarChart, Users, ClipboardList, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
-import { useEffect, useState } from "react";
-import { getCourses, type Course } from "@/services/courses";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
     const { appUser } = useAuth();
     const displayName = appUser?.displayName?.split(' ')[0] ?? 'Usuário';
-
-    // State for courses and recommended courses
-    const [courses, setCourses] = useState<Course[]>([]);
-    const [loadingCourses, setLoadingCourses] = useState(true);
-
-    useEffect(() => {
-        const fetchAllCourses = async () => {
-            try {
-                const fetchedCourses = await getCourses();
-                setCourses(fetchedCourses);
-            } catch (error) {
-                console.error("Failed to fetch courses for dashboard:", error);
-            } finally {
-                setLoadingCourses(false);
-            }
-        };
-        fetchAllCourses();
-    }, []);
-
-    const latestAssessment = appUser?.assessments?.[0];
-    const recommendedIds = latestAssessment?.learningPath ?? [];
-    
-    const recommendedCourses = courses
-        .filter(course => recommendedIds.includes(course.id))
-        // Ensure the order from the learning path is respected
-        .sort((a, b) => recommendedIds.indexOf(a.id) - recommendedIds.indexOf(b.id));
-
 
     // Admin Dashboard View
     if (appUser?.role === 'admin') {
@@ -136,43 +106,18 @@ export default function DashboardPage() {
                     </CardFooter>
                 </Card>
 
-                <Card className="flex flex-col">
+                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2">
-                            <TrendingUp className="text-accent" />
-                            Trilha de Aprendizado Personalizada
+                            <BookOpen className="text-accent" />
+                            Biblioteca de Cursos
                         </CardTitle>
                         <CardDescription>
-                            {loadingCourses ? "Analisando seu perfil para sugerir os melhores cursos..."
-                                : recommendedCourses.length > 0
-                                ? "Cursos recomendados pela IA com base na sua última análise."
-                                : "Sua trilha de aprendizado aparecerá aqui após sua análise."}
+                           Expanda seu conhecimento e habilidades com nossa lista completa de cursos.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-grow space-y-3">
-                        {loadingCourses ? (
-                            <div className="space-y-3">
-                                <Skeleton className="h-10 w-full" />
-                                <Skeleton className="h-10 w-full" />
-                                <Skeleton className="h-10 w-3/4" />
-                            </div>
-                        ) : recommendedCourses.length > 0 ? (
-                            recommendedCourses.map((course, index) => (
-                                <Link key={course.id} href={`/dashboard/courses/${course.id}`} className="block">
-                                    <div className="flex items-center gap-3 p-2 rounded-md border hover:bg-muted/50 transition-colors">
-                                        <span className="flex items-center justify-center h-6 w-6 rounded-full bg-primary text-primary-foreground font-bold text-sm flex-shrink-0">{index + 1}</span>
-                                        <span className="font-medium flex-1 truncate">{course.title}</span>
-                                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                                    </div>
-                                </Link>
-                            ))
-                        ) : (
-                            <div className="text-center text-sm text-muted-foreground py-4 flex flex-col items-center justify-center h-full">
-                                <ListChecks className="w-10 h-10 mb-2 text-muted-foreground/50"/>
-                                <p className="font-semibold">Nenhum curso recomendado por enquanto.</p>
-                                <p>Após sua próxima avaliação, nossa IA montará uma trilha aqui.</p>
-                            </div>
-                        )}
+                    <CardContent className="flex-grow">
+                         <p className="text-sm bg-muted p-3 rounded-lg">Explore cursos sobre Suporte Avançado de Vida, Farmacologia e muito mais.</p>
                     </CardContent>
                      <CardFooter>
                          <Button asChild variant="secondary" className="w-full">
