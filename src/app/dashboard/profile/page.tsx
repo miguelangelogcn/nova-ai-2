@@ -58,7 +58,7 @@ export default function ProfilePage() {
                 {latestAssessment ? (
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline">Análise SWOT Interativa</CardTitle>
+                            <CardTitle className="font-headline">Análise Swot Pessoal</CardTitle>
                             <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
                         </CardHeader>
                         <CardContent>
