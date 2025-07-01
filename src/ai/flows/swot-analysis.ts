@@ -34,7 +34,7 @@ const prompt = ai.definePrompt({
   name: 'generateSwotAnalysisPrompt',
   input: {schema: GenerateSwotAnalysisInputSchema},
   output: {schema: GenerateSwotAnalysisOutputSchema},
-  prompt: `Analise as seguintes respostas do questionário e gere uma análise SWOT.
+  prompt: `Analise as seguintes respostas do questionário, que inclui uma seção comportamental e uma seção de análise DISC, para gerar uma análise SWOT.
 
 Respostas do Questionário: {{{questionnaireResponses}}}
 

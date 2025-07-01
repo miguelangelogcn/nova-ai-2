@@ -1,9 +1,10 @@
 import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import type { GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
+import type { GenerateDiscAnalysisOutput, GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
 
 export type Assessment = {
     swot: GenerateSwotAnalysisOutput;
+    disc?: GenerateDiscAnalysisOutput;
     questionnaireResponses: Record<string, string>;
     appliedAt: any; // Stored as Timestamp, received as ISO string
 };

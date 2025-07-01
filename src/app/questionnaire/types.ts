@@ -5,6 +5,15 @@ export type GenerateSwotAnalysisOutput = {
     threats: string;
 };
 
+export type GenerateDiscAnalysisOutput = {
+    dominance: string;
+    influence: string;
+    steadiness: string;
+    conscientiousness: string;
+    profileSummary: string;
+};
+
 export type AnalysisResult = {
     swot: GenerateSwotAnalysisOutput;
+    disc?: GenerateDiscAnalysisOutput;
 }
