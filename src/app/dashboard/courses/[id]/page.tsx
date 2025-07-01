@@ -41,8 +41,8 @@ export default function CourseModulesPage() {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Course not found</CardTitle>
-                    <CardDescription>This course could not be found. We tried to fetch a course with ID: {id || "Not available"}</CardDescription>
+                    <CardTitle>Curso não encontrado</CardTitle>
+                    <CardDescription>Este curso não pôde ser encontrado. Tentamos buscar um curso com o ID: {id || "Não disponível"}</CardDescription>
                 </CardHeader>
             </Card>
         );
@@ -53,7 +53,7 @@ export default function CourseModulesPage() {
     return (
         <div className="space-y-6">
              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link href="/dashboard/courses" className="hover:underline">Courses</Link>
+                <Link href="/dashboard/courses" className="hover:underline">Cursos</Link>
                 <ChevronRight className="h-4 w-4" />
                 <span className="font-semibold text-foreground">{course.title}</span>
             </div>
@@ -64,7 +64,7 @@ export default function CourseModulesPage() {
                     <CardDescription>{course.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <h3 className="text-xl font-bold font-headline mb-4">Modules</h3>
+                    <h3 className="text-xl font-bold font-headline mb-4">Módulos</h3>
                     {modules.length > 0 ? (
                         <div className="grid gap-4 md:grid-cols-2">
                             {modules.map((module) => (
@@ -79,7 +79,7 @@ export default function CourseModulesPage() {
                             ))}
                         </div>
                     ) : (
-                         <p className="text-sm text-muted-foreground">No modules listed for this course yet.</p>
+                         <p className="text-sm text-muted-foreground">Ainda não há módulos listados para este curso.</p>
                     )}
                 </CardContent>
             </Card>

@@ -29,8 +29,8 @@ export default function LoginPage() {
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Login Failed',
-        description: "Please check your email and password.",
+        title: 'Falha no Login',
+        description: "Por favor, verifique seu e-mail e senha.",
       });
       setLoading(false);
     }
@@ -43,13 +43,13 @@ export default function LoginPage() {
             <div className="inline-block mx-auto text-primary">
                 <NursePathLogo className="w-14 h-14" />
             </div>
-          <CardTitle className="text-3xl font-headline">Welcome to NursePath</CardTitle>
-          <CardDescription>Enter your credentials to access your growth journey</CardDescription>
+          <CardTitle className="text-3xl font-headline">Bem-vindo(a) ao NursePath</CardTitle>
+          <CardDescription>Insira suas credenciais para acessar sua jornada de crescimento</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">E-mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -62,9 +62,9 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
                 <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Senha</Label>
                     <Link href="#" className="ml-auto inline-block text-sm underline">
-                        Forgot your password?
+                        Esqueceu sua senha?
                     </Link>
                 </div>
               <Input
@@ -78,7 +78,7 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full !mt-6" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Login
+              Entrar
             </Button>
           </form>
         </CardContent>

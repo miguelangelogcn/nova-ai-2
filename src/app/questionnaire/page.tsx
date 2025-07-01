@@ -24,10 +24,10 @@ import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 
 const formSchema = z.object({
-    confidence: z.string().nonempty({ message: "Please select a confidence level." }),
-    conflict: z.string().nonempty({ message: "Please describe how you handle conflicts." }),
-    procedures: z.string().nonempty({ message: "Please describe your familiarity with procedures." }),
-    difficultNews: z.string().nonempty({ message: "Please describe your experience." }),
+    confidence: z.string().nonempty({ message: "Por favor, selecione um nível de confiança." }),
+    conflict: z.string().nonempty({ message: "Por favor, descreva como você lida com conflitos." }),
+    procedures: z.string().nonempty({ message: "Por favor, descreva sua familiaridade com procedimentos." }),
+    difficultNews: z.string().nonempty({ message: "Por favor, descreva sua experiência." }),
 });
 
 export default function QuestionnairePage() {
@@ -68,8 +68,8 @@ export default function QuestionnairePage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <h2 className="text-2xl font-headline text-center">Analyzing your responses...</h2>
-                <p className="text-muted-foreground">Your personalized SWOT analysis and learning path are being generated.</p>
+                <h2 className="text-2xl font-headline text-center">Analisando suas respostas...</h2>
+                <p className="text-muted-foreground">Sua análise SWOT e plano de aprendizado personalizados estão sendo gerados.</p>
             </div>
         )
     }
@@ -82,39 +82,39 @@ export default function QuestionnairePage() {
                         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center">
                             <Zap className="w-8 h-8"/>
                         </div>
-                        <CardTitle className="font-headline text-3xl mt-4">Your Analysis is Ready!</CardTitle>
-                        <CardDescription>Here is your personalized SWOT analysis and recommended learning path to guide your professional development.</CardDescription>
+                        <CardTitle className="font-headline text-3xl mt-4">Sua Análise está Pronta!</CardTitle>
+                        <CardDescription>Aqui está sua análise SWOT personalizada e o plano de aprendizado recomendado para guiar seu desenvolvimento profissional.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Separator className="my-4"/>
-                        <h3 className="text-xl font-bold font-headline">SWOT Analysis</h3>
+                        <h3 className="text-xl font-bold font-headline">Análise SWOT</h3>
                         <div className="grid md:grid-cols-2 gap-4 text-left mt-4">
                             <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Strengths</h4>
+                                <h4 className="font-semibold">Forças</h4>
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.strengths}</p>
                             </div>
                             <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Weaknesses</h4>
+                                <h4 className="font-semibold">Fraquezas</h4>
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.weaknesses}</p>
                             </div>
                             <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Opportunities</h4>
+                                <h4 className="font-semibold">Oportunidades</h4>
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.opportunities}</p>
                             </div>
                              <div className="p-4 rounded-lg bg-card border">
-                                <h4 className="font-semibold">Threats</h4>
+                                <h4 className="font-semibold">Ameaças</h4>
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{analysisResult.swot.threats}</p>
                             </div>
                         </div>
                         <Separator className="my-6"/>
-                        <h3 className="text-xl font-bold font-headline">Personalized Learning Path</h3>
+                        <h3 className="text-xl font-bold font-headline">Plano de Aprendizagem Personalizado</h3>
                         <p className="text-sm text-muted-foreground mt-4 text-left whitespace-pre-wrap">{analysisResult.path.learningPath}</p>
                     </CardContent>
                     <CardFooter className="flex-col gap-4">
                         <Button asChild>
-                            <Link href="/dashboard/profile">View on My Profile <ArrowRight className="ml-2"/></Link>
+                            <Link href="/dashboard/profile">Ver no Meu Perfil <ArrowRight className="ml-2"/></Link>
                         </Button>
-                        <Button variant="link" onClick={() => setAnalysisResult(null)}>Take assessment again</Button>
+                        <Button variant="link" onClick={() => setAnalysisResult(null)}>Fazer avaliação novamente</Button>
                     </CardFooter>
                 </Card>
             </div>
@@ -124,8 +124,8 @@ export default function QuestionnairePage() {
     return (
         <Card className="max-w-2xl mx-auto">
             <CardHeader>
-                <CardTitle className="font-headline text-3xl">A Bússola - Your Compass</CardTitle>
-                <CardDescription>Answer these questions honestly to help us build your personalized growth plan.</CardDescription>
+                <CardTitle className="font-headline text-3xl">A Bússola - Seu Guia</CardTitle>
+                <CardDescription>Responda a estas perguntas honestamente para nos ajudar a construir seu plano de crescimento personalizado.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>
@@ -135,7 +135,7 @@ export default function QuestionnairePage() {
                             name="confidence"
                             render={({ field }) => (
                                 <FormItem className="space-y-3">
-                                <FormLabel>How confident are you in performing venipuncture (drawing blood)?</FormLabel>
+                                <FormLabel>Quão confiante você está para realizar uma punção venosa (coletar sangue)?</FormLabel>
                                 <FormControl>
                                     <RadioGroup
                                     onValueChange={field.onChange}
@@ -144,19 +144,19 @@ export default function QuestionnairePage() {
                                     >
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                         <FormControl><RadioGroupItem value="very_confident" /></FormControl>
-                                        <FormLabel className="font-normal">Very Confident</FormLabel>
+                                        <FormLabel className="font-normal">Muito Confiante</FormLabel>
                                     </FormItem>
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                         <FormControl><RadioGroupItem value="confident" /></FormControl>
-                                        <FormLabel className="font-normal">Confident</FormLabel>
+                                        <FormLabel className="font-normal">Confiante</FormLabel>
                                     </FormItem>
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                         <FormControl><RadioGroupItem value="neutral" /></FormControl>
-                                        <FormLabel className="font-normal">Neutral</FormLabel>
+                                        <FormLabel className="font-normal">Neutro</FormLabel>
                                     </FormItem>
                                     <FormItem className="flex items-center space-x-3 space-y-0">
                                         <FormControl><RadioGroupItem value="not_confident" /></FormControl>
-                                        <FormLabel className="font-normal">Not Very Confident</FormLabel>
+                                        <FormLabel className="font-normal">Pouco Confiante</FormLabel>
                                     </FormItem>
                                     </RadioGroup>
                                 </FormControl>
@@ -169,9 +169,9 @@ export default function QuestionnairePage() {
                             name="conflict"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>How do you typically handle a conflict or disagreement with a colleague over patient care?</FormLabel>
+                                <FormLabel>Como você normalmente lida com um conflito ou desacordo com um colega sobre o cuidado do paciente?</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Describe your approach..." {...field} />
+                                    <Textarea placeholder="Descreva sua abordagem..." {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -182,9 +182,9 @@ export default function QuestionnairePage() {
                             name="procedures"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Which of these advanced procedures are you most familiar with? (e.g., inserting a PICC line, managing a ventilator, etc.)</FormLabel>
+                                <FormLabel>Com quais destes procedimentos avançados você está mais familiarizado? (ex: inserir um cateter PICC, gerenciar um ventilador, etc.)</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="List procedures and your familiarity level..." {...field} />
+                                    <Textarea placeholder="Liste os procedimentos e seu nível de familiaridade..." {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -195,9 +195,9 @@ export default function QuestionnairePage() {
                             name="difficultNews"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Describe a time you had to deliver difficult news to a patient's family. How did you approach it?</FormLabel>
+                                <FormLabel>Descreva uma vez que você teve que dar notícias difíceis para a família de um paciente. Como você abordou a situação?</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Describe the situation and your actions..." {...field} />
+                                    <Textarea placeholder="Descreva a situação e suas ações..." {...field} />
                                 </FormControl>
                                 <FormMessage />
                                 </FormItem>
@@ -205,7 +205,7 @@ export default function QuestionnairePage() {
                         />
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4"/>}
-                            Generate My Analysis
+                            Gerar Minha Análise
                         </Button>
                     </form>
                 </Form>

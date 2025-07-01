@@ -35,15 +35,15 @@ import { Button } from './ui/button';
 import { useAuth } from '@/context/auth-context';
 
 const navItems = [
-  { href: '/dashboard', icon: Home, label: 'Home' },
-  { href: '/dashboard/mentor', icon: Bot, label: 'AI Mentor' },
-  { href: '/dashboard/courses', icon: BookOpen, label: 'Courses' },
+  { href: '/dashboard', icon: Home, label: 'Início' },
+  { href: '/dashboard/mentor', icon: Bot, label: 'Mentor IA' },
+  { href: '/dashboard/courses', icon: BookOpen, label: 'Cursos' },
 ];
 
 const adminNavItems = [
-  { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Reports' },
-  { href: '/dashboard/admin/users', icon: Users, label: 'Users' },
-  { href: '/dashboard/admin/logs', icon: ClipboardList, label: 'Logs' },
+  { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
+  { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
+  { href: '/dashboard/admin/logs', icon: ClipboardList, label: 'Registros' },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -132,11 +132,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-3 p-2 rounded-lg">
                 <Link href="/dashboard/profile" className='flex items-center gap-3 flex-grow'>
                     <Avatar>
-                        <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="woman smiling" alt="User" />
+                        <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
                         <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col text-sm">
-                        <span className="font-semibold">{appUser?.displayName ?? 'User'}</span>
+                        <span className="font-semibold">{appUser?.displayName ?? 'Usuário'}</span>
                         <span className="text-muted-foreground text-xs">{user.email}</span>
                     </div>
                 </Link>
@@ -155,7 +155,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <Button variant="ghost" size="icon"><Settings /></Button>
                  <Link href="/dashboard/profile">
                     <Avatar className='h-9 w-9'>
-                        <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="woman smiling" alt="User" />
+                        <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
                         <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
                     </Avatar>
                 </Link>

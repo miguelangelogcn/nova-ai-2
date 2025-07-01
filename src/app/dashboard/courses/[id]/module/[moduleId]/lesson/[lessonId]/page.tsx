@@ -55,8 +55,8 @@ export default function LessonContentPage() {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Content not found</CardTitle>
-                    <CardDescription>Could not find the requested lesson. Course ID: {courseId || 'N/A'}, Module ID: {moduleId || 'N/A'}, Lesson ID: {lessonId || 'N/A'}</CardDescription>
+                    <CardTitle>Conteúdo não encontrado</CardTitle>
+                    <CardDescription>Não foi possível encontrar a aula solicitada. ID do Curso: {courseId || 'N/A'}, ID do Módulo: {moduleId || 'N/A'}, ID da Aula: {lessonId || 'N/A'}</CardDescription>
                 </CardHeader>
             </Card>
         );
@@ -65,7 +65,7 @@ export default function LessonContentPage() {
     return (
         <div className="space-y-6">
              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link href="/dashboard/courses" className="hover:underline">Courses</Link>
+                <Link href="/dashboard/courses" className="hover:underline">Cursos</Link>
                 <ChevronRight className="h-4 w-4" />
                 <Link href={`/dashboard/courses/${courseId}`} className="hover:underline">{course.title}</Link>
                 <ChevronRight className="h-4 w-4" />
@@ -86,23 +86,23 @@ export default function LessonContentPage() {
                                    <iframe
                                         className="w-full h-full rounded-lg"
                                         src={lesson.videoUrl}
-                                        title="Lesson Video"
+                                        title="Vídeo da Aula"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen>
                                     </iframe>
                                 </div>
                             ) : (
                                 <div className="aspect-video bg-muted rounded-lg mb-6 flex items-center justify-center">
-                                    <p className="text-muted-foreground">No video for this lesson.</p>
+                                    <p className="text-muted-foreground">Não há vídeo para esta aula.</p>
                                 </div>
                             )}
 
                             <Separator className="my-6" />
 
                             <div>
-                                <h3 className="text-xl font-bold font-headline mb-2">Lesson Content</h3>
+                                <h3 className="text-xl font-bold font-headline mb-2">Conteúdo da Aula</h3>
                                 <p className="text-muted-foreground whitespace-pre-wrap">
-                                    {lesson.content || 'No text content available for this lesson.'}
+                                    {lesson.content || 'Nenhum conteúdo de texto disponível para esta aula.'}
                                 </p>
                             </div>
                         </CardContent>
@@ -111,7 +111,7 @@ export default function LessonContentPage() {
                 <div className="space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline">Resources</CardTitle>
+                            <CardTitle className="font-headline">Recursos</CardTitle>
                         </CardHeader>
                         <CardContent>
                             {lesson.resources && lesson.resources.length > 0 ? (
@@ -129,7 +129,7 @@ export default function LessonContentPage() {
                                 ))}
                                 </ul>
                             ) : (
-                                <p className="text-sm text-muted-foreground">No resources for this lesson.</p>
+                                <p className="text-sm text-muted-foreground">Nenhum recurso para esta aula.</p>
                             )}
                         </CardContent>
                     </Card>

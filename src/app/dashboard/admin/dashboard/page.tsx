@@ -3,17 +3,17 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+  { month: "Janeiro", desktop: 186 },
+  { month: "Fevereiro", desktop: 305 },
+  { month: "Março", desktop: 237 },
+  { month: "Abril", desktop: 73 },
+  { month: "Maio", desktop: 209 },
+  { month: "Junho", desktop: 214 },
 ];
 
 const chartConfig = {
   desktop: {
-    label: "Completions",
+    label: "Conclusões",
     color: "hsl(var(--primary))",
   },
 };
@@ -22,14 +22,14 @@ export default function AdminDashboardPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold font-headline">Admin Dashboard</h1>
-                <p className="text-muted-foreground">Overview of your organization's learning and engagement.</p>
+                <h1 className="text-3xl font-bold font-headline">Painel do Administrador</h1>
+                <p className="text-muted-foreground">Visão geral do aprendizado e engajamento da sua organização.</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Total Users</CardTitle>
-                        <CardDescription>Total number of active nurses and technicians.</CardDescription>
+                        <CardTitle>Total de Usuários</CardTitle>
+                        <CardDescription>Número total de enfermeiros e técnicos ativos.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-4xl font-bold">128</p>
@@ -37,8 +37,8 @@ export default function AdminDashboardPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Courses Completed</CardTitle>
-                        <CardDescription>Total courses completed this month.</CardDescription>
+                        <CardTitle>Cursos Concluídos</CardTitle>
+                        <CardDescription>Total de cursos concluídos este mês.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-4xl font-bold">342</p>
@@ -46,8 +46,8 @@ export default function AdminDashboardPage() {
                 </Card>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Engagement Rate</CardTitle>
-                        <CardDescription>Percentage of users active in the last 30 days.</CardDescription>
+                        <CardTitle>Taxa de Engajamento</CardTitle>
+                        <CardDescription>Porcentagem de usuários ativos nos últimos 30 dias.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-4xl font-bold">87%</p>
@@ -55,18 +55,18 @@ export default function AdminDashboardPage() {
                 </Card>
                  <Card>
                     <CardHeader>
-                        <CardTitle>Top Concern</CardTitle>
-                        <CardDescription>Most frequent topic in AI Mentor chats.</CardDescription>
+                        <CardTitle>Principal Dúvida</CardTitle>
+                        <CardDescription>Tópico mais frequente nos chats com o Mentor de IA.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-2xl font-bold">Medication Dosing</p>
+                        <p className="text-2xl font-bold">Dosagem de Medicação</p>
                     </CardContent>
                 </Card>
             </div>
             <Card>
                 <CardHeader>
-                    <CardTitle>Monthly Course Completions</CardTitle>
-                    <CardDescription>January - June 2024</CardDescription>
+                    <CardTitle>Cursos Concluídos por Mês</CardTitle>
+                    <CardDescription>Janeiro - Junho 2024</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={chartConfig} className="h-[300px] w-full">

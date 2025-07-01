@@ -8,6 +8,6 @@ export async function handleChat(message: string, chatHistory: AiMentorChatInput
         return result.response;
     } catch (error) {
         console.error("Error in AI Mentor chat:", error);
-        return "I'm sorry, I'm having trouble connecting right now. Please try again later.";
+        return "Desculpe, estou com problemas para me conectar agora. Por favor, tente novamente mais tarde.";
     }
 }

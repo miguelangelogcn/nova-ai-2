@@ -37,14 +37,14 @@ export default function CoursesPage() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold font-headline">Course Library</h1>
-                <p className="text-muted-foreground">Expand your knowledge and skills with our comprehensive list of courses.</p>
+                <h1 className="text-3xl font-bold font-headline">Biblioteca de Cursos</h1>
+                <p className="text-muted-foreground">Expanda seu conhecimento e habilidades com nossa lista completa de cursos.</p>
             </div>
             {courses.length === 0 ? (
                 <Card>
                     <CardHeader>
-                        <CardTitle>No Courses Available</CardTitle>
-                        <CardDescription>It looks like there are no courses here yet. Please check back later or contact an administrator.</CardDescription>
+                        <CardTitle>Nenhum Curso Disponível</CardTitle>
+                        <CardDescription>Parece que ainda não há cursos aqui. Por favor, volte mais tarde ou contate um administrador.</CardDescription>
                     </CardHeader>
                 </Card>
             ) : (
@@ -69,7 +69,7 @@ export default function CoursesPage() {
                                     <CardDescription className="text-sm">{course.description}</CardDescription>
                                 </CardContent>
                                 <CardFooter className="p-4">
-                                     <p className="text-xs text-primary font-semibold">View Details</p>
+                                     <p className="text-xs text-primary font-semibold">Ver Detalhes</p>
                                 </CardFooter>
                             </Card>
                         </Link>

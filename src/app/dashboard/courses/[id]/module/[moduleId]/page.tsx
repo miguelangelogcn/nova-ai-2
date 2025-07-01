@@ -47,8 +47,8 @@ export default function ModuleLessonsPage() {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Content not found</CardTitle>
-                    <CardDescription>Could not find the requested module. Course ID: {courseId || 'N/A'}, Module ID: {moduleId || 'N/A'}</CardDescription>
+                    <CardTitle>Conteúdo não encontrado</CardTitle>
+                    <CardDescription>Não foi possível encontrar o módulo solicitado. ID do Curso: {courseId || 'N/A'}, ID do Módulo: {moduleId || 'N/A'}</CardDescription>
                 </CardHeader>
             </Card>
         );
@@ -59,7 +59,7 @@ export default function ModuleLessonsPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Link href="/dashboard/courses" className="hover:underline">Courses</Link>
+                <Link href="/dashboard/courses" className="hover:underline">Cursos</Link>
                 <ChevronRight className="h-4 w-4" />
                 <Link href={`/dashboard/courses/${courseId}`} className="hover:underline">{course.title}</Link>
                 <ChevronRight className="h-4 w-4" />
@@ -72,7 +72,7 @@ export default function ModuleLessonsPage() {
                     <CardDescription>{module.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                     <h3 className="text-xl font-bold font-headline mb-4">Lessons</h3>
+                     <h3 className="text-xl font-bold font-headline mb-4">Aulas</h3>
                      {lessons.length > 0 ? (
                          <ul className="space-y-3">
                             {lessons.map((lesson) => (
@@ -86,7 +86,7 @@ export default function ModuleLessonsPage() {
                             ))}
                          </ul>
                      ) : (
-                         <p className="text-sm text-muted-foreground">No lessons in this module yet.</p>
+                         <p className="text-sm text-muted-foreground">Ainda não há aulas neste módulo.</p>
                      )}
                 </CardContent>
             </Card>

@@ -12,16 +12,16 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AiMentorChatInputSchema = z.object({
-  message: z.string().describe('The message from the user to the AI mentor.'),
+  message: z.string().describe('A mensagem do usuário para o mentor de IA.'),
   chatHistory: z.array(z.object({
     role: z.enum(['user', 'assistant']),
     content: z.string(),
-  })).optional().describe('The chat history between the user and the AI mentor.'),
+  })).optional().describe('O histórico de chat entre o usuário e o mentor de IA.'),
 });
 export type AiMentorChatInput = z.infer<typeof AiMentorChatInputSchema>;
 
 const AiMentorChatOutputSchema = z.object({
-  response: z.string().describe('The response from the AI mentor.'),
+  response: z.string().describe('A resposta do mentor de IA.'),
 });
 export type AiMentorChatOutput = z.infer<typeof AiMentorChatOutputSchema>;
 
@@ -33,15 +33,15 @@ const prompt = ai.definePrompt({
   name: 'aiMentorChatPrompt',
   input: {schema: AiMentorChatInputSchema},
   output: {schema: AiMentorChatOutputSchema},
-  prompt: `You are a helpful AI mentor for nurses and technicians. You are knowledgeable about all the content of the platform and can answer questions related to nursing and technical procedures.
+  prompt: `Você é um mentor de IA prestativo para enfermeiros e técnicos. Você conhece todo o conteúdo da plataforma e pode responder a perguntas relacionadas à enfermagem e procedimentos técnicos.
 
-Chat History:
+Histórico do Chat:
 {{#each chatHistory}}
-  {{#if (eq role \"user\")}}User:{{else}}AI Mentor:{{/if}} {{content}}
+  {{#if (eq role "user")}}Usuário:{{else}}Mentor de IA:{{/if}} {{content}}
 {{/each}}
 
-User: {{message}}
-AI Mentor: `,
+Usuário: {{message}}
+Mentor de IA: `,
 });
 
 const aiMentorChatFlow = ai.defineFlow(

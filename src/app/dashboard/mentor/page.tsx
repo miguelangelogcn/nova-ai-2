@@ -46,7 +46,7 @@ export default function MentorChatPage() {
     } catch (error) {
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: 'Desculpe, encontrei um erro. Por favor, tente novamente.',
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -60,10 +60,10 @@ export default function MentorChatPage() {
       <Card className="flex-1 flex flex-col w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline flex items-center gap-2">
-            <Bot /> AI Mentor
+            <Bot /> Mentor de IA
           </CardTitle>
           <CardDescription>
-            Your personal AI assistant. Ask me anything about procedures, patient care, or best practices.
+            Seu assistente pessoal de IA. Pergunte-me qualquer coisa sobre procedimentos, cuidados com o paciente ou melhores práticas.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
@@ -94,7 +94,7 @@ export default function MentorChatPage() {
                   </div>
                   {message.role === 'user' && (
                      <Avatar className="w-8 h-8">
-                      <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman smiling" />
+                      <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="mulher sorrindo" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
                   )}
@@ -117,13 +117,13 @@ export default function MentorChatPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
+              placeholder="Digite sua mensagem..."
               className="flex-1"
               disabled={isLoading}
             />
             <Button size="icon" type="submit" disabled={isLoading || !input.trim()}>
               <CornerDownLeft />
-              <span className="sr-only">Send</span>
+              <span className="sr-only">Enviar</span>
             </Button>
           </form>
         </CardContent>

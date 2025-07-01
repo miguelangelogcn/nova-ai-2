@@ -13,17 +13,17 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
 
         // A mock list of courses to be sent to the learning path generator
         const availableCourses = `
-            - Advanced Cardiac Life Support (ACLS): Master the skills needed to manage cardiac arrest and other cardiovascular emergencies.
-            - Pediatric Advanced Life Support (PALS): Learn to recognize and manage life-threatening conditions in infants and children.
-            - Effective Communication in Healthcare: Enhance your communication skills with patients, families, and colleagues.
-            - Wound Care and Management: A comprehensive guide to assessing and treating different types of wounds.
-            - Time Management for Nurses: Strategies to prioritize tasks, manage time effectively, and reduce stress.
-            - Pharmacology Fundamentals: An essential review of medication administration, side effects, and interactions.
-            - Burnout Prevention Strategies: Learn to identify and mitigate the risks of professional burnout.
-            - Leadership and Delegation for Nurses: Develop essential leadership skills and learn to delegate tasks effectively.
+            - Suporte Avançado de Vida em Cardiologia (ACLS): Domine as habilidades necessárias para gerenciar paradas cardíacas e outras emergências cardiovasculares.
+            - Suporte Avançado de Vida em Pediatria (PALS): Aprenda a reconhecer e gerenciar condições de risco de vida em bebês e crianças.
+            - Comunicação Efetiva em Saúde: Aprimore suas habilidades de comunicação com pacientes, familiares e colegas.
+            - Cuidado e Gerenciamento de Feridas: Um guia completo para avaliar e tratar diferentes tipos de feridas.
+            - Gestão de Tempo para Enfermeiros: Estratégias para priorizar tarefas, gerenciar o tempo de forma eficaz e reduzir o estresse.
+            - Fundamentos de Farmacologia: Uma revisão essencial da administração de medicamentos, efeitos colaterais e interações.
+            - Estratégias de Prevenção de Burnout: Aprenda a identificar e mitigar os riscos de esgotamento profissional.
+            - Liderança e Delegação para Enfermeiros: Desenvolva habilidades essenciais de liderança e aprenda a delegar tarefas de forma eficaz.
         `;
 
-        const swotString = `Strengths: ${swotAnalysis.strengths}\nWeaknesses: ${swotAnalysis.weaknesses}\nOpportunities: ${swotAnalysis.opportunities}\nThreats: ${swotAnalysis.threats}`;
+        const swotString = `Forças: ${swotAnalysis.strengths}\nFraquezas: ${swotAnalysis.weaknesses}\nOportunidades: ${swotAnalysis.opportunities}\nAmeaças: ${swotAnalysis.threats}`;
 
         const learningPath = await generatePersonalizedLearningPath({
             swotAnalysis: swotString,
@@ -42,6 +42,6 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
 
     } catch (error) {
         console.error("Error generating analysis:", error);
-        throw new Error("Failed to generate analysis. Please try again.");
+        throw new Error("Falha ao gerar análise. Por favor, tente novamente.");
     }
 }

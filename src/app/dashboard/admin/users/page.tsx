@@ -7,11 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileUp, PlusCircle, Search } from "lucide-react";
 
 const users = [
-    { name: "John Smith", email: "john.smith@hospital.com", role: "Registered Nurse", team: "ICU", status: "Active" },
-    { name: "Emily Johnson", email: "emily.j@hospital.com", role: "Nurse Technician", team: "Pediatrics", status: "Active" },
-    { name: "Michael Williams", email: "michael.w@hospital.com", role: "Registered Nurse", team: "Emergency", status: "Inactive" },
-    { name: "Jessica Brown", email: "jess.brown@hospital.com", role: "Registered Nurse", team: "ICU", status: "Active" },
-    { name: "David Jones", email: "david.j@hospital.com", role: "Charge Nurse", team: "Cardiology", status: "Active" },
+    { name: "John Smith", email: "john.smith@hospital.com", role: "Enfermeiro(a) Registrado(a)", team: "UTI", status: "Ativo" },
+    { name: "Emily Johnson", email: "emily.j@hospital.com", role: "Técnico(a) de Enfermagem", team: "Pediatria", status: "Ativo" },
+    { name: "Michael Williams", email: "michael.w@hospital.com", role: "Enfermeiro(a) Registrado(a)", team: "Emergência", status: "Inativo" },
+    { name: "Jessica Brown", email: "jess.brown@hospital.com", role: "Enfermeiro(a) Registrado(a)", team: "UTI", status: "Ativo" },
+    { name: "David Jones", email: "david.j@hospital.com", role: "Enfermeiro(a) Chefe", team: "Cardiologia", status: "Ativo" },
 ];
 
 export default function AdminUsersPage() {
@@ -20,28 +20,28 @@ export default function AdminUsersPage() {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="font-headline">User Management</CardTitle>
-                        <CardDescription>Manage your organization's users and teams.</CardDescription>
+                        <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
+                        <CardDescription>Gerencie os usuários e equipes da sua organização.</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline"><FileUp className="mr-2" /> Import</Button>
-                        <Button><PlusCircle className="mr-2" /> Add User</Button>
+                        <Button variant="outline"><FileUp className="mr-2" /> Importar</Button>
+                        <Button><PlusCircle className="mr-2" /> Adicionar Usuário</Button>
                     </div>
                 </div>
                 <div className="relative mt-4">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search users..." className="pl-8" />
+                    <Input placeholder="Buscar usuários..." className="pl-8" />
                 </div>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Role</TableHead>
-                            <TableHead>Team</TableHead>
+                            <TableHead>Nome</TableHead>
+                            <TableHead>Cargo</TableHead>
+                            <TableHead>Equipe</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Actions</TableHead>
+                            <TableHead>Ações</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -62,10 +62,10 @@ export default function AdminUsersPage() {
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell><Badge variant="secondary">{user.team}</Badge></TableCell>
                                 <TableCell>
-                                    <Badge variant={user.status === 'Active' ? 'default' : 'destructive'} className={user.status === 'Active' ? 'bg-green-500' : ''}>{user.status}</Badge>
+                                    <Badge variant={user.status === 'Ativo' ? 'default' : 'destructive'} className={user.status === 'Ativo' ? 'bg-green-500' : ''}>{user.status}</Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <Button variant="ghost" size="sm">Edit</Button>
+                                    <Button variant="ghost" size="sm">Editar</Button>
                                 </TableCell>
                             </TableRow>
                         ))}

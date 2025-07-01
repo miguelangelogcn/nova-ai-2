@@ -15,11 +15,11 @@ const PersonalizedLearningPathInputSchema = z.object({
   swotAnalysis: z
     .string()
     .describe(
-      'The SWOT analysis of the user, including strengths, weaknesses, opportunities, and threats.'
+      'A análise SWOT do usuário, incluindo forças, fraquezas, oportunidades e ameaças.'
     ),
   availableCourses: z
     .string()
-    .describe('A list of available courses in the platform with their descriptions.'),
+    .describe('Uma lista de cursos disponíveis na plataforma com suas descrições.'),
 });
 export type PersonalizedLearningPathInput = z.infer<typeof PersonalizedLearningPathInputSchema>;
 
@@ -27,7 +27,7 @@ const PersonalizedLearningPathOutputSchema = z.object({
   learningPath: z
     .string()
     .describe(
-      'A personalized learning path with recommended courses in prioritized order, with explanations for each recommendation.'
+      'Um plano de aprendizado personalizado com cursos recomendados em ordem de prioridade, com explicações para cada recomendação.'
     ),
 });
 export type PersonalizedLearningPathOutput = z.infer<typeof PersonalizedLearningPathOutputSchema>;
@@ -42,14 +42,14 @@ const prompt = ai.definePrompt({
   name: 'personalizedLearningPathPrompt',
   input: {schema: PersonalizedLearningPathInputSchema},
   output: {schema: PersonalizedLearningPathOutputSchema},
-  prompt: `You are an AI learning path generator. You will receive a SWOT analysis of a user and a list of available courses.
+  prompt: `Você é um gerador de plano de aprendizado de IA. Você receberá uma análise SWOT de um usuário e uma lista de cursos disponíveis.
 
-You will use this information to generate a personalized learning path for the user, recommending relevant courses in a prioritized order.
+Você usará essas informações para gerar um plano de aprendizado personalizado para o usuário, recomendando cursos relevantes em ordem de prioridade.
 
-Explain why each course is recommended based on the user's SWOT analysis. Prioritize courses that address the user's weaknesses and threats.
+Explique por que cada curso é recomendado com base na análise SWOT do usuário. Priorize cursos que abordem as fraquezas e ameaças do usuário.
 
-SWOT Analysis: {{{swotAnalysis}}}
-Available Courses: {{{availableCourses}}}`,
+Análise SWOT: {{{swotAnalysis}}}
+Cursos Disponíveis: {{{availableCourses}}}`,
 });
 
 const personalizedLearningPathFlow = ai.defineFlow(
