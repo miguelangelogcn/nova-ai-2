@@ -1,7 +1,7 @@
 'use server';
 
 import { adminDb } from '@/lib/firebase-admin';
-import { type AppUser, type Assessment } from '@/services/user';
+import { type AppUser, type Assessment, type LearningPath } from '@/services/user';
 import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import type { GenerateSwotAnalysisOutput, GenerateDiscAnalysisOutput } from '@/app/questionnaire/types';
 
@@ -46,7 +46,7 @@ export async function getAllUsers(): Promise<AppUser[]> {
  * @param uid The user's ID.
  * @param data The assessment data, including SWOT and questionnaire responses.
  */
-export async function addAssessmentToProfile(uid: string, data: { swot: GenerateSwotAnalysisOutput; disc?: GenerateDiscAnalysisOutput; questionnaireResponses: Record<string, string> }) {
+export async function addAssessmentToProfile(uid: string, data: { swot: GenerateSwotAnalysisOutput; disc?: GenerateDiscAnalysisOutput; learningPath?: LearningPath, questionnaireResponses: Record<string, string> }) {
     const userRef = adminDb.collection("users").doc(uid);
     const newAssessment = {
         ...data,

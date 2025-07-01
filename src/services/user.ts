@@ -2,9 +2,15 @@ import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import type { GenerateDiscAnalysisOutput, GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
 
+export type LearningPath = {
+    recommendedCourseIds: string[];
+    reasoning: string;
+};
+
 export type Assessment = {
     swot: GenerateSwotAnalysisOutput;
     disc?: GenerateDiscAnalysisOutput;
+    learningPath?: LearningPath;
     questionnaireResponses: Record<string, string>;
     appliedAt: any; // Stored as Timestamp, received as ISO string
 };

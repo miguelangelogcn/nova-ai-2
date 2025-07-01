@@ -10,6 +10,13 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
+const CourseInfoSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  category: z.string(),
+});
+
 const GeneratePersonalizedLearningPathInputSchema = z.object({
   swot: z.object({
     strengths: z.string(),
@@ -17,25 +24,20 @@ const GeneratePersonalizedLearningPathInputSchema = z.object({
     opportunities: z.string(),
     threats: z.string(),
   }),
-  courses: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    category: z.string(),
-  })),
+  courses: z.array(CourseInfoSchema),
 });
 export type GeneratePersonalizedLearningPathInput = z.infer<typeof GeneratePersonalizedLearningPathInputSchema>;
 
 const GeneratePersonalizedLearningPathOutputSchema = z.object({
   recommendedCourseIds: z.array(z.string()).describe('An ordered list of recommended course IDs, up to a maximum of 5.'),
-  reasoning: z.string().describe('A brief reasoning for the recommendation.'),
+  reasoning: z.string().describe('A brief reasoning for the recommendation, explaining why these courses were chosen or why no courses were recommended.'),
 });
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
 export async function generatePersonalizedLearningPath(input: GeneratePersonalizedLearningPathInput): Promise<GeneratePersonalizedLearningPathOutput> {
-  // If there are no courses, return an empty path immediately.
+  // Guard clause: If there are no courses, return an empty path immediately without calling the AI.
   if (!input.courses || input.courses.length === 0) {
-    return { recommendedCourseIds: [], reasoning: 'Nenhum curso disponível para recomendação.' };
+    return { recommendedCourseIds: [], reasoning: 'Não há cursos disponíveis na plataforma no momento para criar uma recomendação.' };
   }
   return generatePersonalizedLearningPathFlow(input);
 }
@@ -62,7 +64,7 @@ Aqui está a lista de cursos disponíveis na plataforma:
 
 Com base na análise, recomende uma trilha de até 5 cursos em uma ordem priorizada. A prioridade deve ser dada a cursos que ajudem a mitigar as fraquezas e a aproveitar as oportunidades. Explique brevemente o raciocínio por trás da sua recomendação.
 
-Se nenhum dos cursos disponíveis for relevante para as necessidades de desenvolvimento do funcionário, retorne um array vazio para 'recommendedCourseIds' e explique por que nenhuma recomendação foi feita.`,
+Se nenhum dos cursos disponíveis for relevante para as necessidades de desenvolvimento do funcionário, retorne um array vazio para 'recommendedCourseIds' e explique por que nenhuma recomendação foi feita no campo 'reasoning'.`,
 });
 
 

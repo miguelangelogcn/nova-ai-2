@@ -1,3 +1,5 @@
+import type { GeneratePersonalizedLearningPathOutput } from "@/ai/flows/personalized-learning-path";
+
 export type GenerateSwotAnalysisOutput = {
     strengths: string;
     weaknesses: string;
@@ -16,4 +18,5 @@ export type GenerateDiscAnalysisOutput = {
 export type AnalysisResult = {
     swot: GenerateSwotAnalysisOutput;
     disc?: GenerateDiscAnalysisOutput;
+    learningPath?: GeneratePersonalizedLearningPathOutput;
 }
