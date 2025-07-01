@@ -35,10 +35,15 @@ const GeneratePersonalizedLearningPathOutputSchema = z.object({
 export type GeneratePersonalizedLearningPathOutput = z.infer<typeof GeneratePersonalizedLearningPathOutputSchema>;
 
 export async function generatePersonalizedLearningPath(input: GeneratePersonalizedLearningPathInput): Promise<GeneratePersonalizedLearningPathOutput> {
+  console.log('[AI Flow Wrapper] Starting generatePersonalizedLearningPath.');
+  
   // Guard clause: If there are no courses, return an empty path immediately without calling the AI.
   if (!input.courses || input.courses.length === 0) {
+    console.log('[AI Flow Wrapper] No courses provided. Returning empty recommendation without calling AI.');
     return { recommendedCourseIds: [], reasoning: 'Não há cursos disponíveis na plataforma no momento para criar uma recomendação.' };
   }
+
+  console.log(`[AI Flow Wrapper] Received ${input.courses.length} courses to analyze. Calling the flow...`);
   return generatePersonalizedLearningPathFlow(input);
 }
 
@@ -76,7 +81,25 @@ const generatePersonalizedLearningPathFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedLearningPathOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
-    return output!;
+    console.log('[AI Flow] Executing generatePersonalizedLearningPathFlow.');
+    try {
+        const { output } = await prompt(input);
+        
+        // Defensive check: Ensure the AI returned a valid, structured output.
+        if (!output) {
+            const errorMessage = '[AI Flow] AI prompt did not return a valid structured output. The response was null or undefined.';
+            console.error(errorMessage);
+            throw new Error(errorMessage);
+        }
+        
+        console.log('[AI Flow] AI prompt succeeded. Returning output.');
+        return output;
+
+    } catch (error) {
+        const errorMessage = '[AI Flow] An error occurred within the AI flow execution.';
+        console.error(errorMessage, error);
+        // Re-throw the error to be caught by the calling server action.
+        throw new Error(`${errorMessage} Details: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 );
