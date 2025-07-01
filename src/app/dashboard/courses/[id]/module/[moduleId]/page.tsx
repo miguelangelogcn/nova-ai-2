@@ -47,8 +47,8 @@ export default function ModuleLessonsPage() {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Module not found</CardTitle>
-                    <CardDescription>This module could not be found.</CardDescription>
+                    <CardTitle>Content not found</CardTitle>
+                    <CardDescription>Could not find the requested module. Course ID: {courseId || 'N/A'}, Module ID: {moduleId || 'N/A'}</CardDescription>
                 </CardHeader>
             </Card>
         );

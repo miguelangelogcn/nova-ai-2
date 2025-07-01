@@ -4,7 +4,7 @@ import { getCourse, type Course } from "@/services/courses";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, BookOpen } from "lucide-react";
+import { Loader2, BookOpen, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
@@ -42,7 +42,7 @@ export default function CourseModulesPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Course not found</CardTitle>
-                    <CardDescription>This course could not be found.</CardDescription>
+                    <CardDescription>This course could not be found. We tried to fetch a course with ID: {id || "Not available"}</CardDescription>
                 </CardHeader>
             </Card>
         );
@@ -52,6 +52,11 @@ export default function CourseModulesPage() {
 
     return (
         <div className="space-y-6">
+             <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Link href="/dashboard/courses" className="hover:underline">Courses</Link>
+                <ChevronRight className="h-4 w-4" />
+                <span className="font-semibold text-foreground">{course.title}</span>
+            </div>
             <Card>
                 <CardHeader>
                     <Badge variant="secondary" className="w-fit mb-2">{course.category}</Badge>

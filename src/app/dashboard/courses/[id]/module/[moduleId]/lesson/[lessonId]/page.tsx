@@ -3,7 +3,7 @@
 import { getCourse, type Course, type Module, type Lesson } from "@/services/courses";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Loader2, ChevronRight, FileText, Download } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -54,7 +54,10 @@ export default function LessonContentPage() {
     if (!course || !module || !lesson) {
         return (
             <Card>
-                <CardHeader><CardTitle>Content not found</CardTitle></CardHeader>
+                <CardHeader>
+                    <CardTitle>Content not found</CardTitle>
+                    <CardDescription>Could not find the requested lesson. Course ID: {courseId || 'N/A'}, Module ID: {moduleId || 'N/A'}, Lesson ID: {lessonId || 'N/A'}</CardDescription>
+                </CardHeader>
             </Card>
         );
     }
