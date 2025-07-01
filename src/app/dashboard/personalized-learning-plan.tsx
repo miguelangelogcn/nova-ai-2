@@ -1,12 +1,11 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCourses, type Course } from "@/services/courses";
 import type { LearningPath } from "@/services/user";
-import { Loader2, ArrowRight, BookCheck } from "lucide-react";
+import { Loader2, BookCheck } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 interface PersonalizedLearningPlanProps {
     learningPath?: LearningPath;
@@ -53,7 +52,7 @@ export function PersonalizedLearningPlan({ learningPath }: PersonalizedLearningP
                     Cursos recomendados pela IA com base na sua análise SWOT para impulsionar seu desenvolvimento.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow">
+            <CardContent className="flex-grow min-h-[100px]">
                 {loading ? (
                     <div className="flex justify-center items-center h-full">
                         <Loader2 className="h-6 w-6 animate-spin" />
@@ -74,11 +73,6 @@ export function PersonalizedLearningPlan({ learningPath }: PersonalizedLearningP
                     </p>
                 )}
             </CardContent>
-            <CardFooter>
-                 <Button asChild variant="secondary" className="w-full">
-                    <Link href="/dashboard/courses">Explorar Todos os Cursos <ArrowRight className="ml-2" /></Link>
-                </Button>
-            </CardFooter>
         </Card>
     );
 }
