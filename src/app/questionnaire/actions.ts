@@ -1,7 +1,7 @@
 'use server';
 
 import { generateSwotAnalysis } from "@/ai/flows/swot-analysis";
-import { addAssessmentToProfile } from "@/services/user";
+import { addAssessmentToProfile } from "@/services/user.admin";
 import type { AnalysisResult } from "./types";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {

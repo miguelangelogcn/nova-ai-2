@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { doc, setDoc, getDoc, serverTimestamp, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import type { GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
 
 export type Assessment = {
@@ -73,22 +73,5 @@ export const updateUserProfile = async (uid: string, data: Partial<AppUser>) => 
         await updateDoc(userRef, data);
     } catch (error) {
         console.error("Error updating user profile:", error);
-    }
-};
-
-export const addAssessmentToProfile = async (uid: string, data: { swot: GenerateSwotAnalysisOutput; questionnaireResponses: Record<string, string> }) => {
-    const userRef = doc(db, "users", uid);
-    const newAssessment = {
-        ...data,
-        appliedAt: serverTimestamp(),
-    };
-    try {
-        // Using arrayUnion to add the new assessment to the array
-        await updateDoc(userRef, {
-            assessments: arrayUnion(newAssessment),
-        });
-    } catch (error) {
-        console.error("Error adding assessment to profile:", error);
-        throw error;
     }
 };
