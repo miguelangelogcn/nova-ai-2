@@ -5,7 +5,7 @@ import { addAssessmentToProfile } from "@/services/user.admin";
 import type { AnalysisResult } from "./types";
 import { generateDiscAnalysis } from "@/ai/flows/disc-analysis";
 import { generatePersonalizedLearningPath } from "@/ai/flows/personalized-learning-path";
-import { getCourses } from "@/services/courses";
+import { getCoursesAdmin } from "@/services/courses.admin";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
     const allResponsesString = JSON.stringify(formData, null, 2);
@@ -28,7 +28,7 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
         const [swotAnalysis, discAnalysis, allCourses] = await Promise.all([
             generateSwotAnalysis({ questionnaireResponses: allResponsesString }),
             generateDiscAnalysis({ discQuestionnaireResponses: discResponsesString }),
-            getCourses()
+            getCoursesAdmin()
         ]);
         
         // Generate personalized learning path based on SWOT and courses
