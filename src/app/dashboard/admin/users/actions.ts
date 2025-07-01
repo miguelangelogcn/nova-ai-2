@@ -2,7 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 import * as z from 'zod';
-import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers, AppUser } from '@/services/user';
+import { AppUser } from '@/services/user';
+import { adminCreateUser, adminUpdateUser, adminDeleteUser, adminGetAllUsers } from '@/services/user.admin';
 
 export const userFormSchema = z.object({
   displayName: z.string().min(2, { message: "O nome deve ter pelo menos 2 caracteres." }),
