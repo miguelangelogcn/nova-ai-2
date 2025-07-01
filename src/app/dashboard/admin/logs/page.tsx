@@ -6,7 +6,7 @@ const logs = [
     { timestamp: "2024-05-21 10:45:12", user: "Jane Doe", action: "Curso Iniciado", details: "Suporte Avançado de Vida em Cardiologia" },
     { timestamp: "2024-05-21 10:30:05", user: "John Smith", action: "Login", details: "Login bem-sucedido" },
     { timestamp: "2024-05-21 10:15:34", user: "Admin", action: "Usuário Adicionado", details: "emily.j@hospital.com" },
-    { timestamp: "2024-05-21 09:50:22", user: "Jane Doe", action: "Chat com Mentor de IA", details: "Perguntou sobre dosagem de medicamento." },
+    { timestamp: "2024-05-21 09:50:22", user: "Jane Doe", action: "Chat com Florence", details: "Perguntou sobre dosagem de medicamento." },
     { timestamp: "2024-05-20 18:00:00", user: "Jane Doe", action: "SWOT Atualizada", details: "Concluiu a avaliação 'A Bússola'." },
 ];
 

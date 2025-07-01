@@ -110,9 +110,9 @@ export default function DashboardPage() {
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2">
                             <Bot className="text-accent" />
-                            Mentor de IA
+                            Florence | Mentora
                         </CardTitle>
-                        <CardDescription>Tem uma pergunta? Seu Mentor de IA está disponível 24/7 para ajudar com qualquer dúvida clínica ou de procedimento.</CardDescription>
+                        <CardDescription>Tem uma pergunta? Sua mentora Florence está disponível 24/7 para ajudar com qualquer dúvida clínica ou de procedimento.</CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
                         <p className="text-sm bg-muted p-3 rounded-lg">"Quais são os 5 certos da administração de medicamentos?"</p>

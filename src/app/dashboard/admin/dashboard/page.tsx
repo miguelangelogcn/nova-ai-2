@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
                  <Card>
                     <CardHeader>
                         <CardTitle>Principal Dúvida</CardTitle>
-                        <CardDescription>Tópico mais frequente nos chats com o Mentor de IA.</CardDescription>
+                        <CardDescription>Tópico mais frequente nos chats com a mentora Florence.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-2xl font-bold">Dosagem de Medicação</p>

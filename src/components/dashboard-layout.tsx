@@ -36,7 +36,7 @@ import { useAuth } from '@/context/auth-context';
 
 const userNavItems = [
   { href: '/dashboard', icon: Home, label: 'Início' },
-  { href: '/dashboard/mentor', icon: Bot, label: 'Mentor IA' },
+  { href: '/dashboard/mentor', icon: Bot, label: 'Florence' },
   { href: '/dashboard/courses', icon: BookOpen, label: 'Cursos' },
 ];
 

@@ -60,10 +60,10 @@ export default function MentorChatPage() {
       <Card className="flex-1 flex flex-col w-full max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline flex items-center gap-2">
-            <Bot /> Mentor de IA
+            <Bot /> Florence | Mentora
           </CardTitle>
           <CardDescription>
-            Seu assistente pessoal de IA. Pergunte-me qualquer coisa sobre procedimentos, cuidados com o paciente ou melhores práticas.
+            Sua mentora pessoal. Pergunte-me qualquer coisa sobre procedimentos, cuidados com o paciente ou melhores práticas.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
