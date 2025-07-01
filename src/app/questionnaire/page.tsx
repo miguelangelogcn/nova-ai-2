@@ -189,7 +189,7 @@ const formSchema = z.object({
 export default function QuestionnairePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -232,9 +232,17 @@ export default function QuestionnairePage() {
         })
     }
 
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <Loader2 className="h-12 w-12 animate-spin text-accent mb-4" />
+            </div>
+        )
+    }
+
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh]">
+            <div className="flex flex-col items-center justify-center min-h-screen">
                 <Loader2 className="h-12 w-12 animate-spin text-accent mb-4" />
                 <h2 className="text-2xl font-headline text-center">Analisando suas respostas...</h2>
                 <p className="text-muted-foreground">Sua análise SWOT personalizada está sendo gerada.</p>
@@ -251,16 +259,15 @@ export default function QuestionnairePage() {
                             <Zap className="w-8 h-8"/>
                         </div>
                         <CardTitle className="font-headline text-3xl mt-4">Sua Análise está Pronta!</CardTitle>
-                        <CardDescription>Aqui está sua análise SWOT personalizada. Gire o cubo para explorar e depois veja em seu perfil.</CardDescription>
+                        <CardDescription>Ótimo trabalho! Sua análise está pronta. Explore o resultado e continue para o seu painel.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <SwotCube swot={analysisResult.swot} />
                     </CardContent>
                     <CardFooter className="flex-col gap-4 items-center justify-center pt-6">
                         <Button asChild>
-                            <Link href="/dashboard/profile">Ver no Meu Perfil <ArrowRight className="ml-2"/></Link>
+                            <Link href="/dashboard">Ir para o Painel <ArrowRight className="ml-2"/></Link>
                         </Button>
-                        <Button variant="link" onClick={() => setAnalysisResult(null)}>Fazer avaliação novamente</Button>
                     </CardFooter>
                 </Card>
             </div>
@@ -304,7 +311,7 @@ export default function QuestionnairePage() {
         <Card className="max-w-3xl mx-auto my-8">
             <CardHeader>
                 <CardTitle className="font-headline text-3xl">A Bússola - Seu Guia de Desenvolvimento</CardTitle>
-                <CardDescription>Responda a estas perguntas honestamente. Suas respostas gerarão uma análise personalizada para guiar seu crescimento.</CardDescription>
+                <CardDescription>Sua Bússola de desenvolvimento precisa ser calibrada. Esta etapa é obrigatória para acessar a plataforma. Suas respostas nos ajudarão a guiar sua jornada.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Form {...form}>

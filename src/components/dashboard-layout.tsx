@@ -60,17 +60,58 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, router]);
 
-  const handleLogout = async () => {
-    await logout();
-    router.push('/');
-  }
+  React.useEffect(() => {
+    if (!loading && appUser) {
+      // Admins are exempt from this check.
+      if (appUser.role === 'admin') {
+        return;
+      }
 
-  if (loading || !user) {
+      const latestAssessment = appUser.assessments?.[0]; // Already sorted newest first
+      let isQuestionnaireRequired = false;
+
+      if (!latestAssessment) {
+        isQuestionnaireRequired = true;
+      } else {
+        const lastAssessmentDate = new Date(latestAssessment.appliedAt);
+        const ninetyDaysAgo = new Date();
+        ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+        if (lastAssessmentDate <= ninetyDaysAgo) {
+          isQuestionnaireRequired = true;
+        }
+      }
+
+      if (isQuestionnaireRequired) {
+        router.push('/questionnaire');
+      }
+    }
+  }, [appUser, loading, router]);
+
+
+  const isRedirecting = React.useMemo(() => {
+    if (loading || !appUser) return false;
+    if (appUser.role === 'admin') return false;
+
+    const latestAssessment = appUser.assessments?.[0];
+    if (!latestAssessment) return true;
+
+    const lastAssessmentDate = new Date(latestAssessment.appliedAt);
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    return lastAssessmentDate <= ninetyDaysAgo;
+  }, [appUser, loading]);
+
+  if (loading || !user || !appUser || isRedirecting) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
+  }
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
   }
 
   const getAvatarFallback = () => {
