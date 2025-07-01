@@ -29,7 +29,12 @@ export function SwotCube({ swot }: SwotCubeProps) {
 
   const snapToNearestFace = (currentRotation: number) => {
     const nearestAngle = Math.round(currentRotation / 90) * 90;
-    const normalizedAngle = (nearestAngle % 360 + 360) % 360;
+    
+    // To bring a face to the front, the scene must rotate by the negative of the face's angle.
+    // So, the target face's angle is the negative of the scene's rotation.
+    const targetFaceAngle = -nearestAngle;
+    
+    const normalizedAngle = (targetFaceAngle % 360 + 360) % 360;
     const newIndex = faces.findIndex(f => f.rotation === normalizedAngle);
 
     if (newIndex !== -1) {
