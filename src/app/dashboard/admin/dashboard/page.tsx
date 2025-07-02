@@ -4,6 +4,10 @@ import { AccessChart } from "./access-chart";
 import { HourlyAccessChart } from "./hourly-access-chart";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
+import { type DateRange } from "react-day-picker";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Helper function to process logs into monthly data
 async function getAccessData(logs: any[]) {
@@ -73,22 +77,56 @@ async function getHourlyAccessData(logs: any[]) {
 
 
 export default function AdminDashboardPage() {
+    const [allLogs, setAllLogs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [accessData, setAccessData] = useState<any[]>([]);
     const [hourlyAccessData, setHourlyAccessData] = useState<any[]>([]);
+    const [date, setDate] = useState<DateRange | undefined>(undefined);
 
+    // Fetch all logs once on mount
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
             const logs = await getLogs();
-            const monthly = await getAccessData(logs);
-            const hourly = await getHourlyAccessData(logs);
-            setAccessData(monthly);
-            setHourlyAccessData(hourly);
+            setAllLogs(logs);
             setLoading(false);
         }
         fetchData();
     }, []);
+
+    // Re-process data when logs or date range change
+    useEffect(() => {
+        if (loading) return; // Wait for initial fetch
+
+        const filteredLogs = allLogs.filter((log) => {
+            if (!date || !date.from) return true; // No filter applied
+
+            const logDate = new Date(log.timestamp);
+            
+            const from = new Date(date.from);
+            from.setHours(0, 0, 0, 0);
+
+            if (date.to) { // Range selected
+                const to = new Date(date.to);
+                to.setHours(23, 59, 59, 999);
+                return logDate >= from && logDate <= to;
+            }
+            
+            // Single day selected
+            const to = new Date(date.from);
+            to.setHours(23, 59, 59, 999);
+            return logDate >= from && logDate <= to;
+        });
+        
+        async function processData() {
+            const monthly = await getAccessData(filteredLogs);
+            const hourly = await getHourlyAccessData(filteredLogs);
+            setAccessData(monthly);
+            setHourlyAccessData(hourly);
+        }
+        processData();
+
+    }, [allLogs, date, loading]);
     
     if (loading) {
          return (
@@ -104,6 +142,18 @@ export default function AdminDashboardPage() {
                 <h1 className="text-3xl font-bold font-headline">Painel de Relatórios</h1>
                 <p className="text-muted-foreground">Visão geral do aprendizado e engajamento da sua organização.</p>
             </div>
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Filtros</CardTitle>
+                    <CardDescription>Refine os dados dos relatórios abaixo por um período específico.</CardDescription>
+                </CardHeader>
+                <CardContent className="flex items-center gap-4">
+                     <DatePickerWithRange date={date} onDateChange={setDate} />
+                     <Button variant="ghost" onClick={() => setDate(undefined)} disabled={!date}>Limpar</Button>
+                </CardContent>
+            </Card>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <AccessChart data={accessData} />
                 <HourlyAccessChart data={hourlyAccessData} />
