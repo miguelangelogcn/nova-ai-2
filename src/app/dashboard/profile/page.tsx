@@ -46,8 +46,7 @@ export default function ProfilePage() {
                             <h1 className="text-3xl font-bold font-headline">{appUser.displayName}</h1>
                             <p className="text-muted-foreground capitalize">{appUser.role}</p>
                             <div className="flex gap-2 mt-2">
-                                <Badge>Cardiologia</Badge>
-                                <Badge variant="secondary">{appUser.team ?? 'Equipe Alpha'}</Badge>
+                                {appUser.team && <Badge variant="secondary">{appUser.team}</Badge>}
                             </div>
                         </div>
                         <Button variant="outline" className="ml-auto"><Edit className="mr-2 h-4 w-4" /> Editar Perfil</Button>
