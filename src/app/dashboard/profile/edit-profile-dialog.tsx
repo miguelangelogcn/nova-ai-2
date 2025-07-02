@@ -15,6 +15,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,6 +42,8 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
     resolver: zodResolver(EditProfileSchema),
     defaultValues: {
       displayName: appUser?.displayName || '',
+      email: appUser?.email || '',
+      password: '',
       age: appUser?.age || '',
       education: appUser?.education || '',
       phone: appUser?.phone || '',
@@ -52,6 +55,8 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
     if (isOpen && appUser) {
       form.reset({
         displayName: appUser.displayName,
+        email: appUser.email,
+        password: '',
         age: appUser.age || '',
         education: appUser.education || '',
         phone: appUser.phone || '',
@@ -110,6 +115,33 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
                   <FormControl>
                     <Input placeholder="Jane Doe" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="jane.doe@hospital.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nova Senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormDescription>Deixe em branco para não alterar.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

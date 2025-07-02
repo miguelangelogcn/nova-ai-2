@@ -13,17 +13,24 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { displayName, age, education, phone, cpf } = validation.data;
+  const { displayName, email, password, age, education, phone, cpf } = validation.data;
 
   try {
-    // Update Firebase Auth display name
-    await adminAuth.updateUser(uid, {
+    const authUpdatePayload: { displayName: string, email: string, password?: string } = {
         displayName,
-    });
+        email,
+    };
+    if (password) {
+        authUpdatePayload.password = password;
+    }
+    
+    // Update Firebase Auth
+    await adminAuth.updateUser(uid, authUpdatePayload);
     
     // Update Firestore document
     await adminDb.collection('users').doc(uid).update({
       displayName,
+      email,
       age: age ?? '',
       education: education ?? '',
       phone: phone ?? '',
@@ -34,6 +41,9 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao atualizar perfil (ação):', error);
+     if (error.code === 'auth/email-already-exists') {
+        return { success: false, error: 'Este endereço de e-mail já está em uso por outra conta.' };
+    }
     return { success: false, error: 'Ocorreu um erro desconhecido ao atualizar o perfil.' };
   }
 }

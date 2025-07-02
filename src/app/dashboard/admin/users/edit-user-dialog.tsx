@@ -15,6 +15,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -50,6 +51,8 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
     resolver: zodResolver(EditUserSchema),
     defaultValues: {
       displayName: user.displayName,
+      email: user.email,
+      password: '',
       role: user.role,
       team: user.team || '',
       status: user.status,
@@ -64,6 +67,8 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
     if (isOpen) {
       form.reset({
         displayName: user.displayName,
+        email: user.email,
+        password: '',
         role: user.role,
         team: user.team || '',
         status: user.status,
@@ -114,13 +119,6 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input value={user.email} disabled />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
             <FormField
               control={form.control}
               name="displayName"
@@ -130,6 +128,33 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
                   <FormControl>
                     <Input placeholder="Jane Doe" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="jane.doe@hospital.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nova Senha</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="••••••••" {...field} />
+                  </FormControl>
+                  <FormDescription>Deixe em branco para não alterar a senha.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

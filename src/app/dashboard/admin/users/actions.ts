@@ -83,17 +83,23 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { displayName, role, team, status, age, education, phone, cpf } = validation.data;
+  const { displayName, email, password, role, team, status, age, education, phone, cpf } = validation.data;
 
   try {
+    const authUpdatePayload: { displayName: string; email: string; password?: string } = {
+        displayName,
+        email,
+    };
+    if (password) {
+        authUpdatePayload.password = password;
+    }
     // Update Firebase Auth user
-    await adminAuth.updateUser(uid, {
-      displayName,
-    });
+    await adminAuth.updateUser(uid, authUpdatePayload);
 
     // Update Firestore user document
     await adminDb.collection('users').doc(uid).update({
       displayName,
+      email,
       role,
       team: team ?? '',
       status,
@@ -105,8 +111,12 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
 
     revalidatePath('/dashboard/admin/users');
     return { success: true };
-  } catch (error: any) {
+  } catch (error: any)
+   {
     console.error('Erro ao atualizar usuário (ação):', error);
+    if (error.code === 'auth/email-already-exists') {
+        return { success: false, error: 'Este endereço de e-mail já está em uso por outra conta.' };
+    }
     return { success: false, error: 'Ocorreu um erro desconhecido ao atualizar o usuário.' };
   }
 }
