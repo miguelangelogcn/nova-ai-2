@@ -6,9 +6,10 @@ import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import type { GenerateSwotAnalysisOutput, GenerateDiscAnalysisOutput } from '@/app/questionnaire/types';
 
 // A helper type for what we get from admin SDK, where createdAt is a Firestore Timestamp
-type FirestoreAppUser = Omit<AppUser, 'createdAt' | 'assessments'> & {
+type FirestoreAppUser = Omit<AppUser, 'createdAt' | 'assessments' | 'courseProgress'> & {
     createdAt: Timestamp;
     assessments?: (Omit<Assessment, 'appliedAt'> & { appliedAt: Timestamp })[];
+    courseProgress?: Record<string, Omit<CourseProgress, 'startedAt' | 'completedAt'> & { startedAt: Timestamp, completedAt?: Timestamp }>;
 };
 
 /**
@@ -22,6 +23,18 @@ export async function getAllUsers(): Promise<AppUser[]> {
     const usersSnapshot = await adminDb.collection('users').get();
     const users = usersSnapshot.docs.map(doc => {
         const data = doc.data() as FirestoreAppUser;
+
+        // Serialize timestamps within courseProgress to make them safe for client components
+        const courseProgress = data.courseProgress || {};
+        for (const courseId in courseProgress) {
+            const progress = courseProgress[courseId] as any;
+            if (progress.startedAt && typeof progress.startedAt.toDate === 'function') {
+                progress.startedAt = progress.startedAt.toDate().toISOString();
+            }
+            if (progress.completedAt && typeof progress.completedAt.toDate === 'function') {
+                progress.completedAt = progress.completedAt.toDate().toISOString();
+            }
+        }
         
         // Also serialize timestamps within assessments to make them safe for client components
         const assessments = (data.assessments || [])
@@ -35,6 +48,7 @@ export async function getAllUsers(): Promise<AppUser[]> {
             ...data,
             createdAt: data.createdAt.toDate().toISOString(),
             assessments,
+            courseProgress,
         } as AppUser;
     });
     return users;
@@ -55,6 +69,18 @@ export async function getUserAdmin(uid: string): Promise<AppUser | null> {
     }
     const data = userDoc.data() as FirestoreAppUser;
     
+     // Serialize timestamps within courseProgress to make them safe for client components
+    const courseProgress = data.courseProgress || {};
+    for (const courseId in courseProgress) {
+        const progress = courseProgress[courseId] as any;
+        if (progress.startedAt && typeof progress.startedAt.toDate === 'function') {
+            progress.startedAt = progress.startedAt.toDate().toISOString();
+        }
+        if (progress.completedAt && typeof progress.completedAt.toDate === 'function') {
+            progress.completedAt = progress.completedAt.toDate().toISOString();
+        }
+    }
+    
     const assessments = (data.assessments || [])
         .map((assessment) => ({
             ...assessment,
@@ -66,6 +92,7 @@ export async function getUserAdmin(uid: string): Promise<AppUser | null> {
         ...data,
         createdAt: data.createdAt.toDate().toISOString(),
         assessments,
+        courseProgress,
     } as AppUser;
 }
 
