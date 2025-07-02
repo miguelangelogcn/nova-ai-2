@@ -15,6 +15,7 @@ import {
   Users,
   Loader2,
   Users2,
+  Sparkles,
 } from 'lucide-react';
 
 import { NovaAiSaudeLogo } from '@/components/icons';
@@ -45,6 +46,7 @@ const userNavItems = [
 
 const adminNavItems = [
   { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
+  { href: '/dashboard/admin/aurora', icon: Sparkles, label: 'Aurora' },
   { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
   { href: '/dashboard/admin/teams', icon: Users2, label: 'Equipes' },
   { href: '/dashboard/admin/cargos', icon: Briefcase, label: 'Cargos' },
@@ -67,7 +69,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }, [user, loading, router]);
   
   React.useEffect(() => {
-    if (isManager && pathname === '/dashboard') {
+    if (isManager && (pathname === '/dashboard' || pathname === '/dashboard/')) {
         router.replace('/dashboard/admin/dashboard');
     }
   }, [isManager, pathname, router]);
@@ -156,7 +158,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       asChild
-                      isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href)}
+                      isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href) && item.href !== '/dashboard'}
                       tooltip={item.label}
                     >
                       <Link href={item.href}>
@@ -194,7 +196,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </SidebarContent>
         <SidebarFooter>
             <div className="flex items-center gap-3 p-2 rounded-lg">
-                <Link href="/dashboard/profile" className='flex items-center gap-3 flex-grow' aria-disabled={isManager}>
+                <Link href="/dashboard/profile" className='flex items-center gap-3 flex-grow' aria-disabled={isManager && !isSuperAdmin}>
                     <Avatar>
                         <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
                         <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
