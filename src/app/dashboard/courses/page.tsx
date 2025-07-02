@@ -12,14 +12,16 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { getCourses, type Course } from "@/services/courses";
 import { useAuth } from "@/context/auth-context";
-import { Loader2 } from "lucide-react";
+import { Loader2, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([]);
+    const [startedCourses, setStartedCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const { appUser } = useAuth();
 
@@ -31,6 +33,7 @@ export default function CoursesPage() {
                 setCourses(fetchedCourses);
 
                 if (appUser) {
+                    // Recommended Courses
                     const latestAssessment = appUser.assessments?.[0];
                     const recommendedIds = latestAssessment?.learningPath?.recommendedCourseIds;
                     
@@ -43,8 +46,16 @@ export default function CoursesPage() {
                     } else {
                         setRecommendedCourses([]);
                     }
+
+                    // Started Courses
+                    const inProgressCourses = fetchedCourses.filter(
+                        course => appUser.courseProgress?.[course.id] && !appUser.courseProgress[course.id].completedAt
+                    );
+                    setStartedCourses(inProgressCourses);
+
                 } else {
                     setRecommendedCourses([]);
+                    setStartedCourses([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch courses:", error);
@@ -65,7 +76,14 @@ export default function CoursesPage() {
     }
 
     const CourseCard = ({ course, isRecommended = false }: { course: Course, isRecommended?: boolean }) => {
-        const isCompleted = !!appUser?.courseProgress?.[course.id]?.completedAt;
+        const courseProgress = appUser?.courseProgress?.[course.id];
+        const isStarted = !!courseProgress;
+        const isCompleted = !!courseProgress?.completedAt;
+
+        const totalLessons = course.modules?.reduce((acc, module) => acc + (module.lessons?.length || 0), 0) || 0;
+        const completedLessons = courseProgress?.completedLessons?.length || 0;
+        const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+
         return (
             <Link href={`/dashboard/courses/${course.id}`} className="h-full block">
                 <Card className={cn(
@@ -80,10 +98,18 @@ export default function CoursesPage() {
                         <CardTitle className="font-headline text-lg">{course.title}</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                        <CardDescription className="text-sm">{course.description}</CardDescription>
+                        <CardDescription className="text-sm line-clamp-3">{course.description}</CardDescription>
                     </CardContent>
-                    <CardFooter>
-                         <p className="text-xs text-primary font-semibold">Ver Detalhes</p>
+                    <CardFooter className="flex flex-col items-start gap-2">
+                         {isStarted && !isCompleted && totalLessons > 0 && (
+                             <div className="w-full space-y-1">
+                                 <Progress value={progressPercentage} className="h-2" />
+                                 <p className="text-xs text-muted-foreground">{completedLessons} de {totalLessons} aulas</p>
+                             </div>
+                         )}
+                         <p className="text-xs text-primary font-semibold pt-2">
+                           {isStarted && !isCompleted ? 'Continuar Curso' : (isCompleted ? 'Revisar Curso' : 'Ver Detalhes')}
+                         </p>
                     </CardFooter>
                 </Card>
             </Link>
@@ -109,6 +135,37 @@ export default function CoursesPage() {
                                 <CarouselItem key={course.id} className="md:basis-1/2 lg:basis-1/3">
                                    <div className="p-1 h-full">
                                      <CourseCard course={course} isRecommended />
+                                   </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </Carousel>
+                    <Separator />
+                </div>
+            )}
+
+            {startedCourses.length > 0 && (
+                 <div className="space-y-6">
+                    <div>
+                        <h2 className="text-2xl font-bold font-headline flex items-center gap-2">
+                            <PlayCircle className="text-primary" />
+                            Cursos Iniciados
+                        </h2>
+                        <p className="text-muted-foreground">Continue de onde você parou.</p>
+                    </div>
+                    <Carousel
+                        opts={{
+                            align: "start",
+                        }}
+                        className="w-full px-12"
+                    >
+                        <CarouselContent>
+                            {startedCourses.map((course) => (
+                                <CarouselItem key={course.id} className="md:basis-1/2 lg:basis-1/3">
+                                   <div className="p-1 h-full">
+                                     <CourseCard course={course} />
                                    </div>
                                 </CarouselItem>
                             ))}
