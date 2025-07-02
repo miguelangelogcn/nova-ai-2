@@ -12,14 +12,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const reportData = `
-Relatório de Acessos ao Sistema (Módulo 1 - Funcionários):
-- Mês: Janeiro, Desktop: 186 acessos, Mobile: 109 acessos.
-- Mês: Fevereiro, Desktop: 220 acessos, Mobile: 132 acessos.
-- Mês: Março, Desktop: 345 acessos, Mobile: 298 acessos.
-- Mês: Abril, Desktop: 412 acessos, Mobile: 350 acessos.
-- Mês: Maio, Desktop: 580 acessos, Mobile: 490 acessos.
-- Mês: Junho, Desktop: 650 acessos, Mobile: 510 acessos.
-Resumo: A tendência geral de acessos é de crescimento tanto para desktop quanto para mobile. O desktop continua sendo a plataforma predominante para o acesso.
+Relatório de Acessos Mensais (Módulo 1 - Funcionários):
+- Resumo: A tendência geral de acessos nos últimos 6 meses é de crescimento tanto para desktop quanto para mobile. O desktop continua sendo a plataforma predominante para o acesso.
+
+Relatório de Acessos por Hora (Módulo 1 - Funcionários):
+- Resumo: A atividade na plataforma é mais alta em três períodos principais: durante a madrugada (entre 03H e 05H), no início da manhã (entre 08H e 10H), e novamente no final da tarde/início da noite (entre 18H e 19H). Os acessos via desktop e mobile seguem um padrão similar, com o desktop sendo mais prevalente nos horários de pico da manhã e da tarde.
 `.trim();
 
 const AuroraAssistantChatInputSchema = z.object({
