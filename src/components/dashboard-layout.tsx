@@ -141,7 +141,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <SidebarMenu>
             <SidebarGroup>
               <SidebarGroupLabel>
-                {isAdmin ? 'Pessoal' : 'Desenvolvimento | Funcionário'}
+                Desenvolvimento | Funcionário
               </SidebarGroupLabel>
               {userNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
@@ -162,7 +162,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             {isAdmin && (
               <SidebarGroup>
                 <SidebarGroupLabel>
-                  {appUser.role === 'super-admin' ? 'Acesso Total' : 'Desenvolvimento | Gestor'}
+                  Desenvolvimento | Gestor
                 </SidebarGroupLabel>
                 {adminNavItems.map((item) => (
                   <SidebarMenuItem key={item.href}>
