@@ -44,6 +44,7 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
       displayName: appUser?.displayName || '',
       email: appUser?.email || '',
       password: '',
+      cargo: appUser?.cargo || '',
       age: appUser?.age || '',
       education: appUser?.education || '',
       phone: appUser?.phone || '',
@@ -57,6 +58,7 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
         displayName: appUser.displayName,
         email: appUser.email,
         password: '',
+        cargo: appUser.cargo || '',
         age: appUser.age || '',
         education: appUser.education || '',
         phone: appUser.phone || '',
@@ -142,6 +144,19 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
                     <Input type="password" placeholder="••••••••" {...field} />
                   </FormControl>
                   <FormDescription>Deixe em branco para não alterar.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="cargo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cargo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Seu cargo (ex: Enfermeiro)" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

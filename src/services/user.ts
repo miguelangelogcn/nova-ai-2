@@ -26,8 +26,9 @@ export type AppUser = {
     email: string;
     displayName: string;
     photoURL: string;
-    role: "enfermeiro" | "tecnico" | "desenvolvimento-gestor" | "super-admin";
+    role: "desenvolvimento-funcionario" | "desenvolvimento-gestor" | "super-admin";
     team?: string;
+    cargo?: string;
     createdAt: any;
     status: "Ativo" | "Inativo";
     assessments?: Assessment[];
@@ -50,11 +51,12 @@ export const createUserProfile = async (user: any) => {
                 displayName: displayName ?? email,
                 email,
                 photoURL: photoURL ?? '',
-                role: "enfermeiro",
+                role: "desenvolvimento-funcionario",
                 createdAt: serverTimestamp(),
                 status: "Ativo",
                 assessments: [],
                 courseProgress: {},
+                cargo: '',
                 age: '',
                 education: '',
                 phone: '',

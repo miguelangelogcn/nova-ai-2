@@ -47,8 +47,9 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
       displayName: '',
       email: '',
       password: '',
-      role: 'enfermeiro',
+      role: 'desenvolvimento-funcionario',
       team: '',
+      cargo: '',
       age: '',
       education: '',
       phone: '',
@@ -151,7 +152,7 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Função</FormLabel>
+                  <FormLabel>Função (Nível de Acesso)</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -159,12 +160,24 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="enfermeiro">Enfermeiro(a)</SelectItem>
-                      <SelectItem value="tecnico">Técnico(a)</SelectItem>
+                      <SelectItem value="desenvolvimento-funcionario">Desenvolvimento | Funcionário</SelectItem>
                       <SelectItem value="desenvolvimento-gestor">Desenvolvimento | Gestor</SelectItem>
                       <SelectItem value="super-admin">Acesso Total</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cargo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Cargo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enfermeiro(a)" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

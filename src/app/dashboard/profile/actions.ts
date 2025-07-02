@@ -13,7 +13,7 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { displayName, email, password, age, education, phone, cpf } = validation.data;
+  const { displayName, email, password, cargo, age, education, phone, cpf } = validation.data;
 
   try {
     const authUpdatePayload: { displayName: string, email: string, password?: string } = {
@@ -31,6 +31,7 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
     await adminDb.collection('users').doc(uid).update({
       displayName,
       email,
+      cargo: cargo ?? '',
       age: age ?? '',
       education: education ?? '',
       phone: phone ?? '',
@@ -48,19 +49,17 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
   }
 }
 
-export async function updateProfilePhotoAction(uid: string, photoURL: string) {
-    if (!uid || photoURL === null || photoURL === undefined) {
+export async function updateProfilePhotoAction(uid: string, photoURL: string | null) {
+    if (!uid || photoURL === undefined) {
         return { success: false, error: 'UID ou URL da foto inválidos.' };
     }
     try {
-        // To remove the photo from Firebase Auth, we must pass null.
-        // An empty string from the client signifies this intent.
         const authPhotoUrl = photoURL === '' ? null : photoURL;
         
         // Update Firebase Auth user
         await adminAuth.updateUser(uid, { photoURL: authPhotoUrl });
         // Update Firestore user document
-        await adminDb.collection('users').doc(uid).update({ photoURL });
+        await adminDb.collection('users').doc(uid).update({ photoURL: photoURL ?? '' });
 
         revalidatePath('/dashboard/profile');
         revalidatePath('/dashboard/mentor'); // Revalidate mentor page to update avatar

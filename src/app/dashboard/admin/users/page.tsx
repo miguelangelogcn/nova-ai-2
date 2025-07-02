@@ -57,6 +57,7 @@ export default async function AdminUsersPage() {
                                     <TableHead>Nome</TableHead>
                                     <TableHead>Email</TableHead>
                                     <TableHead>Função</TableHead>
+                                    <TableHead>Cargo</TableHead>
                                     <TableHead>Equipe</TableHead>
                                     <TableHead>Telefone</TableHead>
                                     <TableHead>CPF</TableHead>
@@ -70,7 +71,8 @@ export default async function AdminUsersPage() {
                                     <TableRow key={user.uid}>
                                         <TableCell className="font-medium">{user.displayName}</TableCell>
                                         <TableCell>{user.email}</TableCell>
-                                        <TableCell><Badge variant="secondary" className="capitalize">{user.role}</Badge></TableCell>
+                                        <TableCell><Badge variant="secondary" className="capitalize">{user.role.replace(/-/g, ' ')}</Badge></TableCell>
+                                        <TableCell>{user.cargo || 'N/A'}</TableCell>
                                         <TableCell>{user.team || 'N/A'}</TableCell>
                                         <TableCell>{user.phone || 'N/A'}</TableCell>
                                         <TableCell>{user.cpf || 'N/A'}</TableCell>
@@ -84,7 +86,7 @@ export default async function AdminUsersPage() {
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={9} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
+                                        <TableCell colSpan={10} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>

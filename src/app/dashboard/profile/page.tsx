@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Edit, Loader2, User as UserIcon, Calendar, Book, Phone, FileText } from "lucide-react";
+import { Edit, Loader2, User as UserIcon, Calendar, Book, Phone, FileText, Briefcase } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import type { Assessment } from "@/services/user";
 import { SwotCube } from "./swot-cube";
@@ -35,7 +35,7 @@ export default function ProfilePage() {
                         <CardHeader className="items-center text-center">
                             <AvatarUpload />
                             <CardTitle className="font-headline text-2xl mt-2">{appUser.displayName}</CardTitle>
-                            <CardDescription className="capitalize">{appUser.role}</CardDescription>
+                            <CardDescription className="capitalize">{appUser.cargo || 'Cargo não informado'}</CardDescription>
                             {appUser.team && <Badge variant="secondary">{appUser.team}</Badge>}
                         </CardHeader>
                         <CardFooter>
@@ -52,6 +52,10 @@ export default function ProfilePage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="text-sm space-y-3 text-muted-foreground">
+                            <div className="flex items-center">
+                                <Briefcase className="h-4 w-4 mr-3"/>
+                                <span>Cargo: {appUser.cargo || 'Não informado'}</span>
+                            </div>
                             <div className="flex items-center">
                                 <Calendar className="h-4 w-4 mr-3"/>
                                 <span>Idade: {appUser.age || 'Não informado'}</span>

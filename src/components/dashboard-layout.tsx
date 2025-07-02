@@ -131,7 +131,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const getGroupLabel = () => {
       if (appUser?.role === 'super-admin') return 'Acesso Total';
       if (appUser?.role === 'desenvolvimento-gestor') return 'Desenvolvimento | Gestor';
-      return 'Desenvolvimento | Funcionário';
+      if (appUser?.role === 'desenvolvimento-funcionario') return 'Desenvolvimento | Funcionário';
+      return 'Usuário';
   }
 
   return (

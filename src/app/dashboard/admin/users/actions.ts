@@ -33,7 +33,7 @@ export async function addUserAction(data: AddUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { email, password, displayName, role, team, age, education, phone, cpf } = validation.data;
+  const { email, password, displayName, role, team, cargo, age, education, phone, cpf } = validation.data;
 
   try {
     const userRecord = await adminAuth.createUser({
@@ -50,6 +50,7 @@ export async function addUserAction(data: AddUserInput) {
       photoURL: '',
       role,
       team: team ?? '',
+      cargo: cargo ?? '',
       createdAt: Timestamp.now(),
       status: 'Ativo',
       age: age ?? '',
@@ -83,7 +84,7 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { displayName, email, password, role, team, status, age, education, phone, cpf } = validation.data;
+  const { displayName, email, password, role, team, status, cargo, age, education, phone, cpf } = validation.data;
 
   try {
     const authUpdatePayload: { displayName: string; email: string; password?: string } = {
@@ -103,6 +104,7 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
       role,
       team: team ?? '',
       status,
+      cargo: cargo ?? '',
       age: age ?? '',
       education: education ?? '',
       phone: phone ?? '',
