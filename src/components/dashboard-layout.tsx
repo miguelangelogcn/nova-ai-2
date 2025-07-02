@@ -156,6 +156,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </SidebarGroup>
             ) : (
               <SidebarGroup>
+                <SidebarGroupLabel>Desenvolvimento | Funcionário</SidebarGroupLabel>
                 {userNavItems.map((item) => (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
