@@ -1,7 +1,7 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, BookOpen, BarChart, Users, ClipboardList, Users2 } from "lucide-react";
+import { ArrowRight, Bot, BookOpen, BarChart, Users, ClipboardList, Users2, User } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/context/auth-context";
 
@@ -87,7 +87,7 @@ export default function DashboardPage() {
                 <p className="text-muted-foreground">Aqui está o resumo do seu progresso. Continue com o ótimo trabalho!</p>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card className="flex flex-col">
                     <CardHeader>
                         <CardTitle className="font-headline flex items-center gap-2">
@@ -118,6 +118,23 @@ export default function DashboardPage() {
                     <CardFooter>
                         <Button asChild variant="secondary" className="w-full">
                             <Link href="/dashboard/mentor">Conversar Agora <ArrowRight className="ml-2" /></Link>
+                        </Button>
+                    </CardFooter>
+                </Card>
+
+                <Card className="flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="font-headline flex items-center gap-2">
+                            <User className="text-accent" />
+                            Meu Perfil
+                        </CardTitle>
+                        <CardDescription>Acesse e atualize suas informações, veja sua análise SWOT e acompanhe seu progresso.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                    </CardContent>
+                    <CardFooter>
+                        <Button asChild variant="secondary" className="w-full">
+                            <Link href="/dashboard/profile">Acessar Meu Perfil <ArrowRight className="ml-2" /></Link>
                         </Button>
                     </CardFooter>
                 </Card>
