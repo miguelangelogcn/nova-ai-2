@@ -24,7 +24,7 @@ export function AccessChart({ data }: AccessChartProps) {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline">Número de Acessos ao Sistema</CardTitle>
-                <CardDescription>Acessos de funcionários (Módulo 1) nos últimos 6 meses</CardDescription>
+                <CardDescription>Acessos de funcionários (Módulo 1) por mês (histórico completo)</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-[250px] w-full">

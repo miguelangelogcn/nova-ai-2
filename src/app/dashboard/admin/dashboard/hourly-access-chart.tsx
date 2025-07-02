@@ -24,7 +24,7 @@ export function HourlyAccessChart({ data }: HourlyAccessChartProps) {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline">Horários Mais Acessados (Turnos)</CardTitle>
-                <CardDescription>Acessos de funcionários por hora do dia (últimos 30 dias)</CardDescription>
+                <CardDescription>Acessos de funcionários por hora do dia (histórico completo)</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-[250px] w-full">

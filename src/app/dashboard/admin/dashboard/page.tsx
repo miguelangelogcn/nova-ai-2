@@ -11,16 +11,16 @@ async function getAccessData(logs: any[]) {
     (log) => log.action === "USER_LOGIN" && log.actorRole === "desenvolvimento-funcionario"
   );
 
-  const monthlyData: { [key: string]: { desktop: number; mobile: number } } = {};
+  const monthlyData: { [key: string]: { date: Date; desktop: number; mobile: number } } = {};
 
   employeeLogins.forEach((log) => {
     const date = new Date(log.timestamp);
-    const month = date.toLocaleString("pt-BR", { month: "long" });
-    const year = date.getFullYear();
-    const key = `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
+    date.setDate(1); // Normalize to the first day of the month
+    date.setHours(0, 0, 0, 0); // Normalize time to avoid timezone issues
+    const key = date.toISOString();
 
     if (!monthlyData[key]) {
-      monthlyData[key] = { desktop: 0, mobile: 0 };
+      monthlyData[key] = { date, desktop: 0, mobile: 0 };
     }
 
     // Since we don't have device info, we'll simulate it for demonstration.
@@ -31,13 +31,16 @@ async function getAccessData(logs: any[]) {
     }
   });
 
-  const chartData = Object.entries(monthlyData)
-    .map(([month, data]) => ({ month: month.split(' ')[0], ...data }))
-    .sort((a, b) => {
-        const monthOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        return monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month);
-    })
-    .slice(-6);
+  const chartData = Object.values(monthlyData)
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
+    .map(item => {
+        const monthName = item.date.toLocaleString("pt-BR", { month: "long" });
+        return {
+            month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
+            desktop: item.desktop,
+            mobile: item.mobile,
+        }
+    });
     
     return chartData;
 }
