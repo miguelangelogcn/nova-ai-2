@@ -53,8 +53,12 @@ export async function updateProfilePhotoAction(uid: string, photoURL: string) {
         return { success: false, error: 'UID ou URL da foto inválidos.' };
     }
     try {
+        // To remove the photo from Firebase Auth, we must pass null.
+        // An empty string from the client signifies this intent.
+        const authPhotoUrl = photoURL === '' ? null : photoURL;
+        
         // Update Firebase Auth user
-        await adminAuth.updateUser(uid, { photoURL });
+        await adminAuth.updateUser(uid, { photoURL: authPhotoUrl });
         // Update Firestore user document
         await adminDb.collection('users').doc(uid).update({ photoURL });
 
