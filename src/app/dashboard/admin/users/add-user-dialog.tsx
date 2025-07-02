@@ -162,6 +162,7 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                       <SelectItem value="enfermeiro">Enfermeiro(a)</SelectItem>
                       <SelectItem value="tecnico">Técnico(a)</SelectItem>
                       <SelectItem value="desenvolvimento-gestor">Desenvolvimento | Gestor</SelectItem>
+                      <SelectItem value="super-admin">Acesso Total</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

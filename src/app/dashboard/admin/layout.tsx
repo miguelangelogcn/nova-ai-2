@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && appUser && appUser.role !== 'desenvolvimento-gestor') {
+    if (!loading && appUser && !['desenvolvimento-gestor', 'super-admin'].includes(appUser.role)) {
       router.push('/dashboard');
     }
   }, [appUser, loading, router]);
@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (appUser.role !== 'desenvolvimento-gestor') {
+  if (!['desenvolvimento-gestor', 'super-admin'].includes(appUser.role)) {
     return null; // ou uma página de acesso negado
   }
 

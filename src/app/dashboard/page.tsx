@@ -8,9 +8,10 @@ import { useAuth } from "@/context/auth-context";
 export default function DashboardPage() {
     const { appUser } = useAuth();
     const displayName = appUser?.displayName?.split(' ')[0] ?? 'Usuário';
+    const isAdmin = appUser?.role === 'desenvolvimento-gestor' || appUser?.role === 'super-admin';
 
     // Admin Dashboard View
-    if (appUser?.role === 'desenvolvimento-gestor') {
+    if (isAdmin) {
         return (
             <div className="space-y-6">
                 <div>
