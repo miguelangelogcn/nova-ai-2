@@ -23,6 +23,7 @@ type AuthContextType = {
   loading: boolean;
   login: (email: string, pass: string) => Promise<any>;
   logout: () => Promise<any>;
+  refreshAppUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +32,17 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const refreshAppUser = async () => {
+    if (user) {
+        setLoading(true);
+        const profile = await getUserProfile(user.uid);
+        if (profile) {
+            setAppUser(profile);
+        }
+        setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -65,7 +77,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, appUser, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, appUser, loading, login, logout, refreshAppUser }}>
       {children}
     </AuthContext.Provider>
   );

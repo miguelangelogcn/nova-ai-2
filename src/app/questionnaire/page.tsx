@@ -27,7 +27,7 @@ import { PersonalizedLearningPlan } from "../dashboard/personalized-learning-pla
 const allQuestions = [
     {
       name: "comunicacaoEmpatica",
-      title: "1. Um paciente idoso recusa a medicação e você está no final do plantão. O que você faz?",
+      title: "Um paciente idoso recusa a medicação e você está no final do plantão. O que você faz?",
       options: [
         { value: "A) Conversa brevemente, reforça a importância da medicação para evitar atrasos.", label: "Conversa brevemente, reforça a importância da medicação para evitar atrasos." },
         { value: "B) Escuta o motivo da recusa, acolhe e propõe uma nova abordagem.", label: "Escuta o motivo da recusa, acolhe e propõe uma nova abordagem." },
@@ -36,7 +36,7 @@ const allQuestions = [
     },
     {
       name: "gestaoEmocional",
-      title: "2. Você é criticado(a) na frente de colegas por um erro que não cometeu. Como você reage?",
+      title: "Você é criticado(a) na frente de colegas por um erro que não cometeu. Como você reage?",
       options: [
         { value: "A) Respira fundo, pede para conversar depois em particular.", label: "Respira fundo, pede para conversar depois em particular." },
         { value: "B) Tolera em silêncio, evita mais tensão, mas fica abalado.", label: "Tolera em silêncio, evita mais tensão, mas fica abalado." },
@@ -45,7 +45,7 @@ const allQuestions = [
     },
     {
       name: "trabalhoEquipe",
-      title: "3. Você percebe que um(a) colega esqueceu de administrar uma medicação importante. Qual sua atitude?",
+      title: "Você percebe que um(a) colega esqueceu de administrar uma medicação importante. Qual sua atitude?",
       options: [
         { value: "A) Corrige e comenta depois de forma leve.", label: "Corrige e comenta depois de forma leve." },
         { value: "B) Corrige e conversa no momento, com foco no paciente.", label: "Corrige e conversa no momento, com foco no paciente." },
@@ -54,7 +54,7 @@ const allQuestions = [
     },
     {
         name: "pensamentoCritico",
-        title: "4. Você se depara com uma prescrição médica com dosagem diferente do habitual. O que você faz?",
+        title: "Você se depara com uma prescrição médica com dosagem diferente do habitual. O que você faz?",
         options: [
             { value: "A) Questiona educadamente após revisar histórico e protocolos.", label: "Questiona educadamente após revisar histórico e protocolos." },
             { value: "B) Aplica e documenta dúvida para se resguardar.", label: "Aplica e documenta dúvida para se resguardar." },
@@ -63,7 +63,7 @@ const allQuestions = [
     },
     {
         name: "adaptabilidade",
-        title: "5. Você é remanejado(a) para um novo setor, com processos pouco estruturados. Como você lida com a situação?",
+        title: "Você é remanejado(a) para um novo setor, com processos pouco estruturados. Como você lida com a situação?",
         options: [
             { value: "A) Tenta melhorar o ambiente mesmo que não seja bem recebido.", label: "Tenta melhorar o ambiente mesmo que não seja bem recebido." },
             { value: "B) Cumpre o que pedem e observa o funcionamento.", label: "Cumpre o que pedem e observa o funcionamento." },
@@ -72,7 +72,7 @@ const allQuestions = [
     },
     {
         name: "posturaEtica",
-        title: "6. Um(a) colega sugere que você anote um procedimento como feito antes de executá-lo para 'agilizar' o plantão. Qual é a sua resposta?",
+        title: "Um(a) colega sugere que você anote um procedimento como feito antes de executá-lo para 'agilizar' o plantão. Qual é a sua resposta?",
         options: [
             { value: "A) Sugere anotar juntos depois, reforçando o risco do hábito.", label: "Sugere anotar juntos depois, reforçando o risco do hábito." },
             { value: "B) Diz que prefere não fazer assim, mas respeita o colega.", label: "Diz que prefere não fazer assim, mas respeita o colega." },
@@ -81,7 +81,7 @@ const allQuestions = [
     },
     {
         name: "escutaAtiva",
-        title: "7. Um paciente, cujos exames estão normais, insiste que 'algo está errado'. Como você procede?",
+        title: "Um paciente, cujos exames estão normais, insiste que 'algo está errado'. Como você procede?",
         options: [
             { value: "A) Escuta e comunica à equipe como precaução.", label: "Escuta e comunica à equipe como precaução." },
             { value: "B) Tenta tranquilizar e explica que está tudo certo.", label: "Tenta tranquilizar e explica que está tudo certo." },
@@ -90,7 +90,7 @@ const allQuestions = [
     },
     {
       name: "dianteDeDesafio",
-      title: "8. Diante de um grande desafio, você tende a:",
+      title: "Diante de um grande desafio, você tende a:",
       options: [
         { value: "A) Agir rapidamente e tomar a liderança para resolver.", label: "Agir rapidamente e tomar a liderança para resolver." },
         { value: "B) Conversar com as pessoas para inspirá-las a colaborar.", label: "Conversar com as pessoas para inspirá-las a colaborar." },
@@ -100,7 +100,7 @@ const allQuestions = [
     },
     {
       name: "trabalhoEmGrupo",
-      title: "9. Em um trabalho em grupo, seu papel costuma ser:",
+      title: "Em um trabalho em grupo, seu papel costuma ser:",
       options: [
         { value: "A) O que define as metas e impulsiona o time para a ação.", label: "O que define as metas e impulsiona o time para a ação." },
         { value: "B) O que mantém o ambiente positivo e motiva a todos.", label: "O que mantém o ambiente positivo e motiva a todos." },
@@ -110,7 +110,7 @@ const allQuestions = [
     },
     {
       name: "tomadaDeDecisao",
-      title: "10. Ao tomar uma decisão importante, você valoriza mais:",
+      title: "Ao tomar uma decisão importante, você valoriza mais:",
       options: [
         { value: "A) Resultados rápidos e eficientes.", label: "Resultados rápidos e eficientes." },
         { value: "B) O entusiasmo e a aceitação da equipe.", label: "O entusiasmo e a aceitação da equipe." },
@@ -120,7 +120,7 @@ const allQuestions = [
     },
     {
       name: "ambienteDeTrabalho",
-      title: "11. Você prefere um ambiente de trabalho que seja:",
+      title: "Você prefere um ambiente de trabalho que seja:",
       options: [
         { value: "A) Competitivo e focado em metas.", label: "Competitivo e focado em metas." },
         { value: "B) Colaborativo e cheio de interações sociais.", label: "Colaborativo e cheio de interações sociais." },
@@ -130,7 +130,7 @@ const allQuestions = [
     },
     {
       name: "feedback",
-      title: "12. Como você lida com feedback?",
+      title: "Como você lida com feedback?",
       options: [
         { value: "A) Gosto de feedback direto e focado em como melhorar os resultados.", label: "Gosto de feedback direto e focado em como melhorar os resultados." },
         { value: "B) Prefiro que seja uma conversa amigável e encorajadora.", label: "Prefiro que seja uma conversa amigável e encorajadora." },
@@ -140,7 +140,7 @@ const allQuestions = [
     },
     {
       name: "ritmoDeTrabalho",
-      title: "13. Seu ritmo de trabalho natural é:",
+      title: "Seu ritmo de trabalho natural é:",
       options: [
         { value: "A) Rápido e decidido, sempre buscando a próxima tarefa.", label: "Rápido e decidido, sempre buscando a próxima tarefa." },
         { value: "B) Entusiasmado e variável, dependendo da minha inspiração.", label: "Entusiasmado e variável, dependendo da minha inspiração." },
@@ -150,7 +150,7 @@ const allQuestions = [
     },
     {
       name: "sobPressao",
-      title: "14. Sob pressão, sua primeira reação é:",
+      title: "Sob pressão, sua primeira reação é:",
       options: [
         { value: "A) Assumir o controle e tomar decisões rápidas.", label: "Assumir o controle e tomar decisões rápidas." },
         { value: "B) Tentar persuadir e negociar com os envolvidos.", label: "Tentar persuadir e negociar com os envolvidos." },
@@ -180,7 +180,7 @@ const formSchema = z.object({
 export default function QuestionnairePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-    const { user, loading } = useAuth();
+    const { user, loading, refreshAppUser } = useAuth();
     const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -203,6 +203,7 @@ export default function QuestionnairePage() {
         try {
             const result = await handleAnalysis(values, user.uid);
             setAnalysisResult(result);
+            await refreshAppUser();
         } catch (error: any) {
             console.error(error);
             toast({
