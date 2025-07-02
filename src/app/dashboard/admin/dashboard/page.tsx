@@ -1,7 +1,10 @@
 'use client';
 import { getLogs } from "@/services/logs";
+import { getAllUsers } from "@/services/user.admin";
+import type { AppUser } from "@/services/user";
 import { AccessChart } from "./access-chart";
 import { HourlyAccessChart } from "./hourly-access-chart";
+import { UserSelect } from "./user-select";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
@@ -78,28 +81,40 @@ async function getHourlyAccessData(logs: any[]) {
 
 export default function AdminDashboardPage() {
     const [allLogs, setAllLogs] = useState<any[]>([]);
+    const [allUsers, setAllUsers] = useState<AppUser[]>([]);
     const [loading, setLoading] = useState(true);
     const [accessData, setAccessData] = useState<any[]>([]);
     const [hourlyAccessData, setHourlyAccessData] = useState<any[]>([]);
     const [date, setDate] = useState<DateRange | undefined>(undefined);
+    const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-    // Fetch all logs once on mount
+    // Fetch all logs and users once on mount
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const logs = await getLogs();
+            const [logs, users] = await Promise.all([
+                getLogs(),
+                getAllUsers(),
+            ]);
             setAllLogs(logs);
+            setAllUsers(users.filter(u => u.role === 'desenvolvimento-funcionario'));
             setLoading(false);
         }
         fetchData();
     }, []);
 
-    // Re-process data when logs or date range change
+    // Re-process data when logs, date range or user change
     useEffect(() => {
         if (loading) return; // Wait for initial fetch
 
         const filteredLogs = allLogs.filter((log) => {
-            if (!date || !date.from) return true; // No filter applied
+            // Filter by selected user first
+            if (selectedUser && log.actorUid !== selectedUser) {
+                return false;
+            }
+
+            // Then filter by date
+            if (!date || !date.from) return true; // No date filter applied
 
             const logDate = new Date(log.timestamp);
             
@@ -126,7 +141,7 @@ export default function AdminDashboardPage() {
         }
         processData();
 
-    }, [allLogs, date, loading]);
+    }, [allLogs, date, loading, selectedUser]);
     
     if (loading) {
          return (
@@ -146,11 +161,15 @@ export default function AdminDashboardPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg">Filtros</CardTitle>
-                    <CardDescription>Refine os dados dos relatórios abaixo por um período específico.</CardDescription>
+                    <CardDescription>Refine os dados dos relatórios abaixo por período ou usuário específico.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex items-center gap-4">
+                <CardContent className="flex flex-wrap items-center gap-4">
                      <DatePickerWithRange date={date} onDateChange={setDate} />
-                     <Button variant="ghost" onClick={() => setDate(undefined)} disabled={!date}>Limpar</Button>
+                     <UserSelect users={allUsers} selectedUser={selectedUser} onUserChange={setSelectedUser} />
+                     <Button variant="ghost" onClick={() => {
+                        setDate(undefined);
+                        setSelectedUser(null);
+                     }} disabled={!date && !selectedUser}>Limpar Filtros</Button>
                 </CardContent>
             </Card>
 
