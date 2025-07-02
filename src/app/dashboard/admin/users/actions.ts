@@ -14,10 +14,16 @@ import { type AddUserInput, AddUserSchema, type EditUserInput, EditUserSchema } 
  */
 export async function getUsersAction() {
     try {
-        const users = await getAllUsers();
+        const allUsers = await getAllUsers();
+        
+        // Filter out super-admin users from the list, showing only manageable roles.
+        const visibleUsers = allUsers.filter(user =>
+            user.role === 'desenvolvimento-funcionario' || user.role === 'desenvolvimento-gestor'
+        );
+
         // Sort users by display name alphabetically before returning
-        users.sort((a, b) => a.displayName.localeCompare(b.displayName));
-        return users;
+        visibleUsers.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        return visibleUsers;
     } catch (error: any) {
         console.error("Erro ao buscar usuários (ação):", error.message);
         // Re-throw the original error message to provide clear feedback on the UI

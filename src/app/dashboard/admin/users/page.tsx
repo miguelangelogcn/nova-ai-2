@@ -23,7 +23,7 @@ export default async function AdminUsersPage() {
             getUsersAction(),
             getTeamsAction(),
         ]);
-        users = fetchedUsers.sort((a, b) => a.displayName.localeCompare(b.displayName));
+        users = fetchedUsers;
         teams = fetchedTeams;
     } catch (e: any) {
         error = e.message;
