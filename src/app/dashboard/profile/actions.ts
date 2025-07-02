@@ -49,7 +49,7 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
 }
 
 export async function updateProfilePhotoAction(uid: string, photoURL: string) {
-    if (!uid || !photoURL) {
+    if (!uid || photoURL === null || photoURL === undefined) {
         return { success: false, error: 'UID ou URL da foto inválidos.' };
     }
     try {
