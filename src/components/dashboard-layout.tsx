@@ -43,7 +43,6 @@ const userNavItems = [
 ];
 
 const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Início' },
   { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
   { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
   { href: '/dashboard/admin/teams', icon: Users2, label: 'Equipes' },
@@ -84,15 +83,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         }
       }
 
-      if (isQuestionnaireRequired) {
+      if (isQuestionnaireRequired && pathname !== '/questionnaire') {
         router.push('/questionnaire');
       }
     }
-  }, [appUser, loading, router]);
+  }, [appUser, loading, router, pathname]);
 
 
   const isRedirecting = React.useMemo(() => {
-    if (loading || !appUser) return false;
+    if (loading || !appUser || pathname === '/questionnaire') return false;
     
     // Only 'desenvolvimento-funcionario' can be redirected.
     if (appUser.role !== 'desenvolvimento-funcionario') return false;
@@ -104,7 +103,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
     return lastAssessmentDate <= ninetyDaysAgo;
-  }, [appUser, loading]);
+  }, [appUser, loading, pathname]);
 
   if (loading || !user || !appUser || isRedirecting) {
     return (
@@ -129,14 +128,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     return 'U';
   }
 
-  const navItems = isAdmin ? adminNavItems : userNavItems;
-  const getGroupLabel = () => {
-      if (appUser?.role === 'super-admin') return 'Acesso Total';
-      if (appUser?.role === 'desenvolvimento-gestor') return 'Desenvolvimento | Gestor';
-      if (appUser?.role === 'desenvolvimento-funcionario') return 'Desenvolvimento | Funcionário';
-      return 'Usuário';
-  }
-
   return (
     <SidebarProvider>
       <Sidebar>
@@ -149,8 +140,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </SidebarHeader>
           <SidebarMenu>
             <SidebarGroup>
-              <SidebarGroupLabel>{getGroupLabel()}</SidebarGroupLabel>
-              {navItems.map((item) => (
+              <SidebarGroupLabel>
+                {isAdmin ? 'Pessoal' : 'Desenvolvimento | Funcionário'}
+              </SidebarGroupLabel>
+              {userNavItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild
@@ -165,6 +158,28 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </SidebarMenuItem>
               ))}
             </SidebarGroup>
+            
+            {isAdmin && (
+              <SidebarGroup>
+                <SidebarGroupLabel>
+                  {appUser.role === 'super-admin' ? 'Acesso Total' : 'Desenvolvimento | Gestor'}
+                </SidebarGroupLabel>
+                {adminNavItems.map((item) => (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname.startsWith(item.href)}
+                      tooltip={item.label}
+                    >
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarGroup>
+            )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
