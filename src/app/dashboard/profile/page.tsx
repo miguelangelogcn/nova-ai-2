@@ -1,17 +1,20 @@
 'use client';
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, ClipboardCheck, Edit, Loader2 } from "lucide-react";
+import { ClipboardCheck, Edit, Loader2, User as UserIcon, Calendar, Book, Phone, FileText } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 import type { Assessment } from "@/services/user";
 import { SwotCube } from "./swot-cube";
 import { PersonalizedLearningPlan } from "../personalized-learning-plan";
+import { EditProfileDialog } from "./edit-profile-dialog";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
     if (loading || !user || !appUser) {
         return (
@@ -34,42 +37,72 @@ export default function ProfilePage() {
     const latestAssessment: Assessment | null = appUser.assessments && appUser.assessments.length > 0 ? appUser.assessments[0] : null;
 
     return (
+        <>
+        <EditProfileDialog isOpen={isEditDialogOpen} setIsOpen={setIsEditDialogOpen} />
         <div className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <div className="flex items-center gap-4">
-                        <Avatar className="h-20 w-20">
-                            <AvatarImage src={appUser.photoURL ?? "https://placehold.co/80x80.png"} data-ai-hint="mulher sorrindo" alt={appUser.displayName} />
-                            <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <h1 className="text-3xl font-bold font-headline">{appUser.displayName}</h1>
-                            <p className="text-muted-foreground capitalize">{appUser.role}</p>
-                            <div className="flex gap-2 mt-2">
-                                {appUser.team && <Badge variant="secondary">{appUser.team}</Badge>}
-                            </div>
-                        </div>
-                        <Button variant="outline" className="ml-auto"><Edit className="mr-2 h-4 w-4" /> Editar Perfil</Button>
-                    </div>
-                </CardHeader>
-            </Card>
-
-            <div className="grid md:grid-cols-1 gap-6">
-                {latestAssessment && (
+            <div className="grid md:grid-cols-3 gap-6">
+                <div className="md:col-span-1 space-y-6">
+                    <Card>
+                        <CardHeader className="items-center text-center">
+                            <Avatar className="h-24 w-24 mb-2">
+                                <AvatarImage src={appUser.photoURL ?? "https://placehold.co/96x96.png"} data-ai-hint="mulher sorrindo" alt={appUser.displayName} />
+                                <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
+                            </Avatar>
+                            <CardTitle className="font-headline text-2xl">{appUser.displayName}</CardTitle>
+                            <CardDescription className="capitalize">{appUser.role}</CardDescription>
+                            {appUser.team && <Badge variant="secondary">{appUser.team}</Badge>}
+                        </CardHeader>
+                        <CardFooter>
+                            <Button variant="outline" className="w-full" onClick={() => setIsEditDialogOpen(true)}>
+                                <Edit className="mr-2 h-4 w-4" /> Editar Perfil
+                            </Button>
+                        </CardFooter>
+                    </Card>
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline">Análise Swot Pessoal</CardTitle>
-                            <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
+                           <CardTitle className="font-headline text-lg flex items-center gap-2">
+                                <UserIcon className="h-5 w-5 text-accent"/>
+                                Informações Pessoais
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <SwotCube swot={latestAssessment.swot} />
+                        <CardContent className="text-sm space-y-3 text-muted-foreground">
+                            <div className="flex items-center">
+                                <Calendar className="h-4 w-4 mr-3"/>
+                                <span>Idade: {appUser.age || 'Não informado'}</span>
+                            </div>
+                             <div className="flex items-center">
+                                <Book className="h-4 w-4 mr-3"/>
+                                <span>Escolaridade: {appUser.education || 'Não informado'}</span>
+                            </div>
+                            <div className="flex items-center">
+                                <Phone className="h-4 w-4 mr-3"/>
+                                <span>Telefone: {appUser.phone || 'Não informado'}</span>
+                            </div>
+                             <div className="flex items-center">
+                                <FileText className="h-4 w-4 mr-3"/>
+                                <span>CPF: {appUser.cpf || 'Não informado'}</span>
+                            </div>
                         </CardContent>
                     </Card>
-                )}
-                 {latestAssessment?.learningPath && (
-                    <PersonalizedLearningPlan learningPath={latestAssessment.learningPath} />
-                 )}
+                </div>
+                <div className="md:col-span-2 space-y-6">
+                     {latestAssessment && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-headline">Análise Swot Pessoal</CardTitle>
+                                <CardDescription>Sua análise mais recente. Gire o cubo para explorar suas forças, fraquezas, oportunidades e ameaças.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <SwotCube swot={latestAssessment.swot} />
+                            </CardContent>
+                        </Card>
+                    )}
+                    {latestAssessment?.learningPath && (
+                        <PersonalizedLearningPlan learningPath={latestAssessment.learningPath} />
+                    )}
+                </div>
             </div>
         </div>
+        </>
     )
 }

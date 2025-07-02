@@ -6,6 +6,10 @@ export const AddUserSchema = z.object({
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
   role: z.enum(['enfermeiro', 'tecnico', 'admin']),
   team: z.string().optional(),
+  age: z.string().optional(),
+  education: z.string().optional(),
+  phone: z.string().optional(),
+  cpf: z.string().optional(),
 });
 export type AddUserInput = z.infer<typeof AddUserSchema>;
 
@@ -15,5 +19,9 @@ export const EditUserSchema = z.object({
     role: z.enum(['enfermeiro', 'tecnico', 'admin']),
     team: z.string().optional(),
     status: z.enum(['Ativo', 'Inativo']),
+    age: z.string().optional(),
+    education: z.string().optional(),
+    phone: z.string().optional(),
+    cpf: z.string().optional(),
 });
 export type EditUserInput = z.infer<typeof EditUserSchema>;

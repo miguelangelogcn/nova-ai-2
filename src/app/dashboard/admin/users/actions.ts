@@ -33,7 +33,7 @@ export async function addUserAction(data: AddUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { email, password, displayName, role, team } = validation.data;
+  const { email, password, displayName, role, team, age, education, phone, cpf } = validation.data;
 
   try {
     const userRecord = await adminAuth.createUser({
@@ -52,6 +52,10 @@ export async function addUserAction(data: AddUserInput) {
       team: team ?? '',
       createdAt: Timestamp.now(),
       status: 'Ativo',
+      age: age ?? '',
+      education: education ?? '',
+      phone: phone ?? '',
+      cpf: cpf ?? '',
     });
 
     revalidatePath('/dashboard/admin/users');
@@ -79,7 +83,7 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
 
-  const { displayName, role, team, status } = validation.data;
+  const { displayName, role, team, status, age, education, phone, cpf } = validation.data;
 
   try {
     // Update Firebase Auth user
@@ -93,6 +97,10 @@ export async function updateUserAction(uid: string, data: EditUserInput) {
       role,
       team: team ?? '',
       status,
+      age: age ?? '',
+      education: education ?? '',
+      phone: phone ?? '',
+      cpf: cpf ?? '',
     });
 
     revalidatePath('/dashboard/admin/users');

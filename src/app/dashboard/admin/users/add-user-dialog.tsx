@@ -49,6 +49,10 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
       password: '',
       role: 'enfermeiro',
       team: '',
+      age: '',
+      education: '',
+      phone: '',
+      cpf: '',
     },
   });
 
@@ -182,6 +186,58 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="age"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Idade</FormLabel>
+                  <FormControl>
+                    <Input placeholder="30" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="education"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Escolaridade</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Graduação em Enfermagem" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input placeholder="(11) 99999-9999" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="cpf"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CPF</FormLabel>
+                  <FormControl>
+                    <Input placeholder="123.456.789-00" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

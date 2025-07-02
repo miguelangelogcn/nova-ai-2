@@ -24,6 +24,10 @@ export type AppUser = {
     createdAt: any;
     status: "Ativo" | "Inativo";
     assessments?: Assessment[];
+    age?: string;
+    education?: string;
+    phone?: string;
+    cpf?: string;
 };
 
 export const createUserProfile = async (user: any) => {
@@ -42,6 +46,10 @@ export const createUserProfile = async (user: any) => {
                 createdAt: serverTimestamp(),
                 status: "Ativo",
                 assessments: [],
+                age: '',
+                education: '',
+                phone: '',
+                cpf: '',
             });
         } catch (error) {
             console.error("Error creating user profile:", error);

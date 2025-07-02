@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +58,8 @@ export default async function AdminUsersPage() {
                                     <TableHead>Email</TableHead>
                                     <TableHead>Função</TableHead>
                                     <TableHead>Equipe</TableHead>
+                                    <TableHead>Telefone</TableHead>
+                                    <TableHead>CPF</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Data de Cadastro</TableHead>
                                     <TableHead className="text-right w-[80px]">Ações</TableHead>
@@ -68,6 +72,8 @@ export default async function AdminUsersPage() {
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell><Badge variant="secondary" className="capitalize">{user.role}</Badge></TableCell>
                                         <TableCell>{user.team || 'N/A'}</TableCell>
+                                        <TableCell>{user.phone || 'N/A'}</TableCell>
+                                        <TableCell>{user.cpf || 'N/A'}</TableCell>
                                         <TableCell>
                                             <Badge variant={user.status === 'Ativo' ? 'default' : 'destructive'}>{user.status}</Badge>
                                         </TableCell>
@@ -78,7 +84,7 @@ export default async function AdminUsersPage() {
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={7} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
+                                        <TableCell colSpan={9} className="text-center h-24">Nenhum usuário encontrado.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
