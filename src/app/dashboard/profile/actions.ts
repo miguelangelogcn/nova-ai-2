@@ -47,3 +47,22 @@ export async function updateProfileAction(uid: string, data: EditProfileInput) {
     return { success: false, error: 'Ocorreu um erro desconhecido ao atualizar o perfil.' };
   }
 }
+
+export async function updateProfilePhotoAction(uid: string, photoURL: string) {
+    if (!uid || !photoURL) {
+        return { success: false, error: 'UID ou URL da foto inválidos.' };
+    }
+    try {
+        // Update Firebase Auth user
+        await adminAuth.updateUser(uid, { photoURL });
+        // Update Firestore user document
+        await adminDb.collection('users').doc(uid).update({ photoURL });
+
+        revalidatePath('/dashboard/profile');
+        revalidatePath('/dashboard/mentor'); // Revalidate mentor page to update avatar
+        return { success: true };
+    } catch (error: any) {
+        console.error('Erro ao atualizar foto de perfil (ação):', error);
+        return { success: false, error: 'Ocorreu um erro desconhecido ao atualizar a foto de perfil.' };
+    }
+}

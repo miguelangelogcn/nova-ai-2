@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { handleChat } from './actions';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/auth-context';
 
 type Message = {
   role: 'user' | 'assistant';
@@ -19,6 +20,7 @@ export default function MentorChatPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const { appUser } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -54,6 +56,12 @@ export default function MentorChatPage() {
     }
   };
   
+  const getAvatarFallback = () => {
+    if (appUser?.displayName) {
+        return appUser.displayName.split(' ').map((n) => n[0]).join('').toUpperCase();
+    }
+    return 'U';
+  };
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
@@ -94,8 +102,8 @@ export default function MentorChatPage() {
                   </div>
                   {message.role === 'user' && (
                      <Avatar className="w-8 h-8">
-                      <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="mulher sorrindo" />
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarImage src={appUser?.photoURL || "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt={appUser?.displayName || 'User'} />
+                      <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
                     </Avatar>
                   )}
                 </div>

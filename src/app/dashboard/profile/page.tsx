@@ -1,16 +1,15 @@
 'use client';
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ClipboardCheck, Edit, Loader2, User as UserIcon, Calendar, Book, Phone, FileText } from "lucide-react";
+import { Edit, Loader2, User as UserIcon, Calendar, Book, Phone, FileText } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
-import Link from "next/link";
 import type { Assessment } from "@/services/user";
 import { SwotCube } from "./swot-cube";
 import { PersonalizedLearningPlan } from "../personalized-learning-plan";
 import { EditProfileDialog } from "./edit-profile-dialog";
+import { AvatarUpload } from "./avatar-upload";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
@@ -24,16 +23,6 @@ export default function ProfilePage() {
         );
     }
     
-    const getAvatarFallback = () => {
-        if (appUser?.displayName) {
-            return appUser.displayName.split(' ').map((n) => n[0]).join('').toUpperCase();
-        }
-        if (user.email) {
-            return user.email.substring(0, 2).toUpperCase();
-        }
-        return 'U';
-    }
-
     const latestAssessment: Assessment | null = appUser.assessments && appUser.assessments.length > 0 ? appUser.assessments[0] : null;
 
     return (
@@ -44,11 +33,8 @@ export default function ProfilePage() {
                 <div className="md:col-span-1 space-y-6">
                     <Card>
                         <CardHeader className="items-center text-center">
-                            <Avatar className="h-24 w-24 mb-2">
-                                <AvatarImage src={appUser.photoURL ?? "https://placehold.co/96x96.png"} data-ai-hint="mulher sorrindo" alt={appUser.displayName} />
-                                <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
-                            </Avatar>
-                            <CardTitle className="font-headline text-2xl">{appUser.displayName}</CardTitle>
+                            <AvatarUpload />
+                            <CardTitle className="font-headline text-2xl mt-2">{appUser.displayName}</CardTitle>
                             <CardDescription className="capitalize">{appUser.role}</CardDescription>
                             {appUser.team && <Badge variant="secondary">{appUser.team}</Badge>}
                         </CardHeader>
