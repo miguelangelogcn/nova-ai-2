@@ -3,6 +3,8 @@
 import { addTeam, getTeams, updateTeam, deleteTeam, getTeam } from '@/services/teams';
 import { type TeamFormInput, TeamFormSchema } from './types';
 import { addLog } from '@/services/logs';
+import { adminDb } from '@/lib/firebase-admin';
+import { revalidatePath } from 'next/cache';
 
 export async function getTeamsAction() {
     try {
@@ -66,5 +68,50 @@ export async function deleteTeamAction(id: string, requestorUid: string) {
   } catch (error: any) {
     console.error('Erro ao excluir equipe (ação):', error);
     return { success: false, error: 'Ocorreu um erro desconhecido ao excluir a equipe.' };
+  }
+}
+
+export async function assignUserToTeamAction(userId: string, teamName: string, requestorUid: string) {
+  if (!userId || !teamName) {
+    return { success: false, error: 'Usuário ou nome da equipe inválido.' };
+  }
+
+  try {
+    const userRef = adminDb.collection('users').doc(userId);
+    await userRef.update({ team: teamName });
+    await addLog(requestorUid, 'USER_UPDATED', { affectedUserId: userId, details: `Atribuído à equipe '${teamName}'` });
+    
+    revalidatePath('/dashboard/admin/teams', 'page');
+    revalidatePath('/dashboard/admin/users', 'page');
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error('Erro ao atribuir usuário à equipe:', error);
+    return { success: false, error: 'Falha ao atribuir usuário à equipe.' };
+  }
+}
+
+export async function unassignUserFromTeamAction(userId: string, requestorUid:string) {
+  if (!userId) {
+    return { success: false, error: 'ID do usuário inválido.' };
+  }
+  
+  try {
+    const userRef = adminDb.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const userData = userDoc.data();
+    const oldTeamName = userData?.team || 'N/A';
+
+    await userRef.update({ team: '' });
+    
+    await addLog(requestorUid, 'USER_UPDATED', { affectedUserId: userId, details: `Removido da equipe '${oldTeamName}'` });
+
+    revalidatePath('/dashboard/admin/teams', 'page');
+    revalidatePath('/dashboard/admin/users', 'page');
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error('Erro ao remover usuário da equipe:', error);
+    return { success: false, error: 'Falha ao remover usuário da equipe.' };
   }
 }
