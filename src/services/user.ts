@@ -26,7 +26,7 @@ export type AppUser = {
     email: string;
     displayName: string;
     photoURL: string;
-    role: "enfermeiro" | "tecnico" | "admin";
+    role: "enfermeiro" | "tecnico" | "desenvolvimento-gestor";
     team?: string;
     createdAt: any;
     status: "Ativo" | "Inativo";

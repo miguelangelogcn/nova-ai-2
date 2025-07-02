@@ -10,11 +10,11 @@ export default function DashboardPage() {
     const displayName = appUser?.displayName?.split(' ')[0] ?? 'Usuário';
 
     // Admin Dashboard View
-    if (appUser?.role === 'admin') {
+    if (appUser?.role === 'desenvolvimento-gestor') {
         return (
             <div className="space-y-6">
                 <div>
-                    <h1 className="text-3xl font-bold font-headline">Painel do Administrador</h1>
+                    <h1 className="text-3xl font-bold font-headline">Painel do Gestor</h1>
                     <p className="text-muted-foreground">Gerencie sua organização e monitore o progresso do aprendizado.</p>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2">

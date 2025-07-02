@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     if (!loading && appUser) {
       // Admins are exempt from this check.
-      if (appUser.role === 'admin') {
+      if (appUser.role === 'desenvolvimento-gestor') {
         return;
       }
 
@@ -91,7 +91,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const isRedirecting = React.useMemo(() => {
     if (loading || !appUser) return false;
-    if (appUser.role === 'admin') return false;
+    if (appUser.role === 'desenvolvimento-gestor') return false;
 
     const latestAssessment = appUser.assessments?.[0];
     if (!latestAssessment) return true;
@@ -136,9 +136,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
           </SidebarHeader>
           <SidebarMenu>
-            {appUser?.role === 'admin' ? (
+            {appUser?.role === 'desenvolvimento-gestor' ? (
                 <SidebarGroup>
-                <SidebarGroupLabel>Admin</SidebarGroupLabel>
+                <SidebarGroupLabel>Desenvolvimento | Gestor</SidebarGroupLabel>
                 {adminNavItems.map((item) => (
                     <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
