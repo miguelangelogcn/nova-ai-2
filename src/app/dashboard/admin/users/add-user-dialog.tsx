@@ -34,12 +34,15 @@ import { addUserAction } from './actions';
 import { PlusCircle, Loader2 } from 'lucide-react';
 import type { Team } from '@/services/teams';
 import { AddUserSchema, type AddUserInput } from './types';
+import { useAuth } from '@/context/auth-context';
 
 
 export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
+  const isSuperAdmin = appUser?.role === 'super-admin';
 
   const form = useForm<AddUserInput>({
     resolver: zodResolver(AddUserSchema),
@@ -59,8 +62,17 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
 
   const onSubmit = async (values: AddUserInput) => {
     setIsSubmitting(true);
+    if (!appUser) {
+        toast({
+            variant: "destructive",
+            title: "Erro de autenticação",
+            description: "Você precisa estar logado para adicionar um usuário."
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await addUserAction(values);
+      const result = await addUserAction(values, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',
@@ -162,7 +174,7 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
                     <SelectContent>
                       <SelectItem value="desenvolvimento-funcionario">Desenvolvimento | Funcionário</SelectItem>
                       <SelectItem value="desenvolvimento-gestor">Desenvolvimento | Gestor</SelectItem>
-                      <SelectItem value="super-admin">Acesso Total</SelectItem>
+                      {isSuperAdmin && <SelectItem value="super-admin">Acesso Total</SelectItem>}
                     </SelectContent>
                   </Select>
                   <FormMessage />

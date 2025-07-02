@@ -41,6 +41,36 @@ export async function getAllUsers(): Promise<AppUser[]> {
 }
 
 /**
+ * Fetches a single user from the Firestore 'users' collection using the Admin SDK.
+ * @param uid The user's ID.
+ * @returns A promise that resolves to an AppUser object or null if not found.
+ */
+export async function getUserAdmin(uid: string): Promise<AppUser | null> {
+    if (!adminDb) {
+        throw new Error("A conexão com o banco de dados do Admin não foi inicializada.");
+    }
+    const userDoc = await adminDb.collection('users').doc(uid).get();
+    if (!userDoc.exists) {
+        return null;
+    }
+    const data = userDoc.data() as FirestoreAppUser;
+    
+    const assessments = (data.assessments || [])
+        .map((assessment) => ({
+            ...assessment,
+            appliedAt: assessment.appliedAt.toDate().toISOString(),
+        }))
+        .sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime());
+
+    return {
+        ...data,
+        createdAt: data.createdAt.toDate().toISOString(),
+        assessments,
+    } as AppUser;
+}
+
+
+/**
  * Adds a new assessment record to a user's profile in Firestore.
  * This is a server-side function using the Admin SDK.
  * @param uid The user's ID.

@@ -35,6 +35,7 @@ import { type EditUserInput, EditUserSchema } from './types';
 import { Loader2 } from 'lucide-react';
 import type { AppUser } from '@/services/user';
 import type { Team } from '@/services/teams';
+import { useAuth } from '@/context/auth-context';
 
 interface EditUserDialogProps {
   user: AppUser;
@@ -46,6 +47,8 @@ interface EditUserDialogProps {
 export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: EditUserDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser: currentUser } = useAuth();
+  const isSuperAdmin = currentUser?.role === 'super-admin';
 
   const form = useForm<EditUserInput>({
     resolver: zodResolver(EditUserSchema),
@@ -84,8 +87,17 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
 
   const onSubmit = async (values: EditUserInput) => {
     setIsSubmitting(true);
+    if (!currentUser) {
+        toast({
+            variant: "destructive",
+            title: "Erro de autenticação",
+            description: "Você precisa estar logado para editar um usuário."
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await updateUserAction(user.uid, values);
+      const result = await updateUserAction(user.uid, values, currentUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',
@@ -176,7 +188,7 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
                     <SelectContent>
                       <SelectItem value="desenvolvimento-funcionario">Desenvolvimento | Funcionário</SelectItem>
                       <SelectItem value="desenvolvimento-gestor">Desenvolvimento | Gestor</SelectItem>
-                      <SelectItem value="super-admin">Acesso Total</SelectItem>
+                      {isSuperAdmin && <SelectItem value="super-admin">Acesso Total</SelectItem>}
                     </SelectContent>
                   </Select>
                   <FormMessage />

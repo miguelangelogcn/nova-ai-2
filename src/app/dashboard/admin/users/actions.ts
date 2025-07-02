@@ -1,6 +1,6 @@
 'use server';
 
-import { getAllUsers } from '@/services/user.admin';
+import { getUserAdmin, getAllUsers } from '@/services/user.admin';
 import { revalidatePath } from 'next/cache';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
@@ -25,15 +25,24 @@ export async function getUsersAction() {
     }
 }
 
-export async function addUserAction(data: AddUserInput) {
+export async function addUserAction(data: AddUserInput, requestorUid: string) {
   const validation = AddUserSchema.safeParse(data);
 
   if (!validation.success) {
     const errorMessages = validation.error.issues.map(issue => issue.message).join(' ');
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
+  
+  const requestor = await getUserAdmin(requestorUid);
+  if (!requestor) {
+      return { success: false, error: "Usuário solicitante não encontrado." };
+  }
 
   const { email, password, displayName, role, team, cargo, age, education, phone, cpf } = validation.data;
+
+  if (role === 'super-admin' && requestor.role !== 'super-admin') {
+      return { success: false, error: 'Você não tem permissão para criar usuários com Acesso Total.' };
+  }
 
   try {
     const userRecord = await adminAuth.createUser({
@@ -76,15 +85,25 @@ export async function addUserAction(data: AddUserInput) {
   }
 }
 
-export async function updateUserAction(uid: string, data: EditUserInput) {
+export async function updateUserAction(uid: string, data: EditUserInput, requestorUid: string) {
   const validation = EditUserSchema.safeParse(data);
 
   if (!validation.success) {
     const errorMessages = validation.error.issues.map(issue => issue.message).join(' ');
     return { success: false, error: `Dados inválidos: ${errorMessages}` };
   }
+  
+  const requestor = await getUserAdmin(requestorUid);
+  if (!requestor) {
+      return { success: false, error: "Usuário solicitante não encontrado." };
+  }
+
 
   const { displayName, email, password, role, team, status, cargo, age, education, phone, cpf } = validation.data;
+
+  if (role === 'super-admin' && requestor.role !== 'super-admin') {
+      return { success: false, error: 'Você não tem permissão para atribuir a função de Acesso Total.' };
+  }
 
   try {
     const authUpdatePayload: { displayName: string; email: string; password?: string } = {
