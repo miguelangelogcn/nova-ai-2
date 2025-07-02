@@ -36,15 +36,17 @@ import { Loader2 } from 'lucide-react';
 import type { AppUser } from '@/services/user';
 import type { Team } from '@/services/teams';
 import { useAuth } from '@/context/auth-context';
+import type { Cargo } from '@/services/cargos';
 
 interface EditUserDialogProps {
   user: AppUser;
   availableTeams: Team[];
+  availableCargos: Cargo[];
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: EditUserDialogProps) {
+export function EditUserDialog({ user, availableTeams, availableCargos, isOpen, setIsOpen }: EditUserDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { appUser: currentUser } = useAuth();
@@ -201,9 +203,18 @@ export function EditUserDialog({ user, availableTeams, isOpen, setIsOpen }: Edit
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cargo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enfermeiro(a)" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value ?? ''}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um cargo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableCargos.map(cargo => (
+                        <SelectItem key={cargo.id} value={cargo.name}>{cargo.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

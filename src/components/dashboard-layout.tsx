@@ -7,6 +7,7 @@ import {
   BarChart,
   BookOpen,
   Bot,
+  Briefcase,
   ClipboardList,
   Home,
   LogOut,
@@ -46,6 +47,7 @@ const adminNavItems = [
   { href: '/dashboard/admin/dashboard', icon: BarChart, label: 'Relatórios' },
   { href: '/dashboard/admin/users', icon: Users, label: 'Usuários' },
   { href: '/dashboard/admin/teams', icon: Users2, label: 'Equipes' },
+  { href: '/dashboard/admin/cargos', icon: Briefcase, label: 'Cargos' },
   { href: '/dashboard/admin/logs', icon: ClipboardList, label: 'Registros' },
 ];
 
@@ -64,7 +66,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, router]);
   
-  // Redirect manager from generic dashboard to their specific one
   React.useEffect(() => {
     if (isManager && pathname === '/dashboard') {
         router.replace('/dashboard/admin/dashboard');
@@ -73,12 +74,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (!loading && appUser) {
-      // The questionnaire is only required for the 'desenvolvimento-funcionario' role.
       if (appUser.role !== 'desenvolvimento-funcionario') {
         return;
       }
 
-      const latestAssessment = appUser.assessments?.[0]; // Already sorted newest first
+      const latestAssessment = appUser.assessments?.[0];
       let isQuestionnaireRequired = false;
 
       if (!latestAssessment) {
@@ -102,7 +102,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const isRedirecting = React.useMemo(() => {
     if (loading || !appUser || pathname === '/questionnaire') return false;
     
-    // Only 'desenvolvimento-funcionario' can be redirected.
     if (appUser.role !== 'desenvolvimento-funcionario') return false;
     
     const latestAssessment = appUser.assessments?.[0];

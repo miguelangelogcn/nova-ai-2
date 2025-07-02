@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -10,10 +10,26 @@ import { SwotCube } from "./swot-cube";
 import { PersonalizedLearningPlan } from "../personalized-learning-plan";
 import { EditProfileDialog } from "./edit-profile-dialog";
 import { AvatarUpload } from "./avatar-upload";
+import { getCargos } from "@/services/cargos";
+import type { Cargo } from "@/services/cargos";
 
 export default function ProfilePage() {
     const { user, appUser, loading } = useAuth();
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [availableCargos, setAvailableCargos] = useState<Cargo[]>([]);
+    
+    useEffect(() => {
+        const fetchCargosData = async () => {
+            try {
+                const cargosData = await getCargos();
+                setAvailableCargos(cargosData);
+            } catch (error) {
+                console.error("Failed to fetch cargos for profile edit:", error);
+            }
+        };
+        
+        fetchCargosData();
+    }, []);
 
     if (loading || !user || !appUser) {
         return (
@@ -27,7 +43,7 @@ export default function ProfilePage() {
 
     return (
         <>
-        <EditProfileDialog isOpen={isEditDialogOpen} setIsOpen={setIsEditDialogOpen} />
+        <EditProfileDialog isOpen={isEditDialogOpen} setIsOpen={setIsEditDialogOpen} availableCargos={availableCargos} />
         <div className="space-y-6">
             <div className="grid md:grid-cols-3 gap-6">
                 <div className="md:col-span-1 space-y-6">

@@ -11,34 +11,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { AppUser } from '@/services/user';
-import type { Team } from '@/services/teams';
-import { EditUserDialog } from './edit-user-dialog';
-import { DeleteUserAlert } from './delete-user-alert';
 import type { Cargo } from '@/services/cargos';
+import { EditCargoDialog } from './edit-cargo-dialog';
+import { DeleteCargoAlert } from './delete-cargo-alert';
 
-interface UserActionsProps {
-  user: AppUser;
-  availableTeams: Team[];
-  availableCargos: Cargo[];
+interface CargoActionsProps {
+  cargo: Cargo;
 }
 
-export function UserActions({ user, availableTeams, availableCargos }: UserActionsProps) {
+export function CargoActions({ cargo }: CargoActionsProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   return (
     <>
-      <EditUserDialog
-        user={user}
-        availableTeams={availableTeams}
-        availableCargos={availableCargos}
+      <EditCargoDialog
+        cargo={cargo}
         isOpen={isEditDialogOpen}
         setIsOpen={setIsEditDialogOpen}
       />
-      <DeleteUserAlert
-        userId={user.uid}
-        userName={user.displayName}
+      <DeleteCargoAlert
+        cargoId={cargo.id}
+        cargoName={cargo.name}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
       />

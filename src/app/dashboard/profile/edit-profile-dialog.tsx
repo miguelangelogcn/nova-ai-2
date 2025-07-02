@@ -22,18 +22,27 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { updateProfileAction } from './actions';
 import { type EditProfileInput, EditProfileSchema } from './types';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
+import type { Cargo } from '@/services/cargos';
 
 interface EditProfileDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  availableCargos: Cargo[];
 }
 
-export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps) {
+export function EditProfileDialog({ isOpen, setIsOpen, availableCargos }: EditProfileDialogProps) {
   const { appUser, refreshAppUser } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -154,9 +163,18 @@ export function EditProfileDialog({ isOpen, setIsOpen }: EditProfileDialogProps)
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cargo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Seu cargo (ex: Enfermeiro)" {...field} />
-                  </FormControl>
+                   <Select onValueChange={field.onChange} defaultValue={field.value ?? ''}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um cargo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableCargos.map(cargo => (
+                        <SelectItem key={cargo.id} value={cargo.name}>{cargo.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

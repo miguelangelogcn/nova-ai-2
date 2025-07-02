@@ -35,9 +35,10 @@ import { PlusCircle, Loader2 } from 'lucide-react';
 import type { Team } from '@/services/teams';
 import { AddUserSchema, type AddUserInput } from './types';
 import { useAuth } from '@/context/auth-context';
+import type { Cargo } from '@/services/cargos';
 
 
-export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
+export function AddUserDialog({ availableTeams, availableCargos }: { availableTeams: Team[], availableCargos: Cargo[] }) {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -187,9 +188,18 @@ export function AddUserDialog({ availableTeams }: { availableTeams: Team[] }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Cargo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enfermeiro(a)" {...field} />
-                  </FormControl>
+                   <Select onValueChange={field.onChange} defaultValue={field.value ?? ''}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um cargo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableCargos.map(cargo => (
+                        <SelectItem key={cargo.id} value={cargo.name}>{cargo.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

@@ -11,20 +11,25 @@ import { AddUserDialog } from "./add-user-dialog";
 import { getTeamsAction } from "../teams/actions";
 import type { Team } from "@/services/teams";
 import { UserActions } from "./user-actions";
+import type { Cargo } from "@/services/cargos";
+import { getCargosAction } from "../cargos/actions";
 
 
 export default async function AdminUsersPage() {
     let users: AppUser[] = [];
     let teams: Team[] = [];
+    let cargos: Cargo[] = [];
     let error: string | null = null;
 
     try {
-        const [fetchedUsers, fetchedTeams] = await Promise.all([
+        const [fetchedUsers, fetchedTeams, fetchedCargos] = await Promise.all([
             getUsersAction(),
             getTeamsAction(),
+            getCargosAction(),
         ]);
         users = fetchedUsers;
         teams = fetchedTeams;
+        cargos = fetchedCargos;
     } catch (e: any) {
         error = e.message;
     }
@@ -37,7 +42,7 @@ export default async function AdminUsersPage() {
                         <CardTitle className="font-headline">Gerenciamento de Usuários</CardTitle>
                         <CardDescription>Visualize, adicione, edite e gerencie todos os usuários da plataforma.</CardDescription>
                     </div>
-                    <AddUserDialog availableTeams={teams} />
+                    <AddUserDialog availableTeams={teams} availableCargos={cargos} />
                 </div>
             </CardHeader>
             <CardContent>
@@ -79,7 +84,7 @@ export default async function AdminUsersPage() {
                                         </TableCell>
                                         <TableCell>{format(new Date(user.createdAt), 'dd/MM/yyyy', { locale: ptBR })}</TableCell>
                                         <TableCell className="text-right">
-                                            <UserActions user={user} availableTeams={teams} />
+                                            <UserActions user={user} availableTeams={teams} availableCargos={cargos} />
                                         </TableCell>
                                     </TableRow>
                                 )) : (
