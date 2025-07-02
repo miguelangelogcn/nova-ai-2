@@ -29,15 +29,25 @@ export async function aiMentorChat(input: AiMentorChatInput): Promise<AiMentorCh
   return aiMentorChatFlow(input);
 }
 
+// Internal schema for the prompt that includes a boolean flag for easier templating.
+const InternalPromptInputSchema = z.object({
+    message: z.string(),
+    chatHistory: z.array(z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string(),
+        isUser: z.boolean(),
+    })).optional(),
+});
+
 const prompt = ai.definePrompt({
   name: 'aiMentorChatPrompt',
-  input: {schema: AiMentorChatInputSchema},
+  input: {schema: InternalPromptInputSchema},
   output: {schema: AiMentorChatOutputSchema},
   prompt: `Você é Florence, uma mentora prestativa para enfermeiros e técnicos. Seu nome é Florence. Você conhece todo o conteúdo da plataforma e pode responder a perguntas relacionadas à enfermagem e procedimentos técnicos.
 
 Histórico do Chat:
 {{#each chatHistory}}
-  {{#if (eq role "user")}}Usuário:{{else}}Florence:{{/if}} {{content}}
+  {{#if isUser}}Usuário:{{else}}Florence:{{/if}} {{content}}
 {{/each}}
 
 Usuário: {{message}}
@@ -50,8 +60,23 @@ const aiMentorChatFlow = ai.defineFlow(
     inputSchema: AiMentorChatInputSchema,
     outputSchema: AiMentorChatOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async (input) => {
+    // The client sends the full history including the current user message.
+    // The prompt also uses a {{message}} placeholder for it.
+    // To avoid duplication, we pass the history *without* the last message.
+    const historyForPrompt = input.chatHistory ? input.chatHistory.slice(0, -1) : [];
+    
+    // Process the history to add the 'isUser' flag for Handlebars.
+    const processedHistory = historyForPrompt.map(turn => ({
+        ...turn,
+        isUser: turn.role === 'user',
+    }));
+
+    const {output} = await prompt({
+        message: input.message,
+        chatHistory: processedHistory,
+    });
+    
     return output!;
   }
 );

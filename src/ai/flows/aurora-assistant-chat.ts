@@ -38,9 +38,20 @@ export async function auroraAssistantChat(input: AuroraAssistantChatInput): Prom
   return auroraAssistantChatFlow(input);
 }
 
+// Internal schema for the prompt that includes a boolean flag for easier templating.
+const InternalPromptInputSchema = z.object({
+    message: z.string(),
+    chatHistory: z.array(z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string(),
+        isUser: z.boolean(),
+    })).optional(),
+});
+
+
 const prompt = ai.definePrompt({
   name: 'auroraAssistantChatPrompt',
-  input: {schema: AuroraAssistantChatInputSchema},
+  input: {schema: InternalPromptInputSchema},
   output: {schema: AuroraAssistantChatOutputSchema},
   prompt: `Você é Aurora, uma assistente de IA para gestores na plataforma de saúde Nova AI. Seu nome é Aurora. Você é especializada em analisar dados, identificar tendências e fornecer insights acionáveis com base nos relatórios da plataforma. Seja concisa e direta ao ponto.
 
@@ -53,7 +64,7 @@ Responda às perguntas do gestor com base nesses dados. Você pode cruzar inform
 
 Histórico do Chat:
 {{#each chatHistory}}
-  {{#if (eq role "user")}}Gestor:{{else}}Aurora:{{/if}} {{content}}
+  {{#if isUser}}Gestor:{{else}}Aurora:{{/if}} {{content}}
 {{/each}}
 
 Gestor: {{message}}
@@ -66,8 +77,23 @@ const auroraAssistantChatFlow = ai.defineFlow(
     inputSchema: AuroraAssistantChatInputSchema,
     outputSchema: AuroraAssistantChatOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async (input) => {
+    // The client sends the full history including the current user message.
+    // The prompt also uses a {{message}} placeholder for it.
+    // To avoid duplication, we pass the history *without* the last message.
+    const historyForPrompt = input.chatHistory ? input.chatHistory.slice(0, -1) : [];
+
+    // Process the history to add the 'isUser' flag for Handlebars.
+    const processedHistory = historyForPrompt.map(turn => ({
+        ...turn,
+        isUser: turn.role === 'user',
+    }));
+
+    const {output} = await prompt({
+        message: input.message,
+        chatHistory: processedHistory,
+    });
+    
     return output!;
   }
 );
