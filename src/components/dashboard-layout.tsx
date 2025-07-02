@@ -65,8 +65,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (!loading && appUser) {
-      // Admins are exempt from this check.
-      if (isAdmin) {
+      // The questionnaire is only required for the 'desenvolvimento-funcionario' role.
+      if (appUser.role !== 'desenvolvimento-funcionario') {
         return;
       }
 
@@ -88,13 +88,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         router.push('/questionnaire');
       }
     }
-  }, [appUser, loading, router, isAdmin]);
+  }, [appUser, loading, router]);
 
 
   const isRedirecting = React.useMemo(() => {
     if (loading || !appUser) return false;
-    if (isAdmin) return false;
-
+    
+    // Only 'desenvolvimento-funcionario' can be redirected.
+    if (appUser.role !== 'desenvolvimento-funcionario') return false;
+    
     const latestAssessment = appUser.assessments?.[0];
     if (!latestAssessment) return true;
 
@@ -102,7 +104,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const ninetyDaysAgo = new Date();
     ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
     return lastAssessmentDate <= ninetyDaysAgo;
-  }, [appUser, loading, isAdmin]);
+  }, [appUser, loading]);
 
   if (loading || !user || !appUser || isRedirecting) {
     return (
