@@ -2,6 +2,13 @@ import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import type { GenerateDiscAnalysisOutput, GenerateSwotAnalysisOutput } from "@/app/questionnaire/types";
 
+export type CourseProgress = {
+    courseId: string;
+    startedAt: any; // Stored as Timestamp, received as ISO string
+    completedAt?: any; // Stored as Timestamp, received as ISO string
+    completedLessons: string[]; // array of lessonIds
+};
+
 export type LearningPath = {
     recommendedCourseIds: string[];
 };
@@ -24,6 +31,7 @@ export type AppUser = {
     createdAt: any;
     status: "Ativo" | "Inativo";
     assessments?: Assessment[];
+    courseProgress?: Record<string, CourseProgress>;
     age?: string;
     education?: string;
     phone?: string;
@@ -46,6 +54,7 @@ export const createUserProfile = async (user: any) => {
                 createdAt: serverTimestamp(),
                 status: "Ativo",
                 assessments: [],
+                courseProgress: {},
                 age: '',
                 education: '',
                 phone: '',
@@ -63,17 +72,28 @@ export const getUserProfile = async (uid: string): Promise<AppUser | null> => {
     const snapshot = await getDoc(userRef);
     if (snapshot.exists()) {
         const data = snapshot.data();
-        // Convert Firestore Timestamps to serializable format if they exist
+        
+        const courseProgress = data.courseProgress || {};
+        for (const courseId in courseProgress) {
+            const progress = courseProgress[courseId];
+            if (progress.startedAt?.toDate) {
+                progress.startedAt = progress.startedAt.toDate().toISOString();
+            }
+            if (progress.completedAt?.toDate) {
+                progress.completedAt = progress.completedAt.toDate().toISOString();
+            }
+        }
+        
         const serializableData = {
             ...data,
             createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt,
-            // Sort assessments by date, newest first, and serialize timestamp
             assessments: (data.assessments || [])
                 .map((assessment: any) => ({
                     ...assessment,
                     appliedAt: assessment.appliedAt?.toDate ? assessment.appliedAt.toDate().toISOString() : new Date().toISOString(),
                 }))
                 .sort((a: Assessment, b: Assessment) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime()),
+            courseProgress: courseProgress,
         };
         return serializableData as AppUser;
     }

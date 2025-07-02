@@ -3,11 +3,15 @@
 import { getCourse, type Course, type Module, type Lesson } from "@/services/courses";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, ChevronRight, FileText, Download } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Loader2, ChevronRight, FileText, Download, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-context";
+import { toggleLessonCompletionAction } from "@/services/progress";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 function getYouTubeEmbedUrl(url: string) {
     if (!url) return '';
@@ -33,10 +37,14 @@ export default function LessonContentPage() {
     const [module, setModule] = useState<Module | null>(null);
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { toast } = useToast();
+    const { user, appUser, refreshAppUser, loading: authLoading } = useAuth();
 
     useEffect(() => {
         const fetchCourseData = async () => {
             if (!courseId || !moduleId || !lessonId) return;
+            setLoading(true);
             try {
                 const fetchedCourse = await getCourse(courseId);
                 setCourse(fetchedCourse);
@@ -56,8 +64,29 @@ export default function LessonContentPage() {
         };
         fetchCourseData();
     }, [courseId, moduleId, lessonId]);
+    
+    const handleToggleCompletion = async () => {
+        if (!user || !courseId || !lessonId) return;
+        setIsSubmitting(true);
+        try {
+            const result = await toggleLessonCompletionAction(user.uid, courseId, lessonId);
+            if (result.success) {
+                toast({
+                    title: "Progresso Atualizado!",
+                    description: `Aula ${result.isCompleted ? 'marcada como concluída' : 'desmarcada'}.`,
+                });
+                await refreshAppUser();
+            } else {
+                 toast({ variant: 'destructive', title: "Erro", description: result.error });
+            }
+        } catch (error) {
+            toast({ variant: 'destructive', title: "Erro", description: "Não foi possível atualizar seu progresso." });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-    if (loading) {
+    if (loading || authLoading) {
         return (
             <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -77,6 +106,7 @@ export default function LessonContentPage() {
     }
     
     const embedUrl = lesson.videoUrl ? getYouTubeEmbedUrl(lesson.videoUrl) : '';
+    const isCompleted = appUser?.courseProgress?.[courseId]?.completedLessons.includes(lessonId) ?? false;
 
     return (
         <div className="space-y-6">
@@ -120,6 +150,24 @@ export default function LessonContentPage() {
                                 <p className="text-muted-foreground whitespace-pre-wrap">
                                     {lesson.content || 'Nenhum conteúdo de texto disponível para esta aula.'}
                                 </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader>
+                            <CardTitle className="font-headline">Conclusão da Aula</CardTitle>
+                            <CardDescription>Marque esta aula como concluída para registrar seu progresso.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className={cn("rounded-lg p-4 flex items-center justify-between", isCompleted ? "bg-green-100 border-green-200 border" : "bg-muted")}>
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle2 className={cn("h-6 w-6", isCompleted ? "text-green-600" : "text-muted-foreground")} />
+                                    <p className="font-medium">{isCompleted ? "Aula concluída!" : "Marcar como concluída"}</p>
+                                </div>
+                                <Button onClick={handleToggleCompletion} disabled={isSubmitting}>
+                                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    {isCompleted ? "Desmarcar" : "Concluir Aula"}
+                                </Button>
                             </div>
                         </CardContent>
                     </Card>

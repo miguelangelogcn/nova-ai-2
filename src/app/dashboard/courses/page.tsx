@@ -41,10 +41,10 @@ export default function CoursesPage() {
                             .filter((course): course is Course => !!course);
                         setRecommendedCourses(sortedCourses);
                     } else {
-                        setRecommendedCourses([]); // Limpa as recomendações se o usuário não tiver uma trilha
+                        setRecommendedCourses([]);
                     }
                 } else {
-                    setRecommendedCourses([]); // Limpa as recomendações se não houver usuário
+                    setRecommendedCourses([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch courses:", error);
@@ -64,25 +64,31 @@ export default function CoursesPage() {
         )
     }
 
-    const CourseCard = ({ course, isRecommended = false }: { course: Course, isRecommended?: boolean }) => (
-        <Link href={`/dashboard/courses/${course.id}`} className="h-full block">
-            <Card className={cn(
-                "flex flex-col h-full hover:shadow-lg transition-shadow duration-300",
-                isRecommended && "bg-gradient-to-br from-accent/20"
-            )}>
-                <CardHeader>
-                    <Badge variant="secondary" className="w-fit mb-2">{course.category}</Badge>
-                    <CardTitle className="font-headline text-lg">{course.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                    <CardDescription className="text-sm">{course.description}</CardDescription>
-                </CardContent>
-                <CardFooter>
-                     <p className="text-xs text-primary font-semibold">Ver Detalhes</p>
-                </CardFooter>
-            </Card>
-        </Link>
-    );
+    const CourseCard = ({ course, isRecommended = false }: { course: Course, isRecommended?: boolean }) => {
+        const isCompleted = !!appUser?.courseProgress?.[course.id]?.completedAt;
+        return (
+            <Link href={`/dashboard/courses/${course.id}`} className="h-full block">
+                <Card className={cn(
+                    "flex flex-col h-full hover:shadow-lg transition-shadow duration-300",
+                    isRecommended && "bg-gradient-to-br from-accent/20"
+                )}>
+                    <CardHeader>
+                        <div className="flex justify-between items-center">
+                            <Badge variant="secondary" className="w-fit mb-2">{course.category}</Badge>
+                            {isCompleted && <Badge variant="default" className="bg-green-600 hover:bg-green-700">Concluído</Badge>}
+                        </div>
+                        <CardTitle className="font-headline text-lg">{course.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <CardDescription className="text-sm">{course.description}</CardDescription>
+                    </CardContent>
+                    <CardFooter>
+                         <p className="text-xs text-primary font-semibold">Ver Detalhes</p>
+                    </CardFooter>
+                </Card>
+            </Link>
+        );
+    };
 
     return (
         <div className="space-y-8">

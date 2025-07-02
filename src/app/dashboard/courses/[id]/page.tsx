@@ -7,29 +7,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, BookOpen, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/context/auth-context";
+import { startCourseAction } from "@/services/progress";
+import { Progress } from "@/components/ui/progress";
 
 export default function CourseModulesPage() {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
+    const { user, appUser, loading: authLoading } = useAuth();
 
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchCourseAndStart = async () => {
             if (!id) return;
+            setLoading(true);
             try {
                 const fetchedCourse = await getCourse(id);
                 setCourse(fetchedCourse);
+                if (user && fetchedCourse) {
+                    await startCourseAction(user.uid, id);
+                }
             } catch (error) {
                 console.error("Failed to fetch course:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchCourse();
-    }, [id]);
+        fetchCourseAndStart();
+    }, [id, user]);
 
-    if (loading) {
+    if (loading || authLoading) {
         return (
             <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
                 <Loader2 className="h-8 w-8 animate-spin" />
@@ -49,6 +57,9 @@ export default function CourseModulesPage() {
     }
 
     const modules = course.modules || [];
+    const completedLessons = appUser?.courseProgress?.[id]?.completedLessons.length || 0;
+    const totalLessons = modules.reduce((acc, module) => acc + (module.lessons?.length || 0), 0);
+    const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
     return (
         <div className="space-y-6">
@@ -64,6 +75,15 @@ export default function CourseModulesPage() {
                     <CardDescription>{course.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
+                    {totalLessons > 0 && (
+                        <div className="mb-6">
+                            <h3 className="text-lg font-bold font-headline mb-2">Seu Progresso</h3>
+                            <div className="flex items-center gap-4">
+                                <Progress value={progressPercentage} className="flex-1"/>
+                                <span className="text-sm font-medium text-muted-foreground">{completedLessons} de {totalLessons} aulas</span>
+                            </div>
+                        </div>
+                    )}
                     <h3 className="text-xl font-bold font-headline mb-4">Módulos</h3>
                     {modules.length > 0 ? (
                         <div className="grid gap-4 md:grid-cols-2">
