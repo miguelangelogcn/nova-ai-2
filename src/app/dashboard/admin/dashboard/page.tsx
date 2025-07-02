@@ -11,6 +11,10 @@ import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
 import { type DateRange } from "react-day-picker";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getTeamsAction } from "../teams/actions";
+import type { Team } from "@/services/teams";
+import { TeamSelect } from "./team-select";
+
 
 // Helper function to process logs into monthly data
 async function getAccessData(logs: any[]) {
@@ -82,35 +86,51 @@ async function getHourlyAccessData(logs: any[]) {
 export default function AdminDashboardPage() {
     const [allLogs, setAllLogs] = useState<any[]>([]);
     const [allUsers, setAllUsers] = useState<AppUser[]>([]);
+    const [allTeams, setAllTeams] = useState<Team[]>([]);
     const [loading, setLoading] = useState(true);
     const [accessData, setAccessData] = useState<any[]>([]);
     const [hourlyAccessData, setHourlyAccessData] = useState<any[]>([]);
     const [date, setDate] = useState<DateRange | undefined>(undefined);
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
+    const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
 
     // Fetch all logs and users once on mount
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const [logs, users] = await Promise.all([
+            const [logs, users, teams] = await Promise.all([
                 getLogs(),
                 getAllUsers(),
+                getTeamsAction(),
             ]);
             setAllLogs(logs);
             setAllUsers(users.filter(u => u.role === 'desenvolvimento-funcionario'));
+            setAllTeams(teams);
             setLoading(false);
         }
         fetchData();
     }, []);
 
-    // Re-process data when logs, date range or user change
+    // Re-process data when logs, date range or user/team change
     useEffect(() => {
         if (loading) return; // Wait for initial fetch
+
+        const userTeamMap = new Map(allUsers.map(user => [user.uid, user.team]));
+        
+        const selectedTeamName = allTeams.find(t => t.id === selectedTeam)?.name;
 
         const filteredLogs = allLogs.filter((log) => {
             // Filter by selected user first
             if (selectedUser && log.actorUid !== selectedUser) {
                 return false;
+            }
+            
+            // Filter by team
+            if (selectedTeamName) {
+                const userTeam = userTeamMap.get(log.actorUid);
+                if (userTeam !== selectedTeamName) {
+                    return false;
+                }
             }
 
             // Then filter by date
@@ -141,7 +161,7 @@ export default function AdminDashboardPage() {
         }
         processData();
 
-    }, [allLogs, date, loading, selectedUser]);
+    }, [allLogs, date, loading, selectedUser, selectedTeam, allUsers, allTeams]);
     
     if (loading) {
          return (
@@ -161,15 +181,17 @@ export default function AdminDashboardPage() {
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg">Filtros</CardTitle>
-                    <CardDescription>Refine os dados dos relatórios abaixo por período ou usuário específico.</CardDescription>
+                    <CardDescription>Refine os dados dos relatórios abaixo por período, usuário ou equipe.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap items-center gap-4">
                      <DatePickerWithRange date={date} onDateChange={setDate} />
                      <UserSelect users={allUsers} selectedUser={selectedUser} onUserChange={setSelectedUser} />
+                     <TeamSelect teams={allTeams} selectedTeam={selectedTeam} onTeamChange={setSelectedTeam} />
                      <Button variant="ghost" onClick={() => {
                         setDate(undefined);
                         setSelectedUser(null);
-                     }} disabled={!date && !selectedUser}>Limpar Filtros</Button>
+                        setSelectedTeam(null);
+                     }} disabled={!date && !selectedUser && !selectedTeam}>Limpar Filtros</Button>
                 </CardContent>
             </Card>
 
