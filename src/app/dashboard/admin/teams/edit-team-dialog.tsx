@@ -27,6 +27,7 @@ import { updateTeamAction } from './actions';
 import { type TeamFormInput, TeamFormSchema } from './types';
 import { Loader2 } from 'lucide-react';
 import type { Team } from '@/services/teams';
+import { useAuth } from '@/context/auth-context';
 
 interface EditTeamDialogProps {
   team: Team;
@@ -37,6 +38,7 @@ interface EditTeamDialogProps {
 export function EditTeamDialog({ team, isOpen, setIsOpen }: EditTeamDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const form = useForm<TeamFormInput>({
     resolver: zodResolver(TeamFormSchema),
@@ -57,8 +59,17 @@ export function EditTeamDialog({ team, isOpen, setIsOpen }: EditTeamDialogProps)
 
   const onSubmit = async (values: TeamFormInput) => {
     setIsSubmitting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para editar uma equipe.',
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await updateTeamAction(team.id, values);
+      const result = await updateTeamAction(team.id, values, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',

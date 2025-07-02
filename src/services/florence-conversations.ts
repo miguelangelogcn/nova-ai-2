@@ -3,6 +3,7 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { revalidatePath } from 'next/cache';
+import { addLog } from './logs';
 
 export type FlorenceConversation = {
     id: string;
@@ -48,6 +49,8 @@ export async function startConversation(userId: string): Promise<string> {
     
     await conversationRef.set(newConversation);
     
+    await addLog(userId, 'CHAT_STARTED', { chatType: 'Florence' });
+
     revalidatePath('/dashboard/mentor');
     
     return conversationRef.id;

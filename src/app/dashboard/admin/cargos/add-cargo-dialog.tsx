@@ -26,12 +26,14 @@ import { useToast } from '@/hooks/use-toast';
 import { addCargoAction } from './actions';
 import { CargoFormSchema, type CargoFormInput } from './types';
 import { PlusCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 
 
 export function AddCargoDialog() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const form = useForm<CargoFormInput>({
     resolver: zodResolver(CargoFormSchema),
@@ -42,8 +44,17 @@ export function AddCargoDialog() {
 
   const onSubmit = async (values: CargoFormInput) => {
     setIsSubmitting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para adicionar um cargo.',
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await addCargoAction(values);
+      const result = await addCargoAction(values, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',

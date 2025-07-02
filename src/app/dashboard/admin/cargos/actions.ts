@@ -1,7 +1,8 @@
 'use server';
 
-import { addCargo, getCargos, updateCargo, deleteCargo } from '@/services/cargos';
+import { addCargo, getCargos, updateCargo, deleteCargo, getCargo } from '@/services/cargos';
 import { type CargoFormInput, CargoFormSchema } from './types';
+import { addLog } from '@/services/logs';
 
 export async function getCargosAction() {
     try {
@@ -13,7 +14,7 @@ export async function getCargosAction() {
     }
 }
 
-export async function addCargoAction(data: CargoFormInput) {
+export async function addCargoAction(data: CargoFormInput, requestorUid: string) {
   const validation = CargoFormSchema.safeParse(data);
 
   if (!validation.success) {
@@ -22,7 +23,9 @@ export async function addCargoAction(data: CargoFormInput) {
   }
 
   try {
-    await addCargo(validation.data.name);
+    const { name } = validation.data;
+    await addCargo(name);
+    await addLog(requestorUid, 'CARGO_CREATED', { cargoName: name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao criar cargo (ação):', error);
@@ -30,7 +33,7 @@ export async function addCargoAction(data: CargoFormInput) {
   }
 }
 
-export async function updateCargoAction(id: string, data: CargoFormInput) {
+export async function updateCargoAction(id: string, data: CargoFormInput, requestorUid: string) {
   const validation = CargoFormSchema.safeParse(data);
 
   if (!validation.success) {
@@ -39,7 +42,9 @@ export async function updateCargoAction(id: string, data: CargoFormInput) {
   }
 
   try {
-    await updateCargo(id, validation.data.name);
+    const { name } = validation.data;
+    await updateCargo(id, name);
+    await addLog(requestorUid, 'CARGO_UPDATED', { cargoId: id, newName: name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao atualizar cargo (ação):', error);
@@ -47,9 +52,14 @@ export async function updateCargoAction(id: string, data: CargoFormInput) {
   }
 }
 
-export async function deleteCargoAction(id: string) {
+export async function deleteCargoAction(id: string, requestorUid: string) {
   try {
+    const cargoToDelete = await getCargo(id);
+    if (!cargoToDelete) {
+        return { success: false, error: 'Cargo não encontrado.' };
+    }
     await deleteCargo(id);
+    await addLog(requestorUid, 'CARGO_DELETED', { cargoName: cargoToDelete.name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao excluir cargo (ação):', error);

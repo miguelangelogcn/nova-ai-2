@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { deleteTeamAction } from './actions';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 
 interface DeleteTeamAlertProps {
   teamId: string;
@@ -26,11 +27,21 @@ interface DeleteTeamAlertProps {
 export function DeleteTeamAlert({ teamId, teamName, isOpen, setIsOpen }: DeleteTeamAlertProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para excluir uma equipe.',
+        });
+        setIsDeleting(false);
+        return;
+    }
     try {
-      const result = await deleteTeamAction(teamId);
+      const result = await deleteTeamAction(teamId, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',

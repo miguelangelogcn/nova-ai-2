@@ -14,6 +14,19 @@ type FirestoreCargo = Omit<Cargo, 'id' | 'createdAt'> & {
     createdAt: Timestamp;
 };
 
+export async function getCargo(id: string): Promise<Cargo | null> {
+    const cargoDoc = await adminDb.collection('cargos').doc(id).get();
+    if (!cargoDoc.exists) {
+        return null;
+    }
+    const data = cargoDoc.data() as FirestoreCargo;
+    return {
+        id: cargoDoc.id,
+        name: data.name,
+        createdAt: data.createdAt.toDate().toISOString(),
+    };
+}
+
 export async function getCargos(): Promise<Cargo[]> {
     const cargosSnapshot = await adminDb.collection('cargos').orderBy('name').get();
     const cargos = cargosSnapshot.docs.map(doc => {

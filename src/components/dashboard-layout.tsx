@@ -36,6 +36,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { useAuth } from '@/context/auth-context';
+import { logLogoutAction } from '@/app/actions';
 
 const userNavItems = [
   { href: '/dashboard', icon: Home, label: 'Início' },
@@ -124,6 +125,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }
 
   const handleLogout = async () => {
+    if (user) {
+        await logLogoutAction(user.uid);
+    }
     await logout();
     router.push('/');
   }

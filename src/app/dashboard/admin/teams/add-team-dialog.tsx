@@ -27,12 +27,14 @@ import { useToast } from '@/hooks/use-toast';
 import { addTeamAction } from './actions';
 import { TeamFormSchema, type TeamFormInput } from './types';
 import { PlusCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 
 
 export function AddTeamDialog() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const form = useForm<TeamFormInput>({
     resolver: zodResolver(TeamFormSchema),
@@ -44,8 +46,17 @@ export function AddTeamDialog() {
 
   const onSubmit = async (values: TeamFormInput) => {
     setIsSubmitting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para adicionar uma equipe.',
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await addTeamAction(values);
+      const result = await addTeamAction(values, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',

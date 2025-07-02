@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from '@/context/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { logLoginAction } from './actions';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -23,7 +24,8 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const userCredential = await login(email, password);
+      await logLoginAction(userCredential.user.uid);
       router.push('/dashboard');
     } catch (error: any) {
       toast({

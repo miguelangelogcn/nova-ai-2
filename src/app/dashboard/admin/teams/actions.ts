@@ -1,7 +1,8 @@
 'use server';
 
-import { addTeam, getTeams, updateTeam, deleteTeam } from '@/services/teams';
+import { addTeam, getTeams, updateTeam, deleteTeam, getTeam } from '@/services/teams';
 import { type TeamFormInput, TeamFormSchema } from './types';
+import { addLog } from '@/services/logs';
 
 export async function getTeamsAction() {
     try {
@@ -13,7 +14,7 @@ export async function getTeamsAction() {
     }
 }
 
-export async function addTeamAction(data: TeamFormInput) {
+export async function addTeamAction(data: TeamFormInput, requestorUid: string) {
   const validation = TeamFormSchema.safeParse(data);
 
   if (!validation.success) {
@@ -25,6 +26,7 @@ export async function addTeamAction(data: TeamFormInput) {
 
   try {
     await addTeam(name, description);
+    await addLog(requestorUid, 'TEAM_CREATED', { teamName: name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao criar equipe (ação):', error);
@@ -32,7 +34,7 @@ export async function addTeamAction(data: TeamFormInput) {
   }
 }
 
-export async function updateTeamAction(id: string, data: TeamFormInput) {
+export async function updateTeamAction(id: string, data: TeamFormInput, requestorUid: string) {
   const validation = TeamFormSchema.safeParse(data);
 
   if (!validation.success) {
@@ -44,6 +46,7 @@ export async function updateTeamAction(id: string, data: TeamFormInput) {
 
   try {
     await updateTeam(id, { name, description });
+    await addLog(requestorUid, 'TEAM_UPDATED', { teamId: id, newName: name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao atualizar equipe (ação):', error);
@@ -51,9 +54,14 @@ export async function updateTeamAction(id: string, data: TeamFormInput) {
   }
 }
 
-export async function deleteTeamAction(id: string) {
+export async function deleteTeamAction(id: string, requestorUid: string) {
   try {
+    const teamToDelete = await getTeam(id);
+    if (!teamToDelete) {
+        return { success: false, error: 'Equipe não encontrada.' };
+    }
     await deleteTeam(id);
+    await addLog(requestorUid, 'TEAM_DELETED', { teamName: teamToDelete.name });
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao excluir equipe (ação):', error);

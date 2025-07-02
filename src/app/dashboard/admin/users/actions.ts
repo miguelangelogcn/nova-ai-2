@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import { type AddUserInput, AddUserSchema, type EditUserInput, EditUserSchema } from './types';
+import { addLog } from '@/services/logs';
 
 
 /**
@@ -75,6 +76,8 @@ export async function addUserAction(data: AddUserInput, requestorUid: string) {
     });
 
     revalidatePath('/dashboard/admin/users');
+    
+    await addLog(requestorUid, 'USER_CREATED', { affectedUserEmail: email, roleAssigned: role });
 
     return { success: true };
   } catch (error: any) {
@@ -137,6 +140,9 @@ export async function updateUserAction(uid: string, data: EditUserInput, request
     });
 
     revalidatePath('/dashboard/admin/users');
+    
+    await addLog(requestorUid, 'USER_UPDATED', { affectedUserEmail: email });
+
     return { success: true };
   } catch (error: any)
    {
@@ -148,8 +154,13 @@ export async function updateUserAction(uid: string, data: EditUserInput, request
   }
 }
 
-export async function deleteUserAction(uid: string) {
+export async function deleteUserAction(uid: string, requestorUid: string) {
   try {
+    const userToDelete = await getUserAdmin(uid);
+    if (!userToDelete) {
+        return { success: false, error: 'Usuário a ser excluído não encontrado.' };
+    }
+
     // Delete from Firebase Auth
     await adminAuth.deleteUser(uid);
 
@@ -157,6 +168,9 @@ export async function deleteUserAction(uid: string) {
     await adminDb.collection('users').doc(uid).delete();
 
     revalidatePath('/dashboard/admin/users');
+    
+    await addLog(requestorUid, 'USER_DELETED', { affectedUserEmail: userToDelete.email });
+
     return { success: true };
   } catch (error: any) {
     console.error('Erro ao excluir usuário (ação):', error);

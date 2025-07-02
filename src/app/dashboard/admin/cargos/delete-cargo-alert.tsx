@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { deleteCargoAction } from './actions';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 
 interface DeleteCargoAlertProps {
   cargoId: string;
@@ -25,11 +26,21 @@ interface DeleteCargoAlertProps {
 export function DeleteCargoAlert({ cargoId, cargoName, isOpen, setIsOpen }: DeleteCargoAlertProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para excluir um cargo.',
+        });
+        setIsDeleting(false);
+        return;
+    }
     try {
-      const result = await deleteCargoAction(cargoId);
+      const result = await deleteCargoAction(cargoId, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',

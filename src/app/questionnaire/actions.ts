@@ -6,6 +6,7 @@ import type { AnalysisResult } from "./types";
 import { generateDiscAnalysis } from "@/ai/flows/disc-analysis";
 import { generatePersonalizedLearningPath } from "@/ai/flows/personalized-learning-path";
 import { getCoursesAdmin } from "@/services/courses.admin";
+import { addLog } from "@/services/logs";
 
 export async function handleAnalysis(formData: any, uid: string): Promise<AnalysisResult> {
     console.log('[handleAnalysis] Starting analysis process for user:', uid);
@@ -91,6 +92,7 @@ export async function handleAnalysis(formData: any, uid: string): Promise<Analys
             learningPath: learningPath,
             questionnaireResponses: formData,
         });
+        await addLog(uid, 'ASSESSMENT_COMPLETED');
         console.log('[handleAnalysis] Step 4 Succeeded: Assessment saved to profile.');
     } catch(error) {
         console.error("[handleAnalysis] Step 4 FAILED: Error saving assessment to profile:", error);

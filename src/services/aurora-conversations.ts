@@ -3,6 +3,7 @@
 import { adminDb } from '@/lib/firebase-admin';
 import { Timestamp, FieldValue } from 'firebase-admin/firestore';
 import { revalidatePath } from 'next/cache';
+import { addLog } from './logs';
 
 export type AuroraConversation = {
     id: string;
@@ -47,6 +48,8 @@ export async function startConversation(userId: string): Promise<string> {
     };
     
     await conversationRef.set(newConversation);
+    
+    await addLog(userId, 'CHAT_STARTED', { chatType: 'Aurora' });
     
     revalidatePath('/dashboard/admin/aurora');
     

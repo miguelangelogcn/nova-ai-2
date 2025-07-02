@@ -4,6 +4,7 @@ import { adminDb } from '@/lib/firebase-admin';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { revalidatePath } from 'next/cache';
 import { getCourseAdmin } from './courses.admin';
+import { addLog } from './logs';
 
 // Action to mark a course as started
 export async function startCourseAction(uid: string, courseId: string) {
@@ -21,11 +22,15 @@ export async function startCourseAction(uid: string, courseId: string) {
             return { success: true, message: 'Curso já iniciado.' };
         }
 
+        const course = await getCourseAdmin(courseId);
+
         await userRef.update({
             [`${progressPath}.courseId`]: courseId,
             [`${progressPath}.startedAt`]: Timestamp.now(),
             [`${progressPath}.completedLessons`]: [],
         });
+        
+        await addLog(uid, 'COURSE_STARTED', { courseId, courseTitle: course?.title || 'N/A' });
         
         revalidatePath(`/dashboard/courses/${courseId}`, 'layout');
         return { success: true };
@@ -59,6 +64,9 @@ export async function toggleLessonCompletionAction(uid: string, courseId: string
         
         const completedLessons: string[] = courseProgress?.completedLessons || [];
         const isCompleted = completedLessons.includes(lessonId);
+        
+        const course = await getCourseAdmin(courseId);
+        const lesson = course?.modules?.flatMap(m => m.lessons).find(l => l.id === lessonId);
 
         if (isCompleted) {
             await userRef.update({
@@ -69,10 +77,15 @@ export async function toggleLessonCompletionAction(uid: string, courseId: string
             await userRef.update({
                 [`${progressPath}.completedLessons`]: FieldValue.arrayUnion(lessonId),
             });
+            await addLog(uid, 'LESSON_COMPLETED', {
+                courseId,
+                courseTitle: course?.title || 'N/A',
+                lessonId,
+                lessonTitle: lesson?.title || 'N/A',
+            });
         }
 
         // Check for course completion
-        const course = await getCourseAdmin(courseId);
         if (course?.modules) {
             const totalLessons = course.modules.reduce((acc, module) => acc + (module.lessons?.length || 0), 0);
             const updatedCompletedLessons = (await (await userRef.get()).data())?.courseProgress?.[courseId]?.completedLessons || [];

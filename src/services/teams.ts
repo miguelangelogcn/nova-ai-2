@@ -16,6 +16,25 @@ type FirestoreTeam = Omit<Team, 'id' | 'createdAt'> & {
 };
 
 /**
+ * Fetches a single team from the Firestore 'teams' collection.
+ * @param id - The ID of the team to fetch.
+ * @returns A promise that resolves to a Team object or null if not found.
+ */
+export async function getTeam(id: string): Promise<Team | null> {
+    const teamDoc = await adminDb.collection('teams').doc(id).get();
+    if (!teamDoc.exists) {
+        return null;
+    }
+    const data = teamDoc.data() as FirestoreTeam;
+    return {
+        id: teamDoc.id,
+        ...data,
+        createdAt: data.createdAt.toDate().toISOString(),
+    };
+}
+
+
+/**
  * Fetches all teams from the Firestore 'teams' collection.
  * @returns A promise that resolves to an array of Team objects.
  */

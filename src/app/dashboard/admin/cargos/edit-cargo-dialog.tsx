@@ -26,6 +26,7 @@ import { updateCargoAction } from './actions';
 import { type CargoFormInput, CargoFormSchema } from './types';
 import { Loader2 } from 'lucide-react';
 import type { Cargo } from '@/services/cargos';
+import { useAuth } from '@/context/auth-context';
 
 interface EditCargoDialogProps {
   cargo: Cargo;
@@ -36,6 +37,7 @@ interface EditCargoDialogProps {
 export function EditCargoDialog({ cargo, isOpen, setIsOpen }: EditCargoDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { appUser } = useAuth();
 
   const form = useForm<CargoFormInput>({
     resolver: zodResolver(CargoFormSchema),
@@ -54,8 +56,17 @@ export function EditCargoDialog({ cargo, isOpen, setIsOpen }: EditCargoDialogPro
 
   const onSubmit = async (values: CargoFormInput) => {
     setIsSubmitting(true);
+    if (!appUser) {
+        toast({
+            variant: 'destructive',
+            title: 'Erro de autenticação',
+            description: 'Você precisa estar logado para editar um cargo.',
+        });
+        setIsSubmitting(false);
+        return;
+    }
     try {
-      const result = await updateCargoAction(cargo.id, values);
+      const result = await updateCargoAction(cargo.id, values, appUser.uid);
       if (result.success) {
         toast({
           title: 'Sucesso!',
