@@ -9,16 +9,10 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
-// For now, the reports are static. In the future, this could be dynamic data passed in.
-const reportData = `
-- Total de Usuários: 128
-- Cursos Concluídos (este mês): 342
-- Taxa de Engajamento: 87%
-- Principal Dúvida (Florence): Dosagem de Medicação
-- Conclusões por Mês: Janeiro (186), Fevereiro (305), Março (237), Abril (73), Maio (209), Junho (214)
-`;
+// No data is passed statically anymore. This will be updated as reports are built.
+const reportData = `Nenhum dado de relatório disponível no momento.`;
 
 const AuroraAssistantChatInputSchema = z.object({
   message: z.string().describe('A mensagem do gestor para a assistente Aurora.'),
@@ -60,7 +54,7 @@ Você tem acesso aos seguintes dados de relatório:
 ${reportData}
 ---
 
-Responda às perguntas do gestor com base nesses dados. Você pode cruzar informações e gerar análises.
+Responda às perguntas do gestor. Se não houver dados, informe que os relatórios ainda não estão disponíveis ou que você não tem acesso a essa informação.
 
 Histórico do Chat:
 {{#each chatHistory}}
