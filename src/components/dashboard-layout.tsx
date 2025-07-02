@@ -54,13 +54,22 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, appUser, loading, logout } = useAuth();
   
-  const isAdmin = appUser && ['desenvolvimento-gestor', 'super-admin'].includes(appUser.role);
+  const isEmployee = appUser?.role === 'desenvolvimento-funcionario';
+  const isManager = appUser?.role === 'desenvolvimento-gestor';
+  const isSuperAdmin = appUser?.role === 'super-admin';
 
   React.useEffect(() => {
     if (!loading && !user) {
       router.push('/');
     }
   }, [user, loading, router]);
+  
+  // Redirect manager from generic dashboard to their specific one
+  React.useEffect(() => {
+    if (isManager && pathname === '/dashboard') {
+        router.replace('/dashboard/admin/dashboard');
+    }
+  }, [isManager, pathname, router]);
 
   React.useEffect(() => {
     if (!loading && appUser) {
@@ -139,27 +148,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </div>
           </SidebarHeader>
           <SidebarMenu>
-            <SidebarGroup>
-              <SidebarGroupLabel>
-                Desenvolvimento | Funcionário
-              </SidebarGroupLabel>
-              {userNavItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href)}
-                    tooltip={item.label}
-                  >
-                    <Link href={item.href}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarGroup>
+            {(isEmployee || isSuperAdmin) && (
+              <SidebarGroup>
+                <SidebarGroupLabel>
+                  Desenvolvimento | Funcionário
+                </SidebarGroupLabel>
+                {userNavItems.map((item) => (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href)}
+                      tooltip={item.label}
+                    >
+                      <Link href={item.href}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarGroup>
+            )}
             
-            {isAdmin && (
+            {(isManager || isSuperAdmin) && (
               <SidebarGroup>
                 <SidebarGroupLabel>
                   Desenvolvimento | Gestor
@@ -184,7 +195,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </SidebarContent>
         <SidebarFooter>
             <div className="flex items-center gap-3 p-2 rounded-lg">
-                <Link href="/dashboard/profile" className='flex items-center gap-3 flex-grow'>
+                <Link href="/dashboard/profile" className='flex items-center gap-3 flex-grow' aria-disabled={isManager}>
                     <Avatar>
                         <AvatarImage src={appUser?.photoURL ?? "https://placehold.co/40x40.png"} data-ai-hint="mulher sorrindo" alt="User" />
                         <AvatarFallback>{getAvatarFallback()}</AvatarFallback>
