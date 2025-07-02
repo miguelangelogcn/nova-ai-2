@@ -11,8 +11,16 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
-// No data is passed statically anymore. This will be updated as reports are built.
-const reportData = `Nenhum dado de relatório disponível no momento.`;
+const reportData = `
+Relatório de Acessos ao Sistema (Módulo 1 - Funcionários):
+- Mês: Janeiro, Desktop: 186 acessos, Mobile: 109 acessos.
+- Mês: Fevereiro, Desktop: 220 acessos, Mobile: 132 acessos.
+- Mês: Março, Desktop: 345 acessos, Mobile: 298 acessos.
+- Mês: Abril, Desktop: 412 acessos, Mobile: 350 acessos.
+- Mês: Maio, Desktop: 580 acessos, Mobile: 490 acessos.
+- Mês: Junho, Desktop: 650 acessos, Mobile: 510 acessos.
+Resumo: A tendência geral de acessos é de crescimento tanto para desktop quanto para mobile. O desktop continua sendo a plataforma predominante para o acesso.
+`.trim();
 
 const AuroraAssistantChatInputSchema = z.object({
   message: z.string().describe('A mensagem do gestor para a assistente Aurora.'),
